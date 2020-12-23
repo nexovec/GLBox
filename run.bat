@@ -1,0 +1,1 @@
+cd bin && cmake .. && cmake --build . && cd src/Debug && ECHO. && ECHO. && hello.exe

@@ -4,6 +4,7 @@
 cmake_minimum_required (VERSION 2.8.11)
 project (HELLO)
 add_subdirectory(vendor/glfw)
+add_subdirectory(vendor/glad)
 
 add_subdirectory (src)
 find_package(OpenGL REQUIRED)
