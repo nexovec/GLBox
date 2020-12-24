@@ -1,7 +1,15 @@
+@ECHO OFF
 IF EXIST bin  (
-ECHO.
+cd .
 ) ELSE (
 mkdir bin
 ECHO created bin directory!
 )
-cd bin && cmake .. && cmake --build . && cd src/Debug && ECHO. && ECHO. && hello.exe
+cd bin
+@ECHO ON
+cmake ..
+cmake --build .
+@ECHO OFF
+cd src/Debug
+ECHO. && ECHO.
+hello.exe
