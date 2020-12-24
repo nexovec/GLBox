@@ -7,7 +7,15 @@
 
 const uint32_t gl_buildProgram(char*,char*);
 static void glfw_errCbck(int code,char* err);
+static void runTests();
+static int startup();
 int main(){
+#ifdef RUN_TESTS
+    runTests();
+#endif
+    return startup();
+}
+static int startup(){
     //initialize OpenGL
     glfwSetErrorCallback((GLFWerrorfun)glfw_errCbck);
     if(!glfwInit()){
@@ -21,13 +29,19 @@ int main(){
     gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
     const uint32_t program = gl_buildProgram("res/shaders/vert.glsl","res/shaders/frag.glsl");
     // main program loop
+    glad_glClearColor(0.3f,0.7f,0.3f,1.0f);
     while(glfwWindowShouldClose(window)==GLFW_FALSE){
         glfwPollEvents();
+        glad_glClear(GL_COLOR_BUFFER_BIT);
         if(glfwGetKey(window,GLFW_KEY_ESCAPE))glfwSetWindowShouldClose(window,GLFW_TRUE);
         glfwSwapBuffers(window);
         continue;
     }
     return 0;
+
+}
+static void runTests(){
+    return;
 }
 static void glfw_errCbck(int code,char* err){
     fprintf(stderr,"GLFW Error %d: %s\n",code,err);
