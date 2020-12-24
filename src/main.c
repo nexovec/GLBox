@@ -9,7 +9,7 @@ const uint32_t gl_buildProgram(char*,char*);
 static void glfw_errCbck(int code,char* err);
 int main(){
     //initialize OpenGL
-    glfwSetErrorCallback(glfw_errCbck);
+    glfwSetErrorCallback((GLFWerrorfun)glfw_errCbck);
     if(!glfwInit()){
         return -1;
     }
@@ -18,7 +18,7 @@ int main(){
         return -1;
     }
     glfwMakeContextCurrent(window);
-    gladLoadGL(glfwGetProcAddress);
+    gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
     const uint32_t program = gl_buildProgram("res/shaders/vert.glsl","res/shaders/frag.glsl");
     // main program loop
     while(glfwWindowShouldClose(window)==GLFW_FALSE){
@@ -32,7 +32,7 @@ int main(){
 static void glfw_errCbck(int code,char* err){
     fprintf(stderr,"GLFW Error %d: %s\n",code,err);
 }
-void printShaderError(const uint32_t shader, char* prefixedMessage);
+void printGLError(const uint32_t shader,GLenum pname, char* prefixedMessage);
 const uint32_t gl_buildProgram(char* vertPath, char* fragPath){
     char* vertShaderSource = readStringFromFile("res/shaders/vert.glsl");
     char* fragShaderSource = readStringFromFile("res/shaders/frag.glsl");
@@ -42,19 +42,20 @@ const uint32_t gl_buildProgram(char* vertPath, char* fragPath){
     glad_glShaderSource(fShader,1,&fragShaderSource,NULL);
     glad_glCompileShader(vShader);
     glad_glCompileShader(fShader);
-    printShaderError(vShader,"Vertex shader Error:");
-    printShaderError(fShader,"Fragment shader Error:");
+    printGLError(vShader,GL_COMPILE_STATUS,"Vertex shader Error:");
+    printGLError(fShader,GL_COMPILE_STATUS,"Fragment shader Error:");
     const uint32_t program = glad_glCreateProgram();
     glad_glAttachShader(program, vShader);
     glad_glAttachShader(program, fShader);
     glad_glLinkProgram(program);
+    printGLError(program,GL_LINK_STATUS,"Linking Error:");
     free(vertShaderSource);
     free(fragShaderSource);
     return program;
 }
-void printShaderError(const uint32_t shader, char* prefixedMessage){
+void printGLError(const uint32_t shader, GLenum pname, char* prefixedMessage){
     uint32_t result;
-    glad_glGetShaderiv(shader,GL_COMPILE_STATUS,&result);
+    glad_glGetShaderiv(shader,pname,&result);
     if(!result){
         uint32_t maxLength;
         glad_glGetShaderiv(shader,GL_INFO_LOG_LENGTH,&maxLength);
