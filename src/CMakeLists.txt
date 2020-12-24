@@ -1,4 +1,5 @@
 link_libraries(glfw glad)
 include_directories("${GLFW_SOURCE_DIR}/include")
 include_directories("${HELLO_SOURCE_DIR}/vendor/glad/include")
-add_executable (hello main.c ${GLAD_GL})
+add_executable (hello main.c)
+add_custom_command(TARGET hello PRE_BUILD COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_SOURCE_DIR}/res $<TARGET_FILE_DIR:hello>/res)
