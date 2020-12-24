@@ -11,7 +11,6 @@ char* readStringFromFile(char* path){
         contents[i++] = character;
     }
     contents[i] = '\0';
-    printf("%s",contents);// ::DEBUG
     fclose(file);
     return contents;
 }
