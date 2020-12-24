@@ -12,4 +12,4 @@ cmake --build .
 @ECHO OFF
 cd src/Debug
 ECHO. && ECHO.
-hello.exe
+App.exe
