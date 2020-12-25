@@ -41,7 +41,7 @@ static int startup(){
     const int32_t color_loc = glad_glGetAttribLocation(program,"color");
 
     uint32_t vbo[2];
-    glad_glGenBuffers(2,&vbo);
+    glad_glGenBuffers(2,(uint32_t*)&vbo);
     uint32_t vao;
     glad_glGenVertexArrays(1,&vao);
     glad_glBindVertexArray(vao);
