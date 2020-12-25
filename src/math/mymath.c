@@ -16,7 +16,7 @@ int Mat4f_equals(Mat4f *a, Mat4f *b)
     int res = 1;
     for (int i = 0; i < 16; i++)
     {
-        res = res & (a->members[i] == b->members[i]);
+        res = res && (a->members[i] == b->members[i]);
     }
     return res;
 }
@@ -45,14 +45,11 @@ Mat4f *Mat4f_add(Mat4f *a, Mat4f *b)
 Mat4f *Mat4f_multiply(Mat4f *a, Mat4f *b)
 {
     Mat4f *res = Mat4f_zeroes();
-    for (int i = 0; i < 16; i++)
-    {
-        for (int ii = 0; ii < 4; ii++)
-        {
-            res->members[i] += a->members[((int)i / 4) + ii] * b->members[((int)i % 4) + ii * 4];
-        }
-    }
-    return a;
+    for (int x = 0; x < 4; x++)
+        for (int y = 0; y < 4; y++)
+            for (int i = 0; i < 4; i++)
+                res->members[x + y * 4] += a->members[y * 4 + i] * b->members[x + i * 4];
+    return res;
 }
 Mat4f *Mat4f_transpose(Mat4f *mat)
 {
