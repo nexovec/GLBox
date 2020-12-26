@@ -1,22 +1,22 @@
 #define GLFW_INCLUDE_NONE
 #define RUN_TESTS
-#include "utils.h"
-#include "mymath.h"
+#include "utils/utils.h"
+#include "mymath/mymath.h"
+#include "tests.h"
 #include "stdio.h"
 #include "stdlib.h"
-#include "assert.h"
 #include "GLFW/glfw3.h"
 #include "glad/glad.h"
 
 const uint32_t gl_buildProgram(char *, char *);
 static void glfw_errCbck(int code, char *err);
-static void runTests();
 static int startup();
-void printGLError(const uint32_t shader, GLenum pname, char *prefixedMessage);
+void gl_printGLError(const uint32_t shader, GLenum pname, char *prefixedMessage);
 
 int main()
 {
 #ifdef RUN_TESTS
+    #include "tests.h"
     runTests();
 #endif
     return startup();
@@ -29,6 +29,7 @@ static int startup()
     {
         return -1;
     }
+    glfwWindowHint(GLFW_RESIZABLE,GLFW_FALSE);
     GLFWwindow *window = glfwCreateWindow(800, 600, "Hello there", NULL, NULL);
     if (!window)
     {
@@ -77,13 +78,6 @@ static int startup()
     }
     return 0;
 }
-static void runTests()
-{
-    // !! THESE DON'T GET FREED, TESTING PURPOSES ONLY!
-    assert(Mat4f_equals(Mat4f_identity(), Mat4f_multiply(Mat4f_identity(), Mat4f_identity())));
-    assert(Mat4f_equals(Mat4f_identity(), Mat4f_add(Mat4f_multiply(Mat4f_identity(), Mat4f_zeroes()), Mat4f_identity())));
-    return;
-}
 static void glfw_errCbck(int code, char *err)
 {
     fprintf(stderr, "GLFW Error %d: %s\n", code, err);
@@ -98,18 +92,18 @@ const uint32_t gl_buildProgram(char *vertPath, char *fragPath)
     glad_glShaderSource(fShader, 1, &fragShaderSource, NULL);
     glad_glCompileShader(vShader);
     glad_glCompileShader(fShader);
-    printGLError(vShader, GL_COMPILE_STATUS, "Vertex shader Error:");
-    printGLError(fShader, GL_COMPILE_STATUS, "Fragment shader Error:");
+    gl_printGLError(vShader, GL_COMPILE_STATUS, "Vertex shader Error:");
+    gl_printGLError(fShader, GL_COMPILE_STATUS, "Fragment shader Error:");
     const uint32_t program = glad_glCreateProgram();
     glad_glAttachShader(program, vShader);
     glad_glAttachShader(program, fShader);
     glad_glLinkProgram(program);
-    printGLError(program, GL_LINK_STATUS, "Linking Error:");
+    gl_printGLError(program, GL_LINK_STATUS, "Linking Error:");
     free(vertShaderSource);
     free(fragShaderSource);
     return program;
 }
-void printGLError(const uint32_t shader, GLenum pname, char *prefixedMessage)
+void gl_printGLError(const uint32_t shader, GLenum pname, char *prefixedMessage)
 {
     uint32_t result;
     glad_glGetShaderiv(shader, pname, &result);

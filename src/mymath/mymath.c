@@ -35,6 +35,17 @@ Mat4f *Mat4f_identity()
             res->members[i] = 1;
     return res;
 };
+Mat4f *Mat4f_ortho(float right, float left, float top, float bottom, float far, float near){
+    Mat4f* res = Mat4f_zeroes();
+    res->members[0] = 2/(right-left);
+    res->members[5] = 2/(top-bottom);
+    res->members[10] = 2/(near-far);
+    res->members[15] = 1;
+    res->members[11] = -(far+near)/(far-near);
+    res->members[7] = -(top+bottom)/(top-bottom);
+    res->members[3] = -(right+left)/(right-left);
+    return res;
+}
 Mat4f *Mat4f_add(Mat4f *a, Mat4f *b)
 {
     Mat4f *res = (Mat4f *)malloc(sizeof(Mat4f));
