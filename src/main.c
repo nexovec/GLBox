@@ -42,12 +42,19 @@ static int startup()
         {0.0, 0.0, 1.0}}; /* Blue */
     // GPU data transfer
     const uint32_t program = gl_buildProgram("res/shaders/vert.glsl", "res/shaders/frag.glsl");
-    const int32_t pos_loc = glad_glGetAttribLocation(program, "pos"); // TODO: Error handling for the entire block
+    // TODO: error handle shader runtime
+    glad_glUseProgram(program);
+    const int32_t pos_loc = glad_glGetAttribLocation(program, "pos");
     const int32_t color_loc = glad_glGetAttribLocation(program, "color");
+    const int32_t globT_loc = glad_glGetUniformLocation(program, "globT");
 
+    const float ratio = 4/3;
+    // FIXME: leaks
+    glad_glUniformMatrix4fv(globT_loc,1,GL_FALSE,Mat4f_multiply(Mat4f_ortho(ratio,-ratio,1.0f,-1.0f,-1.0f,1.0f),Mat4f_translation(0.5f,0.3f,0.f))->members);
     uint32_t vbo[2];
     glad_glGenBuffers(2, (uint32_t *)&vbo);
     uint32_t vao;
+
     glad_glGenVertexArrays(1, &vao);
     glad_glBindVertexArray(vao);
 
@@ -68,7 +75,6 @@ static int startup()
         glad_glClear(GL_COLOR_BUFFER_BIT);
         if (glfwGetKey(window, GLFW_KEY_ESCAPE))
             glfwSetWindowShouldClose(window, GLFW_TRUE);
-        glad_glUseProgram(program);
         glad_glDrawArrays(GL_TRIANGLES, 0, 3);
         glfwSwapBuffers(window);
         continue;

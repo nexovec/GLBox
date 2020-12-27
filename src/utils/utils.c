@@ -21,16 +21,16 @@ void glfw_errCbck(int code, char *err)
 {
     fprintf(stderr, "GLFW Error %d: %s\n", code, err);
 }
-void gl_printGLError(const uint32_t shader, GLenum pname, char *prefixedMessage)
+void gl_printGLError(const uint32_t subject, GLenum pname, char *prefixedMessage)
 {
     uint32_t result;
-    glad_glGetShaderiv(shader, pname, &result);
+    glad_glGetShaderiv(subject, pname, &result);
     if (!result)
     {
         uint32_t maxLength;
-        glad_glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &maxLength);
+        glad_glGetShaderiv(subject, GL_INFO_LOG_LENGTH, &maxLength);
         char *message = malloc(maxLength * sizeof(char));
-        glad_glGetShaderInfoLog(shader, maxLength, &maxLength, message);
+        glad_glGetShaderInfoLog(subject, maxLength, &maxLength, message);
         fprintf(stderr, "%s\n%s\n", prefixedMessage, message);
         free(message);
         exit(-1);
