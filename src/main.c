@@ -5,13 +5,10 @@
 #include "tests.h"
 #include "stdio.h"
 #include "stdlib.h"
+#include "stdint.h"
 #include "GLFW/glfw3.h"
 #include "glad/glad.h"
-
-const uint32_t gl_buildProgram(char *, char *);
-static void glfw_errCbck(int code, char *err);
 static int startup();
-void gl_printGLError(const uint32_t shader, GLenum pname, char *prefixedMessage);
 
 int main()
 {
@@ -78,43 +75,5 @@ static int startup()
     }
     return 0;
 }
-static void glfw_errCbck(int code, char *err)
-{
-    fprintf(stderr, "GLFW Error %d: %s\n", code, err);
-}
-const uint32_t gl_buildProgram(char *vertPath, char *fragPath)
-{
-    char *vertShaderSource = readStringFromFile("res/shaders/vert.glsl");
-    char *fragShaderSource = readStringFromFile("res/shaders/frag.glsl");
-    const uint32_t vShader = glad_glCreateShader(GL_VERTEX_SHADER);
-    const uint32_t fShader = glad_glCreateShader(GL_FRAGMENT_SHADER);
-    glad_glShaderSource(vShader, 1, &vertShaderSource, NULL);
-    glad_glShaderSource(fShader, 1, &fragShaderSource, NULL);
-    glad_glCompileShader(vShader);
-    glad_glCompileShader(fShader);
-    gl_printGLError(vShader, GL_COMPILE_STATUS, "Vertex shader Error:");
-    gl_printGLError(fShader, GL_COMPILE_STATUS, "Fragment shader Error:");
-    const uint32_t program = glad_glCreateProgram();
-    glad_glAttachShader(program, vShader);
-    glad_glAttachShader(program, fShader);
-    glad_glLinkProgram(program);
-    gl_printGLError(program, GL_LINK_STATUS, "Linking Error:");
-    free(vertShaderSource);
-    free(fragShaderSource);
-    return program;
-}
-void gl_printGLError(const uint32_t shader, GLenum pname, char *prefixedMessage)
-{
-    uint32_t result;
-    glad_glGetShaderiv(shader, pname, &result);
-    if (!result)
-    {
-        uint32_t maxLength;
-        glad_glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &maxLength);
-        char *message = malloc(maxLength * sizeof(char));
-        glad_glGetShaderInfoLog(shader, maxLength, &maxLength, message);
-        fprintf(stderr, "%s\n%s\n", prefixedMessage, message);
-        free(message);
-        exit(-1);
-    }
-}
+
+

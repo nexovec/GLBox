@@ -3,6 +3,7 @@
 #include "stdio.h"
 
 // NOTE: No side effects here!
+// TODO: 
 Mat4f *Mat4f_print(Mat4f *mat)
 {
     for (int i = 0; i < 4; i++)
@@ -18,6 +19,11 @@ int Mat4f_equals(Mat4f *a, Mat4f *b)
     {
         res = res && (a->members[i] == b->members[i]);
     }
+    return res;
+}
+Mat4f *Mat4f_copy(Mat4f* mat){
+    Mat4f *res = (Mat4f*)malloc(sizeof(Mat4f));
+    for(int i = 0; i<16;i++) res->members[i] = mat->members[i];
     return res;
 }
 Mat4f *Mat4f_zeroes()
@@ -45,6 +51,9 @@ Mat4f *Mat4f_ortho(float right, float left, float top, float bottom, float far, 
     res->members[7] = -(top+bottom)/(top-bottom);
     res->members[3] = -(right+left)/(right-left);
     return res;
+}
+Mat4f *Mat4f_translation(Mat4f *mat, float moveX, float moveY, float moveZ){
+    return mat;
 }
 Mat4f *Mat4f_add(Mat4f *a, Mat4f *b)
 {
