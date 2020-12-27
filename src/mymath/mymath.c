@@ -1,6 +1,7 @@
 #include "mymath.h"
 #include "stdlib.h"
 #include "stdio.h"
+#include "math.h"
 
 // NOTE: No side effects here!
 
@@ -29,7 +30,6 @@ Mat4f *Mat4f_ortho(float right, float left, float top, float bottom, float far, 
     res->members[14] = -(far + near) / (far - near);
     res->members[13] = -(top + bottom) / (top - bottom);
     res->members[12] = -(right + left) / (right - left);
-    Mat4f_print(res);
     return res;
 }
 Mat4f *Mat4f_translation(float moveX, float moveY, float moveZ)
@@ -38,6 +38,17 @@ Mat4f *Mat4f_translation(float moveX, float moveY, float moveZ)
     res->members[14] = moveZ;
     res->members[13] = moveY;
     res->members[12] = moveX;
+    return res;
+}
+Mat4f *Mat4f_rotationX(float rot){
+    // TODO: test
+    Mat4f *res = Mat4f_identity();
+    float c = (float)cos(rot);
+    float s = (float)sin(rot);
+    res->members[5] = c;
+    res->members[6] = s;
+    res->members[9] = -s;
+    res->members[10] = c;
     return res;
 }
 
@@ -54,7 +65,7 @@ int Mat4f_equals(Mat4f *a, Mat4f *b)
     int res = 1;
     for (int i = 0; i < 16; i++)
     {
-        res & (a->members[i] == b->members[i]);
+        res = res & (a->members[i] == b->members[i]);
     }
     return res;
 }
