@@ -51,6 +51,33 @@ Mat4f *Mat4f_rotationX(float rot){
     res->members[10] = c;
     return res;
 }
+Mat4f *Mat4f_rotationY(float rot){
+    // TODO: test
+    Mat4f *res = Mat4f_identity();
+    float c = (float)cos(rot);
+    float s = (float)sin(rot);
+    res->members[0] = c;
+    res->members[2] = -s;
+    res->members[8] = s;
+    res->members[10] = c;
+    return res;
+}
+Mat4f *Mat4f_rotationZ(float rot){
+    // TODO: test
+    Mat4f *res = Mat4f_identity();
+    float c = (float)cos(rot);
+    float s = (float)sin(rot);
+    res->members[0] = c;
+    res->members[1] = s;
+    res->members[4] = -s;
+    res->members[5] = c;
+    return res;
+}
+Mat4f *Mat4f_rotation(float rotX, float rotY, float rotZ){
+// FIXME: leaks
+// FIXME: slow
+    return Mat4f_multiply(Mat4f_rotationX(rotX), Mat4f_multiply(Mat4f_rotationY(rotY), Mat4f_rotationZ(rotZ)));
+}
 
 Mat4f *Mat4f_print(Mat4f *mat)
 {

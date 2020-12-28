@@ -75,6 +75,8 @@ static int startup()
         glad_glClear(GL_COLOR_BUFFER_BIT);
         if (glfwGetKey(window, GLFW_KEY_ESCAPE))
             glfwSetWindowShouldClose(window, GLFW_TRUE);
+        Mat4f *rot = Mat4f_rotation(0.f,0.f,(float)glfwGetTime());
+        glad_glUniformMatrix4fv(globT_loc,1,GL_FALSE,Mat4f_multiply(Mat4f_ortho(ratio,-ratio,1.0f,-1.0f,-1.0f,1.0f),rot)->members);
         glad_glDrawArrays(GL_TRIANGLES, 0, 3);
         glfwSwapBuffers(window);
         continue;
