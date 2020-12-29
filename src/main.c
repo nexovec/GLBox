@@ -53,8 +53,12 @@ static int startup()
     const int32_t globT_loc = glad_glGetUniformLocation(program, "globT");
 
     const float ratio = 4/3;
-    // FIXME: leaks
-    glad_glUniformMatrix4fv(globT_loc,1,GL_FALSE,Mat4f_multiply(Mat4f_ortho(ratio,-ratio,1.0f,-1.0f,-1.0f,1.0f),Mat4f_translation(0.5f,0.3f,0.f))->members);
+    Mat4f ortho, translation, MVP;
+    Mat4f_ortho(&ortho, ratio,-ratio,1.0f,-1.0f,-1.0f,1.0f);
+    Mat4f_translation(&translation, 0.5f,0.3f,0.f);
+    Mat4f_multiply(&MVP, &ortho, &translation);
+    glad_glUniformMatrix4fv(globT_loc,1,GL_FALSE,MVP.members);
+
     uint32_t vbo[2];
     glad_glGenBuffers(2, (uint32_t *)&vbo);
     uint32_t vao;
@@ -79,8 +83,11 @@ static int startup()
         glad_glClear(GL_COLOR_BUFFER_BIT);
         if (glfwGetKey(window, GLFW_KEY_ESCAPE))
             glfwSetWindowShouldClose(window, GLFW_TRUE);
-        Mat4f *rot = Mat4f_rotation(0.f,0.f,(float)glfwGetTime());
-        glad_glUniformMatrix4fv(globT_loc,1,GL_FALSE,Mat4f_multiply(Mat4f_ortho(ratio,-ratio,1.0f,-1.0f,-1.0f,1.0f),rot)->members);
+        Mat4f rot;
+        Mat4f finale;
+        Mat4f_rotation(&rot, 0.f, 0.f, (float)glfwGetTime());
+        Mat4f_multiply(&finale, &MVP, &rot);
+        glad_glUniformMatrix4fv(globT_loc,1,GL_FALSE,finale.members);
         glad_glDrawArrays(GL_TRIANGLES, 0, 3);
         glfwSwapBuffers(window);
         continue;
