@@ -1,4 +1,14 @@
 #pragma once
+#include "stdint.h"
+// SECTION: Vec3f
+typedef struct Vec3f{
+    float x;
+    float y;
+    float z;
+}Vec3f;
+
+Vec3f *Vec3f_fromFloatArr(Vec3f *vecArr, float *floatArr, uint32_t num);
+
 // SECTION: Mat4f
 typedef struct Mat4f
 {

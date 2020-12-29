@@ -2,9 +2,25 @@
 #include "stdlib.h"
 #include "stdio.h"
 #include "math.h"
+#include "string.h"
+#include "stdint.h"
 
-// NOTE: No side effects here!
+// SECTION: Vec3f
+Vec3f *Vec3f_print(Vec3f* vec){
+    printf("(%f,%f,%f)\n",vec->x,vec->y,vec->z);
+    return vec;
+}
+Vec3f *Vec3f_fromFloatArr(Vec3f *vecArr, float *floatArr, uint32_t num){
+    for(int i = 0;i<num;i++){
+        vecArr[i].x = floatArr[i*3];
+        vecArr[i].y = floatArr[i*3+1];
+        vecArr[i].z = floatArr[i*3+2];
+        // Vec3f_print(&vecArr[i]);
+    }
+}
 
+// SECTION: Mat4f
+// TODO: remake without allocations
 Mat4f *Mat4f_zeroes()
 {
     Mat4f *res = (Mat4f *)malloc(sizeof(Mat4f));
