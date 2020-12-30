@@ -3,6 +3,5 @@
 // FIXME: leaks
 typedef struct VBO{
     uint32_t id;
-    Vec3f *positions;
-    Vec3f *colors;
+    Vec3f *data;
 }VBO;

@@ -124,12 +124,11 @@ int Mat4f_equals(Mat4f *a, Mat4f *b)
     }
     return res;
 }
-Mat4f *Mat4f_copy(Mat4f *mat)
+Mat4f *Mat4f_copy(Mat4f *s_e_dest, Mat4f *mat)
 {
-    Mat4f *res = (Mat4f *)malloc(sizeof(Mat4f));
     for (int i = 0; i < 16; i++)
-        res->members[i] = mat->members[i];
-    return res;
+        s_e_dest->members[i] = mat->members[i];
+    return s_e_dest;
 }
 
 Mat4f *Mat4f_add(Mat4f *a, Mat4f *b)

@@ -1,5 +1,4 @@
 #define GLFW_INCLUDE_NONE
-#define RUN_TESTS
 #include "utils/utils.h"
 #include "mymath/mymath.h"
 #include "tests.h"
@@ -12,7 +11,7 @@ static int startup();
 
 int main()
 {
-#ifdef RUN_TESTS
+#ifdef GLE_RUN_TESTS
     #include "tests.h"
     runTests();
 #endif
@@ -36,14 +35,15 @@ static int startup()
     gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
     // SECTION: defining data
     float positionsf[9] = {-0.6f, -0.4f, 0.f, 0.6f, -0.4f, 0.f, 0.f, 0.6f, 0.f};
-    float colorsf[3][3] = {
+    float colorsf[4][3] = {
+        {0.0, 0.0, 0.0},
         {1.0, 0.0, 0.0},  /* Red */
         {0.0, 1.0, 0.0},  /* Green */
         {0.0, 0.0, 1.0}}; /* Blue */
     Vec3f positions[3];
-    Vec3f colors[3];
+    Vec3f colors[4];
     Vec3f_fromFloatArr(positions, (float *)positionsf, 3);
-    Vec3f_fromFloatArr(colors, (float *)colorsf, 3);
+    Vec3f_fromFloatArr(colors, (float *)colorsf, 4);
     // SECTION: GPU data transfer
     const uint32_t program = gl_buildProgram("res/shaders/vert.glsl", "res/shaders/frag.glsl");
     // TODO: error handle shader runtime
@@ -73,8 +73,8 @@ static int startup()
 
     glad_glEnableVertexAttribArray(color_loc);
     glad_glBindBuffer(GL_ARRAY_BUFFER, vbo[1]);
-    glad_glBufferData(GL_ARRAY_BUFFER, sizeof(colors), colors, GL_STATIC_DRAW);
-    glad_glVertexAttribPointer(color_loc, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), 0);
+    glad_glBufferData(GL_ARRAY_BUFFER, sizeof(colors), &colors, GL_STATIC_DRAW);
+    glad_glVertexAttribPointer(color_loc, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (const void*)(sizeof(float)*3));
     // SECTION: main program loop
     glad_glClearColor(0.3f, 0.7f, 0.3f, 1.0f);
     while (glfwWindowShouldClose(window) == GLFW_FALSE)
