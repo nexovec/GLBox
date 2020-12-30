@@ -30,7 +30,6 @@ Vec3f *Vec3f_mult(Vec3f *s_e_vec, Vec3f *b){
 }
 
 // SECTION: Mat4f
-// TODO: remake without allocations
 Mat4f *Mat4f_zeroes(Mat4f *dest)
 {
     for (int i = 0; i < 16; i++)
@@ -131,21 +130,22 @@ Mat4f *Mat4f_copy(Mat4f *s_e_dest, Mat4f *mat)
     return s_e_dest;
 }
 
-Mat4f *Mat4f_add(Mat4f *a, Mat4f *b)
+Mat4f *Mat4f_add(Mat4f *s_e_mat, Mat4f *b)
 {
-    Mat4f *res = (Mat4f *)malloc(sizeof(Mat4f));
+    // TODO: test
     for (int i = 0; i < 16; i++)
-        res->members[i] = a->members[i] + b->members[i];
-    return res;
+        s_e_mat->members[i] += b->members[i];
+    return s_e_mat;
 }
 Mat4f *Mat4f_multiply(Mat4f *dest, Mat4f *a, Mat4f *b)
 {
-    Mat4f_zeroes(dest);
+    Mat4f res;
+    Mat4f_zeroes(&res);
     for (int x = 0; x < 4; x++)
         for (int y = 0; y < 4; y++)
             for (int i = 0; i < 4; i++)
-                dest->members[y + x * 4] += a->members[x * 4 + i] * b->members[y + i * 4];
-    return dest;
+                res.members[y + x * 4] += a->members[x * 4 + i] * b->members[y + i * 4];
+    return Mat4f_copy(dest,&res);
 }
 Mat4f *Mat4f_transpose(Mat4f *dest, Mat4f *mat)
 {

@@ -34,7 +34,7 @@ static int startup()
     glfwMakeContextCurrent(window);
     gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
     // SECTION: defining data
-    float positionsf[9] = {-0.6f, -0.4f, 0.f, 0.6f, -0.4f, 0.f, 0.f, 0.6f, 0.f};
+    float positionsf[9] = {-0.6f, -0.4f, 0.0f, 0.6f, -0.4f, 0.0f, 0.0f, 0.6f, 0.0f};
     float colorsf[4][3] = {
         {0.0, 0.0, 0.0},
         {1.0, 0.0, 0.0},  /* Red */
@@ -53,11 +53,9 @@ static int startup()
     const int32_t globT_loc = glad_glGetUniformLocation(program, "globT");
 
     const float ratio = 4/3;
-    Mat4f ortho, translation, MVP;
+    Mat4f ortho, translation, rot,  MVP;
     Mat4f_ortho(&ortho, ratio,-ratio,1.0f,-1.0f,-1.0f,1.0f);
     Mat4f_translation(&translation, 0.5f,0.3f,0.f);
-    Mat4f_multiply(&MVP, &ortho, &translation);
-    glad_glUniformMatrix4fv(globT_loc,1,GL_FALSE,MVP.members);
 
     uint32_t vbo[2];
     glad_glGenBuffers(2, (uint32_t *)&vbo);
@@ -83,11 +81,9 @@ static int startup()
         glad_glClear(GL_COLOR_BUFFER_BIT);
         if (glfwGetKey(window, GLFW_KEY_ESCAPE))
             glfwSetWindowShouldClose(window, GLFW_TRUE);
-        Mat4f rot;
-        Mat4f finale;
         Mat4f_rotation(&rot, 0.f, 0.f, (float)glfwGetTime());
-        Mat4f_multiply(&finale, &MVP, &rot);
-        glad_glUniformMatrix4fv(globT_loc,1,GL_FALSE,finale.members);
+        Mat4f_multiply(&MVP, Mat4f_multiply(&MVP, &ortho, &translation), &rot);
+        glad_glUniformMatrix4fv(globT_loc,1,GL_FALSE,MVP.members);
         glad_glDrawArrays(GL_TRIANGLES, 0, 3);
         glfwSwapBuffers(window);
         continue;
