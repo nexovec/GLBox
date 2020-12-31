@@ -64,12 +64,13 @@ VBO *VBO_init(VBO *vbo, VBLayout *vbl, float *data, size_t count)
     glad_glBindBuffer(GL_ARRAY_BUFFER, vbo->id);
     // TODO: fix GL_STATIC_DRAW
     glad_glBufferData(GL_ARRAY_BUFFER, count * sizeof(float), vbo->data, GL_STATIC_DRAW);
-    glad_glVertexAttribPointer(vbl->attrNames[0], vbl->compCounts[0], vbl->types[0], GL_FALSE, vbl->stride, (const void *)&vbl->offsets[0]);
-    // for (uint32_t i = 0; i < vbl->count; i++)
-    // {
-    //     // printf("%d %d\n", sizeof(&vbl->offsets[i]), sizeof(const void *));
-    //     glad_glEnableVertexAttribArray(vbl->attrNames[i]);
-    //     glad_glVertexAttribPointer(vbl->attrNames[i], vbl->compCounts[i], vbl->types[i], GL_FALSE, vbl->stride, (const void *)&vbl->offsets[i]);
-    // }
+    // printf("%d %d %d %d %d %d\n", vbl->attrNames[0], vbl->compCounts[0], vbl->types[0], GL_FALSE, vbl->stride, (const void *)vbl->offsets[0]);
+    // glad_glVertexAttribPointer(vbl->attrNames[0], vbl->compCounts[0], vbl->types[0], GL_FALSE, vbl->stride, (const void *)vbl->offsets[0]);
+    for (uint32_t i = 0; i < vbl->count; i++)
+    {
+        // printf("%d %d\n", sizeof(&vbl->offsets[i]), sizeof(const void *));
+        glad_glEnableVertexAttribArray(vbl->attrNames[i]);
+        glad_glVertexAttribPointer(vbl->attrNames[i], vbl->compCounts[i], vbl->types[i], GL_FALSE, vbl->stride, (const void *)vbl->offsets[i]);
+    }
     return vbo;
 }

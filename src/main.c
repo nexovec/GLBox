@@ -68,14 +68,21 @@ static int startup()
     VBLayout vbl;
     VBLayout_init(&vbl);
     VBLayout_addAttr(&vbl, pos_loc, 3, GL_FLOAT, 0);
-    // VBLayout_addAttr(&vbl, color_loc,3,GL_FLOAT,0);
+    VBLayout_addAttr(&vbl, color_loc, 3, GL_FLOAT, 0);
+
+    // BufferAssembler ba;
+    // BufferAssembler_init(&ba, &vbl);
+    // BufferAssembler_addSegment(&ba, (float*)positionsf);
+    // BufferAssembler_addSegment(&ba, (float*)colorsf);
+
     VBO vbo;
     VBO_init(&vbo, &vbl, positionsf, 9);
     // glad_glEnableVertexAttribArray(pos_loc);
     glad_glEnableVertexAttribArray(vbo.layout->attrNames[0]);
     // glad_glBindBuffer(GL_ARRAY_BUFFER, vbo.id);
     // glad_glBufferData(GL_ARRAY_BUFFER, sizeof(positions), positions, GL_STATIC_DRAW);
-    glad_glVertexAttribPointer(pos_loc, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), 0);
+    // printf("%d %d %d %d %d %d\n", pos_loc, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), 0);
+    // glad_glVertexAttribPointer(pos_loc, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), 0);
 
     // glad_glEnableVertexAttribArray(color_loc);
     // glad_glBindBuffer(GL_ARRAY_BUFFER, vbo[1]);
