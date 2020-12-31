@@ -1,6 +1,7 @@
 #define GLFW_INCLUDE_NONE
 #include "utils/utils.h"
 #include "mymath/mymath.h"
+#include "graphics/graphics.h"
 #include "tests.h"
 #include "stdio.h"
 #include "stdlib.h"
@@ -57,22 +58,27 @@ static int startup()
     Mat4f_ortho(&ortho, ratio,-ratio,1.0f,-1.0f,-1.0f,1.0f);
     Mat4f_translation(&translation, 0.5f,0.3f,0.f);
 
-    uint32_t vbo[2];
-    glad_glGenBuffers(2, (uint32_t *)&vbo);
+    // uint32_t vbo[2];
+    // glad_glGenBuffers(2, (uint32_t *)&vbo);
     uint32_t vao;
 
     glad_glGenVertexArrays(1, &vao);
     glad_glBindVertexArray(vao);
 
+    VBLayout vbl;
+    VBLayout_init(&vbl);
+    VBO vbo;
     glad_glEnableVertexAttribArray(pos_loc);
-    glad_glBindBuffer(GL_ARRAY_BUFFER, vbo[0]);
-    glad_glBufferData(GL_ARRAY_BUFFER, sizeof(positions), positions, GL_STATIC_DRAW);
+    VBO_init(&vbo, &vbl, positionsf, 9);
+
+    // glad_glBindBuffer(GL_ARRAY_BUFFER, vbo.id);
+    // glad_glBufferData(GL_ARRAY_BUFFER, sizeof(positions), positions, GL_STATIC_DRAW);
     glad_glVertexAttribPointer(pos_loc, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), 0);
 
-    glad_glEnableVertexAttribArray(color_loc);
-    glad_glBindBuffer(GL_ARRAY_BUFFER, vbo[1]);
-    glad_glBufferData(GL_ARRAY_BUFFER, sizeof(colors), &colors, GL_STATIC_DRAW);
-    glad_glVertexAttribPointer(color_loc, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (const void*)(sizeof(float)*3));
+    // glad_glEnableVertexAttribArray(color_loc);
+    // glad_glBindBuffer(GL_ARRAY_BUFFER, vbo[1]);
+    // glad_glBufferData(GL_ARRAY_BUFFER, sizeof(colors), &colors, GL_STATIC_DRAW);
+    // glad_glVertexAttribPointer(color_loc, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (const void*)(sizeof(float)*3));
     // SECTION: main program loop
     glad_glClearColor(0.3f, 0.7f, 0.3f, 1.0f);
     while (glfwWindowShouldClose(window) == GLFW_FALSE)
