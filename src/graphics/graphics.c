@@ -1,5 +1,6 @@
 #include "graphics/graphics.h"
 #include "glad/glad.h"
+#include "stdio.h"
 #include "stdlib.h"
 
 // TODO: other types than float
@@ -21,19 +22,30 @@ float *BufferAssembler_getBufferData(BufferAssembler *asm, uint32_t vertexCount)
     // TODO: remove malloc
     size_t finalSize = 0;
     for (uint32_t i = 0; i < asm->vbl->count; i++)
-        finalSize += asm->vbl->compCounts[i];
-    float *res = (float *)malloc(finalSize * sizeof(float));
+        finalSize += asm->vbl->compCounts[i] * sizeof(float) * vertexCount ;
+    // printf("%d\n",finalSize/sizeof(float));
+    // printf("%d\n", asm->vbl->count);
+    float *res = calloc(sizeof(float),finalSize);
     for (uint32_t a = 0; a < asm->vbl->count; a++)
     {
+        float * currentSegment = asm->segments[a];
         for (uint32_t v = 0; v < vertexCount; v++)
         {
-            for (uint32_t c = 0; c < asm->vbl->compCounts[a]; c++)
-                res[asm->vbl->offsets[a] + v * asm->vbl->stride] = asm->segments[a][v * asm->vbl->compCounts[a] + c];
+            for (uint32_t c = 0; c < asm->vbl->compCounts[a]; c++){
+                // printf("%d\n", asm->vbl->offsets[a]); // CORRECT
+                // printf("%d\n", asm->vbl->stride); // CORRECT
+                // printf("%d\n", c);
+
+                printf("%d\n", asm->vbl->offsets[a] + v * asm->vbl->stride+c*sizeof(float)); // CORRECT
+                res[asm->vbl->offsets[a] + v * asm->vbl->stride + c*sizeof(float)] = currentSegment[c];
+                // res[asm->vbl->offsets[a] + v * asm->vbl->stride + c*sizeof(float)] = currentSegment[v * asm->vbl->compCounts[a] + c];
+            }
         }
     }
+    for(int i = 0; i< (int)finalSize/3/sizeof(float); i++)
+        printf("%15.4f %15.4f %15.4f\n", res[i*4], res[i*4 + 1], res[i*4 + 2]);
     return res;
 }
-
 
 VBLayout *VBLayout_init(VBLayout *vbl)
 {

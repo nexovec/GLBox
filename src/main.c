@@ -36,15 +36,15 @@ static int startup()
     gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
     // SECTION: defining data
     float positionsf[9] = {-0.6f, -0.4f, 0.0f, 0.6f, -0.4f, 0.0f, 0.0f, 0.6f, 0.0f};
-    float colorsf[4][3] = {
-        {0.0, 0.0, 0.0},
-        {1.0, 0.0, 0.0},  /* Red */
-        {0.0, 1.0, 0.0},  /* Green */
-        {0.0, 0.0, 1.0}}; /* Blue */
-    Vec3f positions[3];
-    Vec3f colors[4];
-    Vec3f_fromFloatArr(positions, (float *)positionsf, 3);
-    Vec3f_fromFloatArr(colors, (float *)colorsf, 4);
+    float colorsf[9] = {
+        // {0.0, 0.0, 0.0},
+        1.0, 0.0, 0.0,  /* Red */
+        0.0, 1.0, 0.0,  /* Green */
+        0.0, 0.0, 1.0}; /* Blue */
+    // Vec3f positions[3];
+    // Vec3f colors[4];
+    // Vec3f_fromFloatArr(positions, (float *)positionsf, 3);
+    // Vec3f_fromFloatArr(colors, (float *)colorsf, 4);
     // SECTION: GPU data transfer
     const uint32_t program = gl_buildProgram("res/shaders/vert.glsl", "res/shaders/frag.glsl");
     // TODO: error handle shader runtime
@@ -68,17 +68,18 @@ static int startup()
     VBLayout vbl;
     VBLayout_init(&vbl);
     VBLayout_addAttr(&vbl, pos_loc, 3, GL_FLOAT, 0);
-    VBLayout_addAttr(&vbl, color_loc, 3, GL_FLOAT, 0);
+    VBLayout_addAttr(&vbl, color_loc, 3, GL_FLOAT, 3*sizeof(float));
 
-    // BufferAssembler ba;
-    // BufferAssembler_init(&ba, &vbl);
-    // BufferAssembler_addSegment(&ba, (float*)positionsf);
-    // BufferAssembler_addSegment(&ba, (float*)colorsf);
+    BufferAssembler ba;
+    BufferAssembler_init(&ba, &vbl);
+    BufferAssembler_addSegment(&ba, (float*)positionsf);
+    BufferAssembler_addSegment(&ba, (float*)colorsf);
 
     VBO vbo;
-    VBO_init(&vbo, &vbl, positionsf, 9);
+    VBO_init(&vbo, &vbl, BufferAssembler_getBufferData(&ba,3), 9);
+    // VBO_init(&vbo, &vbl, positionsf, 9);
     // glad_glEnableVertexAttribArray(pos_loc);
-    glad_glEnableVertexAttribArray(vbo.layout->attrNames[0]);
+    // glad_glEnableVertexAttribArray(vbo.layout->attrNames[0]);
     // glad_glBindBuffer(GL_ARRAY_BUFFER, vbo.id);
     // glad_glBufferData(GL_ARRAY_BUFFER, sizeof(positions), positions, GL_STATIC_DRAW);
     // printf("%d %d %d %d %d %d\n", pos_loc, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), 0);
