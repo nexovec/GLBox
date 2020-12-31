@@ -22,10 +22,12 @@ float *BufferAssembler_getBufferData(BufferAssembler *asm, uint32_t vertexCount)
     for (uint32_t i = 0; i < asm->vbl->count; i++)
         finalSize += asm->vbl->compCounts[i];
     float *res = (float *)malloc(finalSize * sizeof(float));
-    for(uint32_t a = 0; a < asm->vbl->count;a++){
-        for(uint32_t v = 0; v < vertexCount; v++){
-            for(uint32_t c = 0; c < asm->vbl->compCounts[a]; c++)
-            res[asm->vbl->offsets[a]+v*asm->vbl->stride] = asm->segments[a][v*asm->vbl->compCounts[a] + c];
+    for (uint32_t a = 0; a < asm->vbl->count; a++)
+    {
+        for (uint32_t v = 0; v < vertexCount; v++)
+        {
+            for (uint32_t c = 0; c < asm->vbl->compCounts[a]; c++)
+                res[asm->vbl->offsets[a] + v * asm->vbl->stride] = asm->segments[a][v * asm->vbl->compCounts[a] + c];
         }
     }
     return res;

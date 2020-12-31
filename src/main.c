@@ -13,7 +13,7 @@ static int startup();
 int main()
 {
 #ifdef GLE_RUN_TESTS
-    #include "tests.h"
+#include "tests.h"
     runTests();
 #endif
     return startup();
@@ -26,7 +26,7 @@ static int startup()
     {
         return -1;
     }
-    glfwWindowHint(GLFW_RESIZABLE,GLFW_FALSE);
+    glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
     GLFWwindow *window = glfwCreateWindow(800, 600, "Hello there", NULL, NULL);
     if (!window)
     {
@@ -53,10 +53,10 @@ static int startup()
     const int32_t color_loc = glad_glGetAttribLocation(program, "color");
     const int32_t globT_loc = glad_glGetUniformLocation(program, "globT");
 
-    const float ratio = 4/3;
-    Mat4f ortho, translation, rot,  MVP;
-    Mat4f_ortho(&ortho, ratio,-ratio,1.0f,-1.0f,-1.0f,1.0f);
-    Mat4f_translation(&translation, 0.5f,0.3f,0.f);
+    const float ratio = 4 / 3;
+    Mat4f ortho, translation, rot, MVP;
+    Mat4f_ortho(&ortho, ratio, -ratio, 1.0f, -1.0f, -1.0f, 1.0f);
+    Mat4f_translation(&translation, 0.5f, 0.3f, 0.f);
 
     // uint32_t vbo[2];
     // glad_glGenBuffers(2, (uint32_t *)&vbo);
@@ -67,7 +67,7 @@ static int startup()
 
     VBLayout vbl;
     VBLayout_init(&vbl);
-    VBLayout_addAttr(&vbl, pos_loc,3,GL_FLOAT,0);
+    VBLayout_addAttr(&vbl, pos_loc, 3, GL_FLOAT, 0);
     // VBLayout_addAttr(&vbl, color_loc,3,GL_FLOAT,0);
     VBO vbo;
     VBO_init(&vbo, &vbl, positionsf, 9);
@@ -91,12 +91,10 @@ static int startup()
             glfwSetWindowShouldClose(window, GLFW_TRUE);
         Mat4f_rotation(&rot, 0.f, 0.f, (float)glfwGetTime());
         Mat4f_multiply(&MVP, Mat4f_multiply(&MVP, &ortho, &translation), &rot);
-        glad_glUniformMatrix4fv(globT_loc,1,GL_FALSE,MVP.members);
+        glad_glUniformMatrix4fv(globT_loc, 1, GL_FALSE, MVP.members);
         glad_glDrawArrays(GL_TRIANGLES, 0, 3);
         glfwSwapBuffers(window);
         continue;
     }
     return 0;
 }
-
-
