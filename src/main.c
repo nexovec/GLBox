@@ -71,8 +71,8 @@ static int startup()
     // VBLayout_addAttr(&vbl, color_loc,3,GL_FLOAT,0);
     VBO vbo;
     VBO_init(&vbo, &vbl, positionsf, 9);
-
-    glad_glEnableVertexAttribArray(pos_loc);
+    // glad_glEnableVertexAttribArray(pos_loc);
+    glad_glEnableVertexAttribArray(vbo.layout->attrNames[0]);
     // glad_glBindBuffer(GL_ARRAY_BUFFER, vbo.id);
     // glad_glBufferData(GL_ARRAY_BUFFER, sizeof(positions), positions, GL_STATIC_DRAW);
     glad_glVertexAttribPointer(pos_loc, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), 0);

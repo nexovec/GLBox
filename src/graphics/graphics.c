@@ -2,6 +2,7 @@
 #include "glad/glad.h"
 #include "stdlib.h"
 
+// TODO: other types than float
 BufferAssembler *BufferAssembler_init(BufferAssembler *asm, VBLayout *vbl)
 {
     asm->vbl = vbl;
@@ -32,17 +33,19 @@ float *BufferAssembler_getBufferData(BufferAssembler *asm, uint32_t vertexCount)
     }
     return res;
 }
+
+
 VBLayout *VBLayout_init(VBLayout *vbl)
 {
     vbl->count = 0;
     vbl->stride = 0;
     return vbl;
 }
-// FIXME: only works for float because sizeof(float) is used in stride comp.
 VBLayout *VBLayout_addAttr(VBLayout *vbl, uint32_t attrName, uint32_t compCount, uint32_t type, uint32_t offset)
 {
     // TODO: guards for sizes in debug
     uint32_t i = vbl->count;
+    vbl->attrNames[i] = attrName;
     vbl->compCounts[i] = compCount;
     vbl->types[i] = type;
     vbl->offsets[i] = offset;
