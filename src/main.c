@@ -41,10 +41,6 @@ static int startup()
         0.0, 1.0, 0.0, /* Green */
         0.0f, 0.6f, 0.0f,
         0.0, 0.0, 1.0}; /* Blue */
-    // Vec3f positions[3];
-    // Vec3f colors[4];
-    // Vec3f_fromFloatArr(positions, (float *)positionsf, 3);
-    // Vec3f_fromFloatArr(colors, (float *)colorsf, 4);
     // SECTION: GPU data transfer
     const uint32_t program = gl_buildProgram("res/shaders/vert.glsl", "res/shaders/frag.glsl");
     // TODO: error handle shader runtime
@@ -71,8 +67,6 @@ static int startup()
     glad_glVertexAttribPointer(pos_loc, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), 0);
 
     glad_glEnableVertexAttribArray(color_loc);
-    // glad_glBindBuffer(GL_ARRAY_BUFFER, vbo);
-    // glad_glBufferData(GL_ARRAY_BUFFER, sizeof(colors), &colors, GL_STATIC_DRAW);
     glad_glVertexAttribPointer(color_loc, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (const void *)(sizeof(float) * 3));
     // SECTION: main program loop
     glad_glClearColor(0.3f, 0.7f, 0.3f, 1.0f);

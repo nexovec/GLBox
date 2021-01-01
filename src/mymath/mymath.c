@@ -6,23 +6,28 @@
 #include "stdint.h"
 
 // SECTION: Vec3f
-Vec3f *Vec3f_print(Vec3f* vec){
-    printf("(%f,%f,%f)\n",vec->x,vec->y,vec->z);
+Vec3f *Vec3f_print(Vec3f *vec)
+{
+    printf("(%f,%f,%f)\n", vec->x, vec->y, vec->z);
     return vec;
 }
-Vec3f *Vec3f_fromFloatArr(Vec3f *s_e_vecArr, float *floatArr, uint32_t num){
-    for(uint32_t i = 0;i<num;i++){
-        s_e_vecArr[i].x = floatArr[i*3];
-        s_e_vecArr[i].y = floatArr[i*3+1];
-        s_e_vecArr[i].z = floatArr[i*3+2];
+Vec3f *Vec3f_fromFloatArr(Vec3f *s_e_vecArr, float *floatArr, uint32_t num)
+{
+    for (uint32_t i = 0; i < num; i++)
+    {
+        s_e_vecArr[i].x = floatArr[i * 3];
+        s_e_vecArr[i].y = floatArr[i * 3 + 1];
+        s_e_vecArr[i].z = floatArr[i * 3 + 2];
     }
     return s_e_vecArr;
 }
 
-float Vec3f_dot(Vec3f *a, Vec3f *b){
-    return a->x*b->x + a->y*b->y + a->z*b->z;
+float Vec3f_dot(Vec3f *a, Vec3f *b)
+{
+    return a->x * b->x + a->y * b->y + a->z * b->z;
 }
-Vec3f *Vec3f_mult(Vec3f *s_e_vec, Vec3f *b){
+Vec3f *Vec3f_mult(Vec3f *s_e_vec, Vec3f *b)
+{
     s_e_vec->x *= b->x;
     s_e_vec->y *= b->y;
     s_e_vec->z *= b->z;
@@ -64,7 +69,8 @@ Mat4f *Mat4f_translation(Mat4f *s_e_mat, float moveX, float moveY, float moveZ)
     s_e_mat->members[12] = moveX;
     return s_e_mat;
 }
-Mat4f *Mat4f_rotationX(Mat4f *s_e_mat,float rot){
+Mat4f *Mat4f_rotationX(Mat4f *s_e_mat, float rot)
+{
     Mat4f_identity(s_e_mat);
     float c = (float)cos(rot);
     float s = (float)sin(rot);
@@ -74,7 +80,8 @@ Mat4f *Mat4f_rotationX(Mat4f *s_e_mat,float rot){
     s_e_mat->members[10] = c;
     return s_e_mat;
 }
-Mat4f *Mat4f_rotationY(Mat4f *s_e_mat, float rot){
+Mat4f *Mat4f_rotationY(Mat4f *s_e_mat, float rot)
+{
     Mat4f_identity(s_e_mat);
     float c = (float)cos(rot);
     float s = (float)sin(rot);
@@ -84,8 +91,9 @@ Mat4f *Mat4f_rotationY(Mat4f *s_e_mat, float rot){
     s_e_mat->members[10] = c;
     return s_e_mat;
 }
-Mat4f *Mat4f_rotationZ(Mat4f *s_e_mat, float rot){
-     Mat4f_identity(s_e_mat);
+Mat4f *Mat4f_rotationZ(Mat4f *s_e_mat, float rot)
+{
+    Mat4f_identity(s_e_mat);
     float c = (float)cos(rot);
     float s = (float)sin(rot);
     s_e_mat->members[0] = c;
@@ -94,13 +102,14 @@ Mat4f *Mat4f_rotationZ(Mat4f *s_e_mat, float rot){
     s_e_mat->members[5] = c;
     return s_e_mat;
 }
-Mat4f *Mat4f_rotation(Mat4f *mat, float rotX, float rotY, float rotZ){
+Mat4f *Mat4f_rotation(Mat4f *mat, float rotX, float rotY, float rotZ)
+{
     // FIXME: slow
     // TODO: testing
     Mat4f x, y, z, yz;
     Mat4f_rotationX(&x, rotX);
-    Mat4f_rotationY(&y,rotY);
-    Mat4f_rotationZ(&z,rotZ);
+    Mat4f_rotationY(&y, rotY);
+    Mat4f_rotationZ(&z, rotZ);
     Mat4f_multiply(&yz, &y, &z);
     Mat4f_multiply(mat, &x, &yz);
     return mat;
@@ -145,7 +154,7 @@ Mat4f *Mat4f_multiply(Mat4f *dest, Mat4f *a, Mat4f *b)
         for (int y = 0; y < 4; y++)
             for (int i = 0; i < 4; i++)
                 res.members[y + x * 4] += a->members[x * 4 + i] * b->members[y + i * 4];
-    return Mat4f_copy(dest,&res);
+    return Mat4f_copy(dest, &res);
 }
 Mat4f *Mat4f_transpose(Mat4f *dest, Mat4f *mat)
 {

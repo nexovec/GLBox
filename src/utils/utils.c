@@ -5,12 +5,14 @@
 #include "stdint.h"
 #include "glad/glad.h"
 
-char* readStringFromFile(char* path){
-    FILE* file = fopen(path,"r"); // FIXME: fissile material
-    char* contents = (char*)malloc(1000*sizeof(char));
+char *readStringFromFile(char *path)
+{
+    FILE *file = fopen(path, "r"); // FIXME: fissile material
+    char *contents = (char *)malloc(1000 * sizeof(char));
     int i = 0;
     char character;
-    while((character = fgetc(file)) != EOF){
+    while ((character = fgetc(file)) != EOF)
+    {
         contents[i++] = character;
     }
     contents[i] = '\0';
