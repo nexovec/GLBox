@@ -12,7 +12,7 @@ static int startup();
 int main()
 {
 #ifdef GLE_RUN_TESTS
-    #include "tests.h"
+#include "tests.h"
     runTests();
 #endif
     return startup();
@@ -25,7 +25,7 @@ static int startup()
     {
         return -1;
     }
-    glfwWindowHint(GLFW_RESIZABLE,GLFW_FALSE);
+    glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
     GLFWwindow *window = glfwCreateWindow(800, 600, "Hello there", NULL, NULL);
     if (!window)
     {
@@ -34,16 +34,17 @@ static int startup()
     glfwMakeContextCurrent(window);
     gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
     // SECTION: defining data
-    float positionsf[9] = {-0.6f, -0.4f, 0.0f, 0.6f, -0.4f, 0.0f, 0.0f, 0.6f, 0.0f};
-    float colorsf[4][3] = {
-        {0.0, 0.0, 0.0},
-        {1.0, 0.0, 0.0},  /* Red */
-        {0.0, 1.0, 0.0},  /* Green */
-        {0.0, 0.0, 1.0}}; /* Blue */
-    Vec3f positions[3];
-    Vec3f colors[4];
-    Vec3f_fromFloatArr(positions, (float *)positionsf, 3);
-    Vec3f_fromFloatArr(colors, (float *)colorsf, 4);
+    float positionsf[18] = {
+        -0.6f, -0.4f, 0.0f,
+        1.0, 0.0, 0.0, /* Red */
+        0.6f, -0.4f, 0.0f,
+        0.0, 1.0, 0.0, /* Green */
+        0.0f, 0.6f, 0.0f,
+        0.0, 0.0, 1.0}; /* Blue */
+    // Vec3f positions[3];
+    // Vec3f colors[4];
+    // Vec3f_fromFloatArr(positions, (float *)positionsf, 3);
+    // Vec3f_fromFloatArr(colors, (float *)colorsf, 4);
     // SECTION: GPU data transfer
     const uint32_t program = gl_buildProgram("res/shaders/vert.glsl", "res/shaders/frag.glsl");
     // TODO: error handle shader runtime
@@ -52,27 +53,27 @@ static int startup()
     const int32_t color_loc = glad_glGetAttribLocation(program, "color");
     const int32_t globT_loc = glad_glGetUniformLocation(program, "globT");
 
-    const float ratio = 4/3;
-    Mat4f ortho, translation, rot,  MVP;
-    Mat4f_ortho(&ortho, ratio,-ratio,1.0f,-1.0f,-1.0f,1.0f);
-    Mat4f_translation(&translation, 0.5f,0.3f,0.f);
+    const float ratio = 4 / 3;
+    Mat4f ortho, translation, rot, MVP;
+    Mat4f_ortho(&ortho, ratio, -ratio, 1.0f, -1.0f, -1.0f, 1.0f);
+    Mat4f_translation(&translation, 0.5f, 0.3f, 0.f);
 
-    uint32_t vbo[2];
-    glad_glGenBuffers(2, (uint32_t *)&vbo);
+    uint32_t vbo;
+    glad_glGenBuffers(1, &vbo);
     uint32_t vao;
 
     glad_glGenVertexArrays(1, &vao);
     glad_glBindVertexArray(vao);
 
     glad_glEnableVertexAttribArray(pos_loc);
-    glad_glBindBuffer(GL_ARRAY_BUFFER, vbo[0]);
-    glad_glBufferData(GL_ARRAY_BUFFER, sizeof(positions), positions, GL_STATIC_DRAW);
-    glad_glVertexAttribPointer(pos_loc, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), 0);
+    glad_glBindBuffer(GL_ARRAY_BUFFER, vbo);
+    glad_glBufferData(GL_ARRAY_BUFFER, sizeof(positionsf), positionsf, GL_STATIC_DRAW);
+    glad_glVertexAttribPointer(pos_loc, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), 0);
 
     glad_glEnableVertexAttribArray(color_loc);
-    glad_glBindBuffer(GL_ARRAY_BUFFER, vbo[1]);
-    glad_glBufferData(GL_ARRAY_BUFFER, sizeof(colors), &colors, GL_STATIC_DRAW);
-    glad_glVertexAttribPointer(color_loc, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (const void*)(sizeof(float)*3));
+    // glad_glBindBuffer(GL_ARRAY_BUFFER, vbo);
+    // glad_glBufferData(GL_ARRAY_BUFFER, sizeof(colors), &colors, GL_STATIC_DRAW);
+    glad_glVertexAttribPointer(color_loc, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (const void *)(sizeof(float) * 3));
     // SECTION: main program loop
     glad_glClearColor(0.3f, 0.7f, 0.3f, 1.0f);
     while (glfwWindowShouldClose(window) == GLFW_FALSE)
@@ -83,12 +84,10 @@ static int startup()
             glfwSetWindowShouldClose(window, GLFW_TRUE);
         Mat4f_rotation(&rot, 0.f, 0.f, (float)glfwGetTime());
         Mat4f_multiply(&MVP, Mat4f_multiply(&MVP, &ortho, &translation), &rot);
-        glad_glUniformMatrix4fv(globT_loc,1,GL_FALSE,MVP.members);
+        glad_glUniformMatrix4fv(globT_loc, 1, GL_FALSE, MVP.members);
         glad_glDrawArrays(GL_TRIANGLES, 0, 3);
         glfwSwapBuffers(window);
         continue;
     }
     return 0;
 }
-
-
