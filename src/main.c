@@ -28,7 +28,8 @@ static int startup()
     }
     glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
     GLFWwindow *window = glfwCreateWindow(800, 600, "Hello there", NULL, NULL);
-    if (!window)
+    GLFWwindow *menuWindow = glfwCreateWindow(300, 600, "Menu window", NULL, NULL);
+    if (!(window&&menuWindow))
     {
         return -1;
     }
@@ -63,7 +64,7 @@ static int startup()
     VBLayout_init(&vbl);
     VBLayout_addAttr(&vbl, pos_loc, 3, GL_FLOAT);
     VBLayout_addAttr(&vbl, color_loc, 3, GL_FLOAT);
-    printf("%d %d\n",pos_loc, color_loc);
+    // printf("%d %d\n",pos_loc, color_loc);
     VBO vbo;
     vbo.data = positionsf;
     VBO_init(&vbo, &vbl, 3);
@@ -72,6 +73,8 @@ static int startup()
     while (glfwWindowShouldClose(window) == GLFW_FALSE)
     {
         glfwPollEvents();
+        // canvas screen
+        glfwMakeContextCurrent(window);
         glad_glClear(GL_COLOR_BUFFER_BIT);
         if (glfwGetKey(window, GLFW_KEY_ESCAPE))
             glfwSetWindowShouldClose(window, GLFW_TRUE);
@@ -80,6 +83,13 @@ static int startup()
         glad_glUniformMatrix4fv(globT_loc, 1, GL_FALSE, MVP.members);
         glad_glDrawArrays(GL_TRIANGLES, 0, 3);
         glfwSwapBuffers(window);
+        // menu screen
+        glfwMakeContextCurrent(menuWindow);
+        glad_glClearColor(0.3f, 0.7f, 0.3f, 1.0f);
+        if (glfwGetKey(menuWindow, GLFW_KEY_ESCAPE))
+            glfwSetWindowShouldClose(window, GLFW_TRUE);
+        glad_glClear(GL_COLOR_BUFFER_BIT);
+        glfwSwapBuffers(menuWindow);
         continue;
     }
     return 0;
