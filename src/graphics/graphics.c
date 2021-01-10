@@ -2,6 +2,7 @@
 #include "glad/glad.h"
 #include "assert.h"
 #include "stdlib.h"
+#include "stdio.h"
 
 VBLayout *VBLayout_init(VBLayout *vbl)
 {
@@ -10,7 +11,7 @@ VBLayout *VBLayout_init(VBLayout *vbl)
     vbl->offsets[0] = 0;
     return vbl;
 }
-// FIXME: only works for float because sizeof(float) is used in stride comp.
+// FIXME: only works for float
 VBLayout *VBLayout_addAttr(VBLayout *vbl, uint32_t attrName, uint32_t compCount, uint32_t type)
 {
     // TODO: guards for sizes in debug
@@ -41,9 +42,23 @@ VBO *VBO_init(VBO *vbo, VBLayout *vbl, size_t vCount)
     return vbo;
 }
 
-MeshArray *MeshArray_initMeshArray(VBO *vbo, size_t maxMeshes)
+MeshArray *MeshArray_initMeshArray(MeshArray *ma, VBO *vbo, size_t maxMeshes)
 {
+    ma->vbo = vbo;
+    ma->meshCount = 0;
+    ma->maxMeshes = maxMeshes;
     //FIXME: leaks
-    MeshArray *res = malloc(sizeof(MeshArray));
-    return res;
+    ma->meshes = malloc(sizeof(Mesh) * ma->maxMeshes);
+    return ma;
+}
+
+MeshArray *MeshArray_registerMesh(MeshArray *ma, Mesh *mesh)
+{
+    if (ma->maxMeshes == ma->meshCount - 1)
+    {
+        printf("MeshArray is full");
+        return ma;
+    }
+    ma->meshes[ma->meshCount++] = mesh;
+    return ma;
 }

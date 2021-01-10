@@ -23,7 +23,7 @@ VBO *VBO_init(VBO *vbo, VBLayout *vbl, size_t vCount);
 */
 typedef struct Mesh
 {
-    uint32_t offset;
+    float *pointer;
     uint32_t vCount;
 } Mesh;
 
@@ -32,6 +32,7 @@ typedef struct MeshArray
     VBO *vbo;
     size_t meshCount;
     size_t maxMeshes;
-    Mesh *meshes;
+    Mesh **meshes;
 } MeshArray;
-MeshArray *MeshArray_initMeshArray(VBO *vbo, size_t maxMeshes);
+MeshArray *MeshArray_initMeshArray(MeshArray *ma, VBO *vbo, size_t maxMeshes);
+MeshArray *MeshArray_registerMesh(MeshArray *ma, Mesh *mesh);
