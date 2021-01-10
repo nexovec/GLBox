@@ -29,7 +29,7 @@ static int startup()
     glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
     GLFWwindow *window = glfwCreateWindow(800, 600, "Hello there", NULL, NULL);
     GLFWwindow *menuWindow = glfwCreateWindow(300, 600, "Menu window", NULL, NULL);
-    if (!(window&&menuWindow))
+    if (!(window && menuWindow))
     {
         return -1;
     }
@@ -37,16 +37,16 @@ static int startup()
     gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
     // SECTION: defining data
     float positionsf[18] = {
-        -0.6f, -0.4f, 0.0f,
+        400.f, 200.f, 0.0f,
         1.0, 0.0, 0.0, /* Red */
-        0.6f, -0.4f, 0.0f,
+        500.f, 300.f, 0.0f,
         0.0, 1.0, 0.0, /* Green */
-        0.0f, 0.6f, 0.0f,
+        0.0f, 400.f, 0.0f,
         0.0, 0.0, 1.0}; /* Blue */
     // SECTION: math
     const float ratio = 4 / 3;
     Mat4f ortho, translation, rot, MVP;
-    Mat4f_ortho(&ortho, ratio, -ratio, 1.0f, -1.0f, -1.0f, 1.0f);
+    Mat4f_ortho(&ortho, 800.f, 0.f, 0.f, 600.f, -1.0f, 1.0f);
     Mat4f_translation(&translation, 0.5f, 0.3f, 0.f);
     // SECTION: GPU data transfer
     const uint32_t program = gl_buildProgram("res/shaders/vert.glsl", "res/shaders/frag.glsl");
@@ -55,7 +55,6 @@ static int startup()
     const int32_t pos_loc = glad_glGetAttribLocation(program, "pos");
     const int32_t color_loc = glad_glGetAttribLocation(program, "color");
     const int32_t globT_loc = glad_glGetUniformLocation(program, "globT");
-
 
     uint32_t vao;
     glad_glGenVertexArrays(1, &vao);

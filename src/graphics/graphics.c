@@ -1,10 +1,11 @@
 #include "graphics/graphics.h"
 #include "glad/glad.h"
 #include "assert.h"
+#include "stdlib.h"
 
 VBLayout *VBLayout_init(VBLayout *vbl)
 {
-    vbl->count = 0;
+    vbl->attrCount = 0;
     vbl->stride = 0;
     vbl->offsets[0] = 0;
     return vbl;
@@ -13,7 +14,7 @@ VBLayout *VBLayout_init(VBLayout *vbl)
 VBLayout *VBLayout_addAttr(VBLayout *vbl, uint32_t attrName, uint32_t compCount, uint32_t type)
 {
     // TODO: guards for sizes in debug
-    uint32_t i = vbl->count++;
+    uint32_t i = vbl->attrCount++;
     vbl->attrNames[i] = attrName;
     vbl->compCounts[i] = compCount;
     vbl->types[i] = type;
@@ -32,10 +33,17 @@ VBO *VBO_init(VBO *vbo, VBLayout *vbl, size_t vCount)
     // TODO: fix GL_STATIC_DRAW
     glad_glBufferData(GL_ARRAY_BUFFER, vCount * vbl->stride * sizeof(float), vbo->data, GL_STATIC_DRAW);
     vbo->layout = vbl;
-    for (uint32_t i = 0; i < vbl->count; i++)
+    for (uint32_t i = 0; i < vbl->attrCount; i++)
     {
         glad_glEnableVertexAttribArray(vbl->attrNames[i]);
         glad_glVertexAttribPointer(vbl->attrNames[i], vbl->compCounts[i], vbl->types[i], GL_FALSE, vbl->stride, (const void *)vbl->offsets[i]);
     }
     return vbo;
+}
+
+MeshArray *MeshArray_initMeshArray(VBO *vbo, size_t maxMeshes)
+{
+    //FIXME: leaks
+    MeshArray *res = malloc(sizeof(MeshArray));
+    return res;
 }
