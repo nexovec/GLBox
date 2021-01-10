@@ -46,8 +46,8 @@ static int startup()
     // SECTION: math
     const float ratio = 4 / 3;
     Mat4f ortho, translation, rot, MVP;
-    Mat4f_ortho(&ortho, 800.f, 0.f, 0.f, 600.f, -1.0f, 1.0f);
-    Mat4f_translation(&translation, 0.5f, 0.3f, 0.f);
+    Mat4f_ortho(&ortho, 600.f * ratio, 0.f, 0.f, 600.f, -1.0f, 1.0f);
+    Mat4f_translation(&translation, 0.f, 0.f, 0.f);
     // SECTION: GPU data transfer
     const uint32_t program = gl_buildProgram("res/shaders/vert.glsl", "res/shaders/frag.glsl");
     // TODO: error handle shader runtime
@@ -68,7 +68,7 @@ static int startup()
     // VBO_init(&vbo, &vbl, 3);
 
     // temporary
-    MeshArray *ma = makeBasicMeshArray(pos_loc,color_loc);
+    MeshArray *ma = makeBasicMeshArray(pos_loc, color_loc);
     // SECTION: main program loop
     glad_glClearColor(0.3f, 0.7f, 0.3f, 1.0f);
     while (glfwWindowShouldClose(window) == GLFW_FALSE)
@@ -79,7 +79,8 @@ static int startup()
         glad_glClear(GL_COLOR_BUFFER_BIT);
         if (glfwGetKey(window, GLFW_KEY_ESCAPE))
             glfwSetWindowShouldClose(window, GLFW_TRUE);
-        rot = *Mat4f_rotation(&rot, 0.f, 0.f, (float)glfwGetTime());
+        // rot = *Mat4f_rotation(&rot, 0.f, 0.f, (float)glfwGetTime());
+        rot = *Mat4f_identity(&rot);
         MVP = *Mat4f_multiply(&MVP, Mat4f_multiply(&MVP, &ortho, &translation), &rot);
         glad_glUniformMatrix4fv(globT_loc, 1, GL_FALSE, MVP.members);
         glad_glDrawArrays(GL_TRIANGLES, 0, 3);

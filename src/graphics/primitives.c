@@ -19,6 +19,9 @@ Mesh *makeTriangleMesh(float x1, float y1, float x2, float y2, float x3, float y
             p[i * 6 + 3 + ii] = color;
     return res;
 }
-Mesh *makeSimpleTriangleMesh(){
-    return makeTriangleMesh(0,0,350,350,0,350,0.8f);
+
+// temporary
+Mesh *makeSimpleTriangleMesh()
+{
+    return makeTriangleMesh(20, 20, 350, 350, 20, 350, 0.8f);
 }
