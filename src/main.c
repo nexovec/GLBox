@@ -56,17 +56,19 @@ static int startup()
     const int32_t color_loc = glad_glGetAttribLocation(program, "color");
     const int32_t globT_loc = glad_glGetUniformLocation(program, "globT");
 
-    uint32_t vao;
-    glad_glGenVertexArrays(1, &vao);
-    glad_glBindVertexArray(vao);
-    VBLayout vbl;
-    VBLayout_init(&vbl);
-    VBLayout_addAttr(&vbl, pos_loc, 3, GL_FLOAT);
-    VBLayout_addAttr(&vbl, color_loc, 3, GL_FLOAT);
-    // printf("%d %d\n",pos_loc, color_loc);
-    VBO vbo;
-    vbo.data = positionsf;
-    VBO_init(&vbo, &vbl, 3);
+    // uint32_t vao;
+    // glad_glGenVertexArrays(1, &vao);
+    // glad_glBindVertexArray(vao);
+    // VBLayout vbl;
+    // VBLayout_init(&vbl);
+    // VBLayout_addAttr(&vbl, pos_loc, 3, GL_FLOAT);
+    // VBLayout_addAttr(&vbl, color_loc, 3, GL_FLOAT);
+    // VBO vbo;
+    // vbo.data = positionsf;
+    // VBO_init(&vbo, &vbl, 3);
+
+    // temporary
+    MeshArray *ma = makeBasicMeshArray(pos_loc,color_loc);
     // SECTION: main program loop
     glad_glClearColor(0.3f, 0.7f, 0.3f, 1.0f);
     while (glfwWindowShouldClose(window) == GLFW_FALSE)
