@@ -59,3 +59,14 @@ const uint32_t gl_buildProgram(char *vertPath, char *fragPath)
     free(fragShaderSource);
     return program;
 }
+
+float *concatArrays(float *a, size_t aCount, float *b, size_t bCount)
+{
+    // FIXME: leaks
+    float *res = malloc(sizeof(float) * (aCount + bCount));
+    for (int i = 0; i < aCount; i++)
+        res[i] = a[i];
+    for (int i = 0; i < bCount; i++)
+        res[aCount + i] = b[i];
+    return res;
+}

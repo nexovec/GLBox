@@ -67,7 +67,8 @@ MeshArray *MeshArray_packVBO(MeshArray *ma)
 {
     // temporary
     size_t s = 3 * (3 * 2) * sizeof(float);
-    ma->vbo->data = makeSimpleTriangleMesh()->pointer;
+    // ma->vbo->data = makeSimpleTriangleMesh()->pointer;
+    ma->vbo->data = makeSimpleQuadMesh()->pointer;
     return ma;
 }
 
