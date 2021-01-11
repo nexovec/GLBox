@@ -16,38 +16,28 @@ int main()
 #include "tests.h"
     runTests();
 #endif
-    return startup();
+    return startup(800, 600);
 }
-static int startup()
+static int startup(const uint32_t width, const uint32_t height)
 {
     // SECTION: initialize OpenGL
     glfwSetErrorCallback((GLFWerrorfun)glfw_errCbck);
     if (!glfwInit())
-    {
         return -1;
-    }
     glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
-    GLFWwindow *window = glfwCreateWindow(800, 600, "Hello there", NULL, NULL);
-    GLFWwindow *menuWindow = glfwCreateWindow(300, 600, "Menu window", NULL, NULL);
+    GLFWwindow *window = glfwCreateWindow(width, height, "Hello there", NULL, NULL);
+    GLFWwindow *menuWindow = glfwCreateWindow(300, height, "Menu window", NULL, NULL);
     if (!(window && menuWindow))
-    {
         return -1;
-    }
     glfwMakeContextCurrent(window);
     gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
-    // SECTION: defining data
-    float positionsf[18] = {
-        400.f, 200.f, 0.0f,
-        1.0, 0.0, 0.0, /* Red */
-        500.f, 300.f, 0.0f,
-        0.0, 1.0, 0.0, /* Green */
-        0.0f, 400.f, 0.0f,
-        0.0, 0.0, 1.0}; /* Blue */
+
     // SECTION: math
     const float ratio = 4 / 3;
     Mat4f ortho, translation, rot, MVP;
     Mat4f_ortho(&ortho, 600.f * ratio, 0.f, 0.f, 600.f, -1.0f, 1.0f);
     Mat4f_translation(&translation, 0.f, 0.f, 0.f);
+
     // SECTION: GPU data transfer
     const uint32_t program = gl_buildProgram("res/shaders/vert.glsl", "res/shaders/frag.glsl");
     // TODO: error handle shader runtime
@@ -56,19 +46,9 @@ static int startup()
     const int32_t color_loc = glad_glGetAttribLocation(program, "color");
     const int32_t globT_loc = glad_glGetUniformLocation(program, "globT");
 
-    // uint32_t vao;
-    // glad_glGenVertexArrays(1, &vao);
-    // glad_glBindVertexArray(vao);
-    // VBLayout vbl;
-    // VBLayout_init(&vbl);
-    // VBLayout_addAttr(&vbl, pos_loc, 3, GL_FLOAT);
-    // VBLayout_addAttr(&vbl, color_loc, 3, GL_FLOAT);
-    // VBO vbo;
-    // vbo.data = positionsf;
-    // VBO_init(&vbo, &vbl, 3);
-
     // temporary
     MeshArray *ma = makeBasicMeshArray(pos_loc, color_loc);
+
     // SECTION: main program loop
     glad_glClearColor(0.3f, 0.7f, 0.3f, 1.0f);
     while (glfwWindowShouldClose(window) == GLFW_FALSE)
