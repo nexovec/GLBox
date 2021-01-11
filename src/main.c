@@ -83,6 +83,7 @@ static int startup()
         rot = *Mat4f_identity(&rot);
         MVP = *Mat4f_multiply(&MVP, Mat4f_multiply(&MVP, &ortho, &translation), &rot);
         glad_glUniformMatrix4fv(globT_loc, 1, GL_FALSE, MVP.members);
+        // TODO: supply vCount
         glad_glDrawArrays(GL_TRIANGLES, 0, 6);
         glfwSwapBuffers(window);
         // menu screen
