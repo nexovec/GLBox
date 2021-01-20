@@ -63,12 +63,16 @@ MeshArray *MeshArray_registerMesh(MeshArray *ma, Mesh *mesh)
     ma->meshes[ma->meshCount++] = mesh;
     return ma;
 }
-MeshArray *MeshArray_packVBO(MeshArray *ma)
+MeshArray *MeshArray_packVBO(MeshArray *ma, Mesh *mesh)
 {
+    // TODO: !!
+    ma->meshes[0] = mesh;
     // temporary
-    size_t s = 3 * (3 * 2) * sizeof(float);
-    // ma->vbo->data = makeSimpleTriangleMesh()->pointer;
-    ma->vbo->data = makeSimpleQuadMesh()->pointer;
+    size_t s = mesh->vCount * (3 * 2) * sizeof(float);
+    // FIXME: lol, not like this
+    ma->meshCount = 1;
+    ma->vbo->data = mesh->pointer;
+    printf("\n%d", mesh->vCount);
     return ma;
 }
 
@@ -86,9 +90,17 @@ MeshArray *makeBasicMeshArray(uint32_t pos_loc, uint32_t color_loc)
     vbo = malloc(sizeof(VBO));
 
     MeshArray *ma = malloc(sizeof(MeshArray));
-    MeshArray_initMeshArray(ma, vbo, 1);
-    MeshArray_packVBO(ma);
-
-    VBO_init(vbo, vbl, 3);
+    MeshArray_initMeshArray(ma, vbo, 1000);
+    MeshArray_packVBO(ma, makeSimpleQuadMesh());
+    VBO_init(vbo, vbl, 12);
     return ma;
+}
+uint32_t getMeshArrayVCount(MeshArray *arr)
+{
+    uint32_t res = 0;
+    for (int i = 0; i < arr->meshCount; i++)
+    {
+        res += arr->meshes[i]->vCount;
+    }
+    return res;
 }

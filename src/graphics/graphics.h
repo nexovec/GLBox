@@ -37,7 +37,7 @@ typedef struct MeshArray
 } MeshArray;
 MeshArray *MeshArray_initMeshArray(MeshArray *ma, VBO *vbo, size_t maxMeshes);
 MeshArray *MeshArray_registerMesh(MeshArray *ma, Mesh *mesh);
-MeshArray *MeshArray_packVBO(MeshArray *ma);
+MeshArray *MeshArray_packVBO(MeshArray *ma, Mesh *mesh);
 
 // temporary
 MeshArray *makeBasicMeshArray(uint32_t pos_loc, uint32_t color_loc);

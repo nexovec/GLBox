@@ -39,6 +39,7 @@ Mesh *makeQuadMesh(Vec3f *pos, Vec3f *size)
             &(Vec3f){pos->x + size->x, pos->y + size->y, 0},
             &(Vec3f){0.8f, 0.4f, 0.2f}),
         18);
+    res->vCount = 6;
     return res;
 }
 
@@ -50,7 +51,14 @@ Mesh *makeSimpleTriangleMesh()
     res->pointer = makeTriangleArr(&(Vec3f){20, 20, 0}, &(Vec3f){350, 350, 0}, &(Vec3f){20, 350, 0}, &(Vec3f){0.8f, 0.4f, 0.2f});
     return res;
 }
+// temporary
 Mesh *makeSimpleQuadMesh()
 {
-    return makeQuadMesh(&(Vec3f){20, 20, 0}, &(Vec3f){350, 350, 0});
+    Mesh *m1 = makeQuadMesh(&(Vec3f){20, 20, 0}, &(Vec3f){350, 350, 0});
+    Mesh *m2 = makeQuadMesh(&(Vec3f){400, 400, 0}, &(Vec3f){100, 100, 0});
+    // FIXME: leaks
+    Mesh *res = malloc(sizeof(Mesh));
+    res->pointer = concatArrays(m1->pointer, 36, m2->pointer, 36);
+    res->vCount = m1->vCount * 2;
+    return res;
 }

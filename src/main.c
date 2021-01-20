@@ -47,7 +47,9 @@ static int startup(const uint32_t width, const uint32_t height)
     const int32_t globT_loc = glad_glGetUniformLocation(program, "globT");
 
     // temporary
+    printf("Hello");
     MeshArray *ma = makeBasicMeshArray(pos_loc, color_loc);
+    printf("Hello");
 
     // SECTION: main program loop
     glad_glClearColor(0.3f, 0.7f, 0.3f, 1.0f);
@@ -64,7 +66,7 @@ static int startup(const uint32_t width, const uint32_t height)
         MVP = *Mat4f_multiply(&MVP, Mat4f_multiply(&MVP, &ortho, &translation), &rot);
         glad_glUniformMatrix4fv(globT_loc, 1, GL_FALSE, MVP.members);
         // TODO: supply vCount
-        glad_glDrawArrays(GL_TRIANGLES, 0, 6);
+        glad_glDrawArrays(GL_TRIANGLES, 0, 12);
         glfwSwapBuffers(window);
         // menu screen
         glfwMakeContextCurrent(menuWindow);
