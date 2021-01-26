@@ -5,6 +5,8 @@
 #include "stdlib.h"
 #include "stdio.h"
 
+static uint32_t getMeshArrayVCount(MeshArray *arr);
+
 VBLayout *VBLayout_init(VBLayout *vbl)
 {
     vbl->attrCount = 0;
@@ -27,18 +29,20 @@ VBLayout *VBLayout_addAttr(VBLayout *vbl, uint32_t attrName, uint32_t compCount,
     vbl->stride += compCount * sizeof(float);
     return vbl;
 }
+VBO *VBO_init(VBO *vbo, VBLayout *layout){
+    vbo->layout = layout;
+    return vbo;
+}
 // FIXME: depends on VA state creep and pre-enabled attribute names
-VBO *VBO_init(VBO *vbo, VBLayout *vbl, size_t vCount)
+VBO *VBO_uploadBuffer(VBO *vbo, size_t vCount)
 {
     glad_glGenBuffers(1, &vbo->id);
     glad_glBindBuffer(GL_ARRAY_BUFFER, vbo->id);
-    // TODO: fix GL_STATIC_DRAW
-    glad_glBufferData(GL_ARRAY_BUFFER, vCount * vbl->stride * sizeof(float), vbo->data, GL_STATIC_DRAW);
-    vbo->layout = vbl;
-    for (uint32_t i = 0; i < vbl->attrCount; i++)
+    glad_glBufferData(GL_ARRAY_BUFFER, vCount * vbo->layout->stride, vbo->data, GL_DYNAMIC_DRAW);
+    for (uint32_t i = 0; i < vbo->layout->attrCount; i++)
     {
-        glad_glEnableVertexAttribArray(vbl->attrNames[i]);
-        glad_glVertexAttribPointer(vbl->attrNames[i], vbl->compCounts[i], vbl->types[i], GL_FALSE, vbl->stride, (const void *)vbl->offsets[i]);
+        glad_glEnableVertexAttribArray(vbo->layout->attrNames[i]);
+        glad_glVertexAttribPointer(vbo->layout->attrNames[i], vbo->layout->compCounts[i], vbo->layout->types[i], GL_FALSE, vbo->layout->stride, (const void *)vbo->layout->offsets[i]);
     }
     return vbo;
 }
@@ -63,16 +67,15 @@ MeshArray *MeshArray_registerMesh(MeshArray *ma, Mesh *mesh)
     ma->meshes[ma->meshCount++] = mesh;
     return ma;
 }
-MeshArray *MeshArray_packVBO(MeshArray *ma, Mesh *mesh)
+MeshArray *MeshArray_packVBO(MeshArray *ma)
 {
     // TODO: !!
-    ma->meshes[0] = mesh;
-    // temporary
-    size_t s = mesh->vCount * (3 * 2) * sizeof(float);
-    // FIXME: lol, not like this
+    size_t s = ma->meshes[0]->vCount * (3 * 2) * sizeof(float);
+    // FIXME: lol, not like this... need to make multiple meshes supported
     ma->meshCount = 1;
-    ma->vbo->data = mesh->pointer;
-    printf("\n%d", mesh->vCount);
+    ma->vbo->data = ma->meshes[0]->pointer;
+    size_t vCount = getMeshArrayVCount(ma);
+    VBO_uploadBuffer(ma->vbo, vCount);
     return ma;
 }
 
@@ -90,14 +93,19 @@ MeshArray *makeBasicMeshArray(uint32_t pos_loc, uint32_t color_loc)
     VBO *vbo;
     // FIXME: leaks
     vbo = malloc(sizeof(VBO));
+    VBO_init(vbo,vbl);
     MeshArray *ma = malloc(sizeof(MeshArray));
     MeshArray_initMeshArray(ma, vbo, 1000);
 
-    MeshArray_packVBO(ma, makeSimpleQuadMesh());
-    VBO_init(vbo, vbl, 12);
+    Mesh **meshes = malloc(1*sizeof(Mesh*));
+    meshes[0] = makeSimpleQuadMesh();
+    for(int i = 0;i<1;i++)
+        MeshArray_registerMesh(ma, meshes[i]);
+
+    MeshArray_packVBO(ma);
     return ma;
 }
-uint32_t getMeshArrayVCount(MeshArray *arr)
+static uint32_t getMeshArrayVCount(MeshArray *arr)
 {
     uint32_t res = 0;
     for (int i = 0; i < arr->meshCount; i++)

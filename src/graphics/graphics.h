@@ -17,11 +17,9 @@ typedef struct VBO
     VBLayout *layout;
     float *data;
 } VBO;
-VBO *VBO_init(VBO *vbo, VBLayout *vbl, size_t vCount);
+VBO *VBO_init(VBO *vbo, VBLayout *layout);
+VBO *VBO_uploadBuffer(VBO *vbo, size_t vCount);
 
-/*
-*   Should only be used in context of an existing MeshArray
-*/
 typedef struct Mesh
 {
     float *pointer;
@@ -37,7 +35,7 @@ typedef struct MeshArray
 } MeshArray;
 MeshArray *MeshArray_initMeshArray(MeshArray *ma, VBO *vbo, size_t maxMeshes);
 MeshArray *MeshArray_registerMesh(MeshArray *ma, Mesh *mesh);
-MeshArray *MeshArray_packVBO(MeshArray *ma, Mesh *mesh);
+MeshArray *MeshArray_packVBO(MeshArray *ma);
 
 // temporary
 MeshArray *makeBasicMeshArray(uint32_t pos_loc, uint32_t color_loc);
