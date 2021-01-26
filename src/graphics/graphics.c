@@ -49,7 +49,7 @@ MeshArray *MeshArray_initMeshArray(MeshArray *ma, VBO *vbo, size_t maxMeshes)
     ma->meshCount = 0;
     ma->maxMeshes = maxMeshes;
     //FIXME: leaks
-    ma->meshes = malloc(sizeof(Mesh) * ma->maxMeshes);
+    ma->meshes = calloc(sizeof(Mesh), ma->maxMeshes);
     return ma;
 }
 
@@ -82,15 +82,17 @@ MeshArray *makeBasicMeshArray(uint32_t pos_loc, uint32_t color_loc)
     uint32_t vao;
     glad_glGenVertexArrays(1, &vao);
     glad_glBindVertexArray(vao);
+    // FIXME: leaks
     VBLayout *vbl = malloc(sizeof(VBLayout));
     VBLayout_init(vbl);
     VBLayout_addAttr(vbl, pos_loc, 3, GL_FLOAT);
     VBLayout_addAttr(vbl, color_loc, 3, GL_FLOAT);
     VBO *vbo;
+    // FIXME: leaks
     vbo = malloc(sizeof(VBO));
-
     MeshArray *ma = malloc(sizeof(MeshArray));
     MeshArray_initMeshArray(ma, vbo, 1000);
+
     MeshArray_packVBO(ma, makeSimpleQuadMesh());
     VBO_init(vbo, vbl, 12);
     return ma;
@@ -100,6 +102,7 @@ uint32_t getMeshArrayVCount(MeshArray *arr)
     uint32_t res = 0;
     for (int i = 0; i < arr->meshCount; i++)
     {
+        if(arr->meshes[i] == 0) break;
         res += arr->meshes[i]->vCount;
     }
     return res;

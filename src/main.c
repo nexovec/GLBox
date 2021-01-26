@@ -47,9 +47,9 @@ static int startup(const uint32_t width, const uint32_t height)
     const int32_t globT_loc = glad_glGetUniformLocation(program, "globT");
 
     // temporary
-    printf("Hello");
+    printf("initializing MeshArray");
     MeshArray *ma = makeBasicMeshArray(pos_loc, color_loc);
-    printf("Hello");
+    printf("Mesh array created!");
 
     // SECTION: main program loop
     glad_glClearColor(0.3f, 0.7f, 0.3f, 1.0f);
