@@ -60,7 +60,7 @@ const uint32_t gl_buildProgram(char *vertPath, char *fragPath)
     return program;
 }
 
-float *concatArrays(float *a, size_t aCount, float *b, size_t bCount)
+float *concatFloatArrays(float *a, size_t aCount, float *b, size_t bCount)
 {
     // FIXME: leaks
     float *res = malloc(sizeof(float) * (aCount + bCount));

@@ -1,5 +1,6 @@
 #include "graphics/graphics.h"
 #include "graphics/primitives.h"
+#include "utils/utils.h"
 #include "glad/glad.h"
 #include "assert.h"
 #include "stdlib.h"
@@ -70,10 +71,11 @@ MeshArray *MeshArray_registerMesh(MeshArray *ma, Mesh *mesh)
 MeshArray *MeshArray_packVBO(MeshArray *ma)
 {
     // TODO: !!
-    size_t s = ma->meshes[0]->vCount * (3 * 2) * sizeof(float);
     // FIXME: lol, not like this... need to make multiple meshes supported
-    ma->meshCount = 1;
     ma->vbo->data = ma->meshes[0]->pointer;
+    // FIXME: ma->meshes[1] doesn't exist?!
+    printf("\n%d | %d", ma->meshes[0]->vCount, 0);//ma->meshes[1]->vCount);
+    // ma->vbo->data = concatFloatArrays(ma->meshes[0]->pointer, ma->meshes[0]->vCount, ma->meshes[1]->pointer, ma->meshes[1]->vCount);
     size_t vCount = getMeshArrayVCount(ma);
     VBO_uploadBuffer(ma->vbo, vCount);
     return ma;
@@ -97,11 +99,12 @@ MeshArray *makeBasicMeshArray(uint32_t pos_loc, uint32_t color_loc)
     MeshArray *ma = malloc(sizeof(MeshArray));
     MeshArray_initMeshArray(ma, vbo, 1000);
 
-    Mesh **meshes = malloc(1*sizeof(Mesh*));
+    size_t meshCount = 2;
+    Mesh **meshes = malloc(meshCount*sizeof(Mesh*));
     meshes[0] = makeSimpleQuadMesh();
+    meshes[1] = makeQuadMesh(&(Vec3f){420, 150, 0},&(Vec3f){50, 50, 0});
     for(int i = 0;i<1;i++)
         MeshArray_registerMesh(ma, meshes[i]);
-
     MeshArray_packVBO(ma);
     return ma;
 }

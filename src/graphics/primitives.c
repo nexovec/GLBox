@@ -26,7 +26,7 @@ Mesh *makeQuadMesh(Vec3f *pos, Vec3f *size)
 {
     // FIXME: leaks
     Mesh *res = malloc(sizeof(Mesh));
-    res->pointer = concatArrays(
+    res->pointer = concatFloatArrays(
         makeTriangleArr(
             &(Vec3f){pos->x, pos->y, 0},
             &(Vec3f){pos->x + size->x, pos->y + size->y, 0},
@@ -58,7 +58,8 @@ Mesh *makeSimpleQuadMesh()
     Mesh *m2 = makeQuadMesh(&(Vec3f){400, 400, 0}, &(Vec3f){100, 100, 0});
     // FIXME: leaks
     Mesh *res = malloc(sizeof(Mesh));
-    res->pointer = concatArrays(m1->pointer, 36, m2->pointer, 36);
-    res->vCount = m1->vCount * 2;
+    // FIXME: magic numbers
+    res->pointer = concatFloatArrays(m1->pointer, 6*m1->vCount, m2->pointer, 6*m2->vCount);
+    res->vCount = m1->vCount + m2->vCount;
     return res;
 }
