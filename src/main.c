@@ -29,6 +29,11 @@ static int startup(const uint32_t width, const uint32_t height)
     GLFWwindow *menuWindow = glfwCreateWindow(300, height, "Menu window", NULL, NULL);
     if (!(window && menuWindow))
         return -1;
+    const GLFWvidmode *v = glfwGetVideoMode(glfwGetPrimaryMonitor());
+    int centerW = v->width / 2 - width / 2, centerH = v->height / 2 - height / 2;
+    glfwSetWindowPos(window, centerW, centerH);
+    glfwSetWindowPos(menuWindow, centerW - 50 - 300, centerH - 10);
+
     glfwMakeContextCurrent(window);
     gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
 

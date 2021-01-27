@@ -28,7 +28,8 @@ VBLayout *VBLayout_addAttr(VBLayout *vbl, uint32_t attrName, uint32_t compCount,
     vbl->stride += compCount * sizeof(float);
     return vbl;
 }
-VBO *VBO_init(VBO *vbo, VBLayout *layout){
+VBO *VBO_init(VBO *vbo, VBLayout *layout)
+{
     vbo->layout = layout;
     return vbo;
 }
@@ -69,7 +70,7 @@ MeshArray *MeshArray_registerMesh(MeshArray *ma, Mesh *mesh)
 MeshArray *MeshArray_packVBO(MeshArray *ma)
 {
     // TODO: lol, not like this... need to make multiple meshes supported
-    ma->vbo->data = concatFloatArrays(ma->meshes[0]->pointer,6*ma->meshes[0]->vCount,ma->meshes[1]->pointer,6*ma->meshes[1]->vCount);
+    ma->vbo->data = concatFloatArrays(ma->meshes[0]->pointer, 6 * ma->meshes[0]->vCount, ma->meshes[1]->pointer, 6 * ma->meshes[1]->vCount);
     ma->vbo->vCount = getMeshArrayVCount(ma);
     // printf("\n%d | %d | %d\n", ma->meshes[0]->vCount, ma->meshes[1]->vCount, ma->vCount);
     VBO_uploadBuffer(ma->vbo, ma->vbo->vCount);
@@ -90,16 +91,16 @@ MeshArray *makeBasicMeshArray(uint32_t pos_loc, uint32_t color_loc)
     VBO *vbo;
     // FIXME: leaks
     vbo = malloc(sizeof(VBO));
-    VBO_init(vbo,vbl);
+    VBO_init(vbo, vbl);
     MeshArray *ma = malloc(sizeof(MeshArray));
     MeshArray_initMeshArray(ma, vbo, 1000);
 
     size_t meshCount = 2;
     // NOTE: copying data
-    Mesh **meshes = malloc(meshCount*sizeof(Mesh*));
+    Mesh **meshes = malloc(meshCount * sizeof(Mesh *));
     meshes[0] = makeSimpleQuadMesh();
-    meshes[1] = makeQuadMesh(&(Vec3f){420, 100, 0},&(Vec3f){100, 100, 0});
-    for(int i = 0;i<meshCount;i++)
+    meshes[1] = makeQuadMesh(&(Vec3f){420, 100, 0}, &(Vec3f){100, 100, 0}, COLOR_WHITE);
+    for (int i = 0; i < meshCount; i++)
         MeshArray_registerMesh(ma, meshes[i]);
     MeshArray_packVBO(ma);
     return ma;
@@ -109,7 +110,8 @@ uint32_t getMeshArrayVCount(MeshArray *arr)
     uint32_t res = 0;
     for (int i = 0; i < arr->meshCount; i++)
     {
-        if(arr->meshes[i] == 0) break;
+        if (arr->meshes[i] == 0)
+            break;
         res += arr->meshes[i]->vCount;
     }
     return res;

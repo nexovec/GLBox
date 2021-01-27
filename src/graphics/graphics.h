@@ -1,5 +1,14 @@
 #pragma once
 #include "stdint.h"
+
+enum Colors
+{
+    COLOR_WHITE = 1,
+    COLOR_BLACK,
+    COLOR_BLUE,
+    COLOR_RED,
+    COLOR_GREEN
+};
 typedef struct VBLayout
 {
     uint32_t attrCount;

@@ -6,7 +6,6 @@
 // FIXME: assumes VBLayout
 float *makeTriangleArr(Vec3f *v1, Vec3f *v2, Vec3f *v3, Vec3f *color)
 {
-    // FIXME: 2D only
     float *p = malloc(3 * (3 * 2) * sizeof(float));
     p[0] = v1->x;
     p[1] = v1->y;
@@ -22,22 +21,44 @@ float *makeTriangleArr(Vec3f *v1, Vec3f *v2, Vec3f *v3, Vec3f *color)
     return p;
 }
 
-Mesh *makeQuadMesh(Vec3f *pos, Vec3f *size)
+Mesh *makeQuadMesh(Vec3f *pos, Vec3f *size, int col)
 {
     // FIXME: leaks
     Mesh *res = malloc(sizeof(Mesh));
+    Vec3f *colorVec;
+    switch (col)
+    {
+    case COLOR_WHITE:
+        colorVec = &(Vec3f){0.8f, 0.8f, 0.8f};
+        break;
+    case COLOR_BLACK:
+        colorVec = &(Vec3f){0.15f, 0.15f, 0.15f};
+        break;
+    case COLOR_BLUE:
+        colorVec = &(Vec3f){0.2f, 0.2f, 0.8f};
+        break;
+    case COLOR_GREEN:
+        colorVec = &(Vec3f){0.2f, 0.8f, 0.2f};
+        break;
+    case COLOR_RED:
+        colorVec = &(Vec3f){0.8f, 0.2f, 0.2f};
+        break;
+    default:
+        colorVec = &(Vec3f){1.0f, 0.0f, 1.0f};
+        break;
+    }
     res->pointer = concatFloatArrays(
         makeTriangleArr(
             &(Vec3f){pos->x, pos->y, 0},
             &(Vec3f){pos->x + size->x, pos->y + size->y, 0},
             &(Vec3f){pos->x, pos->y + size->y, 0},
-            &(Vec3f){0.8f, 0.4f, 0.2f}),
+            colorVec),
         18,
         makeTriangleArr(
             &(Vec3f){pos->x, pos->y, 0},
             &(Vec3f){pos->x + size->x, pos->y, 0},
             &(Vec3f){pos->x + size->x, pos->y + size->y, 0},
-            &(Vec3f){0.8f, 0.4f, 0.2f}),
+            colorVec),
         18);
     res->vCount = 6;
     return res;
@@ -54,12 +75,12 @@ Mesh *makeSimpleTriangleMesh()
 // temporary
 Mesh *makeSimpleQuadMesh()
 {
-    Mesh *m1 = makeQuadMesh(&(Vec3f){20, 20, 0}, &(Vec3f){350, 350, 0});
-    Mesh *m2 = makeQuadMesh(&(Vec3f){400, 400, 0}, &(Vec3f){100, 100, 0});
+    Mesh *m1 = makeQuadMesh(&(Vec3f){20, 20, 0}, &(Vec3f){350, 350, 0}, COLOR_BLUE);
+    Mesh *m2 = makeQuadMesh(&(Vec3f){400, 400, 0}, &(Vec3f){100, 100, 0}, COLOR_BLACK);
     // FIXME: leaks
     Mesh *res = malloc(sizeof(Mesh));
     // FIXME: magic numbers
-    res->pointer = concatFloatArrays(m1->pointer, 6*m1->vCount, m2->pointer, 6*m2->vCount);
+    res->pointer = concatFloatArrays(m1->pointer, 6 * m1->vCount, m2->pointer, 6 * m2->vCount);
     res->vCount = m1->vCount + m2->vCount;
     return res;
 }
