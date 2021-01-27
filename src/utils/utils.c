@@ -1,5 +1,7 @@
 #define _CRT_SECURE_NO_WARNINGS
 #include "utils.h"
+#include "mymath/mymath.h"
+#include "graphics/graphics.h"
 #include "stdio.h"
 #include "stdlib.h"
 #include "stdint.h"
@@ -69,4 +71,28 @@ float *concatFloatArrays(float *a, size_t aCount, float *b, size_t bCount)
     for (int i = 0; i < bCount; i++)
         res[aCount + i] = b[i];
     return res;
+}
+
+Vec3f *colorVecFromEnum(Vec3f *colorVec, int col){
+    switch (col)
+    {
+    case COLOR_WHITE:
+        *colorVec = (Vec3f){0.8f, 0.8f, 0.8f};
+        break;
+    case COLOR_BLACK:
+        *colorVec = (Vec3f){0.15f, 0.15f, 0.15f};
+        break;
+    case COLOR_BLUE:
+        *colorVec = (Vec3f){0.2f, 0.2f, 0.8f};
+        break;
+    case COLOR_GREEN:
+        *colorVec = (Vec3f){0.2f, 0.8f, 0.2f};
+        break;
+    case COLOR_RED:
+        *colorVec = (Vec3f){0.8f, 0.2f, 0.2f};
+        break;
+    default:
+        *colorVec = (Vec3f){1.0f, 0.0f, 1.0f};
+        break;
+    }return colorVec;
 }
