@@ -16,6 +16,7 @@ typedef struct VBO
     uint32_t id;
     VBLayout *layout;
     float *data;
+    uint32_t vCount;
 } VBO;
 VBO *VBO_init(VBO *vbo, VBLayout *layout);
 VBO *VBO_uploadBuffer(VBO *vbo, size_t vCount);
@@ -37,5 +38,6 @@ MeshArray *MeshArray_initMeshArray(MeshArray *ma, VBO *vbo, size_t maxMeshes);
 MeshArray *MeshArray_registerMesh(MeshArray *ma, Mesh *mesh);
 MeshArray *MeshArray_packVBO(MeshArray *ma);
 
+uint32_t getMeshArrayVCount(MeshArray *arr);
 // temporary
 MeshArray *makeBasicMeshArray(uint32_t pos_loc, uint32_t color_loc);

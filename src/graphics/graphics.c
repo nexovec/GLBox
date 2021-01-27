@@ -6,8 +6,6 @@
 #include "stdlib.h"
 #include "stdio.h"
 
-static uint32_t getMeshArrayVCount(MeshArray *arr);
-
 VBLayout *VBLayout_init(VBLayout *vbl)
 {
     vbl->attrCount = 0;
@@ -70,14 +68,11 @@ MeshArray *MeshArray_registerMesh(MeshArray *ma, Mesh *mesh)
 }
 MeshArray *MeshArray_packVBO(MeshArray *ma)
 {
-    // TODO: !!
-    // FIXME: lol, not like this... need to make multiple meshes supported
-    ma->vbo->data = ma->meshes[0]->pointer;
-    // FIXME: ma->meshes[1] doesn't exist?!
-    printf("\n%d | %d", ma->meshes[0]->vCount, 0);//ma->meshes[1]->vCount);
-    // ma->vbo->data = concatFloatArrays(ma->meshes[0]->pointer, ma->meshes[0]->vCount, ma->meshes[1]->pointer, ma->meshes[1]->vCount);
-    size_t vCount = getMeshArrayVCount(ma);
-    VBO_uploadBuffer(ma->vbo, vCount);
+    // TODO: lol, not like this... need to make multiple meshes supported
+    ma->vbo->data = concatFloatArrays(ma->meshes[0]->pointer,6*ma->meshes[0]->vCount,ma->meshes[1]->pointer,6*ma->meshes[1]->vCount);
+    ma->vbo->vCount = getMeshArrayVCount(ma);
+    // printf("\n%d | %d | %d\n", ma->meshes[0]->vCount, ma->meshes[1]->vCount, ma->vCount);
+    VBO_uploadBuffer(ma->vbo, ma->vbo->vCount);
     return ma;
 }
 
@@ -100,15 +95,16 @@ MeshArray *makeBasicMeshArray(uint32_t pos_loc, uint32_t color_loc)
     MeshArray_initMeshArray(ma, vbo, 1000);
 
     size_t meshCount = 2;
+    // NOTE: copying data
     Mesh **meshes = malloc(meshCount*sizeof(Mesh*));
     meshes[0] = makeSimpleQuadMesh();
-    meshes[1] = makeQuadMesh(&(Vec3f){420, 150, 0},&(Vec3f){50, 50, 0});
-    for(int i = 0;i<1;i++)
+    meshes[1] = makeQuadMesh(&(Vec3f){420, 100, 0},&(Vec3f){100, 100, 0});
+    for(int i = 0;i<meshCount;i++)
         MeshArray_registerMesh(ma, meshes[i]);
     MeshArray_packVBO(ma);
     return ma;
 }
-static uint32_t getMeshArrayVCount(MeshArray *arr)
+uint32_t getMeshArrayVCount(MeshArray *arr)
 {
     uint32_t res = 0;
     for (int i = 0; i < arr->meshCount; i++)

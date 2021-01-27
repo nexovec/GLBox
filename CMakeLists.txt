@@ -4,8 +4,8 @@
 cmake_minimum_required (VERSION 2.8.11)
 project (HELLO)
 # set(GLFW_BUILD_EXAMPLES TRUE)
-# set(GLE_RUN_TESTS TRUE)
-# message("${CMAKE_C_COMPILER}")
+# set(GLBOX_RUN_TESTS TRUE)
+message("${CMAKE_C_COMPILER}")
 add_subdirectory(vendor/glfw)
 add_subdirectory(vendor/glad)
 

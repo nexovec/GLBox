@@ -12,7 +12,7 @@ static int startup();
 
 int main()
 {
-#ifdef GLE_RUN_TESTS
+#ifdef GLBOX_RUN_TESTS
 #include "tests.h"
     runTests();
 #endif
@@ -65,8 +65,7 @@ static int startup(const uint32_t width, const uint32_t height)
         rot = *Mat4f_identity(&rot);
         MVP = *Mat4f_multiply(&MVP, Mat4f_multiply(&MVP, &ortho, &translation), &rot);
         glad_glUniformMatrix4fv(globT_loc, 1, GL_FALSE, MVP.members);
-        // TODO: supply vCount
-        glad_glDrawArrays(GL_TRIANGLES, 0, 12);
+        glad_glDrawArrays(GL_TRIANGLES, 0, ma->vbo->vCount);
         glfwSwapBuffers(window);
         // menu screen
         glfwMakeContextCurrent(menuWindow);
