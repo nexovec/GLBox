@@ -1,3 +1,4 @@
+#pragma once
 #include "stdint.h"
 #include "mymath/mymath.h"
 #include "graphics/graphics.h"

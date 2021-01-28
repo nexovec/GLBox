@@ -1,6 +1,7 @@
 #include "graphing.h"
 #include "graphics/graphics.h"
 #include "graphics/primitives.h"
+#include "algorithms/sequences.h"
 #include "utils/utils.h"
 #include "stdlib.h"
 
@@ -8,15 +9,15 @@ Mesh **meshifyChart(BarChart *chart)
 {
     // TODO: abstract these integers
     int x = 100;
-    int y = 400;
-    int entryWidth = 25;
-    int spacingWidth = 5;
-    int scale = 30;
+    int y = 500;
+    int entryWidth = 2;
+    int spacingWidth = 1;
+    float scale = 1.0f;
     // FIXME: leaks
     Mesh **meshes = malloc((1 + chart->numOfEntries) * sizeof(Mesh *));
     for (int i = 0; i < (int)chart->numOfEntries; i++)
     {
-        int yCoord = (int)chart->entries[i] * scale;
+        int yCoord = (int)(chart->entries[i] * scale);
         meshes[i] = makeQuadMesh(
             &(Vec3f){(float)x + spacingWidth + i * (spacingWidth + entryWidth), (float)y - yCoord, 0},
             &(Vec3f){(float)entryWidth, (float)yCoord, 0},
@@ -30,15 +31,18 @@ Mesh **meshifyChart(BarChart *chart)
 }
 
 //temporary
+#define ENTRIES 100
 BarChart makeSampleBarChart()
 {
     BarChart res;
-    res.numOfEntries = 10;
+    res.numOfEntries = ENTRIES;
     res.colors = malloc((res.numOfEntries + 1) * sizeof(int));
-    uint32_t entries[] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+    uint32_t entries[ENTRIES];
+    // rangeIntSequence(entries,res.numOfEntries,1,1);
+    randIntSequence(entries, res.numOfEntries, 1, 300);
     res.entries = malloc(res.numOfEntries * sizeof(float));
     for (uint32_t i = 0; i < res.numOfEntries; i++)
         res.entries[i] = (float)entries[i];
-    printFloatArr(res.entries, 10);
+    printFloatArr(res.entries, 100);
     return res;
 }

@@ -1,5 +1,5 @@
-# OpenGL sandbox in C
-My OpenGL code to get inspired from.
+# GLBox
+OpenGL sandbox in C.
 ## How to Build
 Make sure you have Windows and the latest CMake and git installed.
 Press WIN+E, press CTRL+L, type cmd, press ENTER, then type:
