@@ -25,8 +25,9 @@ static int startup(const uint32_t width, const uint32_t height)
     if (!glfwInit())
         return -1;
     glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
-    GLFWwindow *window = glfwCreateWindow(width, height, "Hello there", NULL, NULL);
-    GLFWwindow *menuWindow = glfwCreateWindow(300, height, "Menu window", NULL, NULL);
+    GLFWwindow *window = glfwCreateWindow(width, height, "GLBox 0.0.1 dev", NULL, NULL);
+    glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
+    GLFWwindow *menuWindow = glfwCreateWindow(300, height, "Menu", NULL, NULL);
     if (!(window && menuWindow))
         return -1;
     const GLFWvidmode *v = glfwGetVideoMode(glfwGetPrimaryMonitor());
@@ -57,7 +58,7 @@ static int startup(const uint32_t width, const uint32_t height)
     printf("Mesh array created!");
 
     // SECTION: main program loop
-    glad_glClearColor(0.3f, 0.7f, 0.3f, 1.0f);
+    glad_glClearColor(40.f / 255, 44.f / 255, 40.f / 255, 1.0f);
     while (glfwWindowShouldClose(window) == GLFW_FALSE)
     {
         glfwPollEvents();
@@ -74,7 +75,7 @@ static int startup(const uint32_t width, const uint32_t height)
         glfwSwapBuffers(window);
         // menu screen
         glfwMakeContextCurrent(menuWindow);
-        glad_glClearColor(0.3f, 0.7f, 0.3f, 1.0f);
+        glad_glClearColor(40.f / 255, 44.f / 255, 40.f / 255, 1.0f);
         if (glfwGetKey(menuWindow, GLFW_KEY_ESCAPE))
             glfwSetWindowShouldClose(window, GLFW_TRUE);
         glad_glClear(GL_COLOR_BUFFER_BIT);

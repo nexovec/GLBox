@@ -3,11 +3,11 @@
 #include "graphics/graphics.h"
 typedef struct BarChart
 {
-    uint32_t numOfVertices;
-    Vec3f *positions;
-    Vec3f *colors;
+    uint32_t numOfEntries;
+    float *entries;
+    int *colors;
 } BarChart;
-MeshArray *meshifyChart(BarChart *chart);
+Mesh **meshifyChart(BarChart *chart);
 
 // temporary
-BarChart *makeSampleBarChart();
+BarChart makeSampleBarChart();

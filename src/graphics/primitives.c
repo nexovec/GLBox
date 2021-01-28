@@ -17,7 +17,6 @@ float *makeTriangleArr(Vec3f *v1, Vec3f *v2, Vec3f *v3, Vec3f *color)
     for (int i = 0; i < 3; i++)
         for (int ii = 0; ii < 3; ii++)
             p[i * 6 + 3 + ii] = ((float *)color)[ii];
-    // TODO: vCount
     return p;
 }
 

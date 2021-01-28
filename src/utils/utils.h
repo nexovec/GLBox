@@ -12,3 +12,4 @@ const uint32_t gl_buildProgram(char *vertPath, char *fragPath);
 float *concatFloatArrays(float *a, size_t aCount, float *b, size_t bCount);
 
 Vec3f *colorVecFromEnum(Vec3f *colorVec, int col);
+void printFloatArr(float *arr, int n);

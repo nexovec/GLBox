@@ -73,26 +73,35 @@ float *concatFloatArrays(float *a, size_t aCount, float *b, size_t bCount)
     return res;
 }
 
-Vec3f *colorVecFromEnum(Vec3f *colorVec, int col){
+Vec3f *colorVecFromEnum(Vec3f *colorVec, int col)
+{
     switch (col)
     {
     case COLOR_WHITE:
         *colorVec = (Vec3f){0.8f, 0.8f, 0.8f};
         break;
     case COLOR_BLACK:
-        *colorVec = (Vec3f){0.15f, 0.15f, 0.15f};
+        *colorVec = (Vec3f){0.12f, 0.12f, 0.12f};
         break;
     case COLOR_BLUE:
-        *colorVec = (Vec3f){0.2f, 0.2f, 0.8f};
+        *colorVec = (Vec3f){0.16f, 0.16f, 0.8f};
         break;
     case COLOR_GREEN:
-        *colorVec = (Vec3f){0.2f, 0.8f, 0.2f};
+        *colorVec = (Vec3f){0.16f, 0.8f, 0.16f};
         break;
     case COLOR_RED:
-        *colorVec = (Vec3f){0.8f, 0.2f, 0.2f};
+        *colorVec = (Vec3f){0.8f, 0.16f, 0.16f};
         break;
     default:
         *colorVec = (Vec3f){1.0f, 0.0f, 1.0f};
         break;
-    }return colorVec;
+    }
+    return colorVec;
+}
+void printFloatArr(float *arr, int n)
+{
+    printf("[");
+    for (int i = 0; i < n; i++)
+        printf("%f, ", arr[i]);
+    printf("]");
 }

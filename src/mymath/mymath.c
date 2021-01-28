@@ -105,7 +105,6 @@ Mat4f *Mat4f_rotationZ(Mat4f *s_e_mat, float rot)
 Mat4f *Mat4f_rotation(Mat4f *mat, float rotX, float rotY, float rotZ)
 {
     // FIXME: slow
-    // TODO: testing
     Mat4f x, y, z, yz;
     Mat4f_rotationX(&x, rotX);
     Mat4f_rotationY(&y, rotY);
@@ -141,7 +140,6 @@ Mat4f *Mat4f_copy(Mat4f *s_e_dest, Mat4f *mat)
 
 Mat4f *Mat4f_add(Mat4f *s_e_mat, Mat4f *b)
 {
-    // TODO: test
     for (int i = 0; i < 16; i++)
         s_e_mat->members[i] += b->members[i];
     return s_e_mat;
