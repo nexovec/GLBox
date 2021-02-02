@@ -9,6 +9,3 @@ typedef struct BarChart
     int *colors;
 } BarChart;
 Mesh **meshifyChart(BarChart *chart);
-
-// temporary
-BarChart makeSampleBarChart();

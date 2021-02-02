@@ -2,6 +2,7 @@
 #include "utils/utils.h"
 #include "mymath/mymath.h"
 #include "graphics/graphics.h"
+#include "examples/examples.h"
 #include "tests.h"
 #include "stdio.h"
 #include "stdlib.h"
@@ -44,18 +45,20 @@ static int startup(const uint32_t width, const uint32_t height)
     Mat4f_ortho(&ortho, 600.f * ratio, 0.f, 0.f, 600.f, -1.0f, 1.0f);
     Mat4f_translation(&translation, 0.f, 0.f, 0.f);
 
-    // SECTION: GPU data transfer
+    // SECTION: GPU init
     const uint32_t program = gl_buildProgram("res/shaders/vert.glsl", "res/shaders/frag.glsl");
     // TODO: error handle shader runtime
     glad_glUseProgram(program);
     const int32_t pos_loc = glad_glGetAttribLocation(program, "pos");
     const int32_t color_loc = glad_glGetAttribLocation(program, "color");
     const int32_t globT_loc = glad_glGetUniformLocation(program, "globT");
-
+    // SECTION: data instantiation
+    BarChart barchart = makeSampleBarChart();
     // temporary
     printf("initializing MeshArray");
     MeshArray *ma = makeBasicMeshArray(pos_loc, color_loc);
     printf("Mesh array created!");
+
 
     // SECTION: main program loop
     glad_glClearColor(40.f / 255, 44.f / 255, 40.f / 255, 1.0f);

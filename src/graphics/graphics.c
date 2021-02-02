@@ -86,6 +86,7 @@ MeshArray *MeshArray_packVBO(MeshArray *ma)
 }
 
 //temporary
+    #include "examples/examples.h"
 MeshArray *makeBasicMeshArray(uint32_t pos_loc, uint32_t color_loc)
 {
     uint32_t vao;
