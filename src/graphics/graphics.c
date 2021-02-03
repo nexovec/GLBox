@@ -86,8 +86,7 @@ MeshArray *MeshArray_packVBO(MeshArray *ma)
 }
 
 //temporary
-    #include "examples/examples.h"
-MeshArray *makeBasicMeshArray(uint32_t pos_loc, uint32_t color_loc)
+MeshArray *makeBasicMeshArray(uint32_t pos_loc, uint32_t color_loc, BarChart *barchart)
 {
     uint32_t vao;
     glad_glGenVertexArrays(1, &vao);
@@ -103,14 +102,8 @@ MeshArray *makeBasicMeshArray(uint32_t pos_loc, uint32_t color_loc)
     VBO_init(vbo, vbl);
     MeshArray *ma = malloc(sizeof(MeshArray));
     MeshArray_initMeshArray(ma, vbo, 1000);
-
-    // size_t meshCount = 2;
-    // Mesh **meshes = malloc(meshCount * sizeof(Mesh *));
-    // meshes[0] = makeSimpleQuadMesh();
-    // meshes[1] = makeQuadMesh(&(Vec3f){420, 100, 0}, &(Vec3f){100, 100, 0}, COLOR_WHITE);
-    BarChart barchart = makeSampleBarChart();
-    size_t meshCount = barchart.numOfEntries + 1;
-    Mesh **meshes = meshifyChart(&barchart);
+    size_t meshCount = barchart->numOfEntries + 1;
+    Mesh **meshes = meshifyChart(barchart);
     for (int i = 0; i < meshCount; i++)
         MeshArray_registerMesh(ma, meshes[i]);
     MeshArray_packVBO(ma);

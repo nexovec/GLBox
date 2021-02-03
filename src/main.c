@@ -56,7 +56,7 @@ static int startup(const uint32_t width, const uint32_t height)
     BarChart barchart = makeSampleBarChart();
     // temporary
     printf("initializing MeshArray");
-    MeshArray *ma = makeBasicMeshArray(pos_loc, color_loc);
+    MeshArray *ma = makeBasicMeshArray(pos_loc, color_loc, &barchart);
     printf("Mesh array created!");
 
 
