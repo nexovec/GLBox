@@ -54,11 +54,7 @@ static int startup(const uint32_t width, const uint32_t height)
     const int32_t globT_loc = glad_glGetUniformLocation(program, "globT");
     // SECTION: data instantiation
     BarChart barchart = makeSampleBarChart();
-    // temporary
-    printf("initializing MeshArray");
     MeshArray *ma = makeBasicMeshArray(pos_loc, color_loc, &barchart);
-    printf("Mesh array created!");
-
 
     // SECTION: main program loop
     glad_glClearColor(40.f / 255, 44.f / 255, 40.f / 255, 1.0f);

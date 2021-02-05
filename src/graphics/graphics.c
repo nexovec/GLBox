@@ -80,12 +80,9 @@ MeshArray *MeshArray_packVBO(MeshArray *ma)
         vCounter += v2;
     }
     ma->vbo->vCount = getMeshArrayVCount(ma);
-    // printf("\n%d | %d | %d\n", ma->meshes[0]->vCount, ma->meshes[1]->vCount, ma->vCount);
     VBO_uploadBuffer(ma->vbo, ma->vbo->vCount);
     return ma;
 }
-
-//temporary
 MeshArray *makeBasicMeshArray(uint32_t pos_loc, uint32_t color_loc, BarChart *barchart)
 {
     uint32_t vao;

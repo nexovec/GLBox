@@ -48,5 +48,4 @@ MeshArray *MeshArray_registerMesh(MeshArray *ma, Mesh *mesh);
 MeshArray *MeshArray_packVBO(MeshArray *ma);
 
 uint32_t getMeshArrayVCount(MeshArray *arr);
-// temporary
 MeshArray *makeBasicMeshArray(uint32_t pos_loc, uint32_t color_loc);
