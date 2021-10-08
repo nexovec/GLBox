@@ -2,3 +2,8 @@
 .vs
 .vscode
 bin/*
+HelloWorld.vcxproj
+
+HelloWorld.vcxproj.filters
+
+Test.sln
