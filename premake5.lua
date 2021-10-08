@@ -20,7 +20,7 @@ links {
 }
 defines {'GLFW_INCLUDE_NONE'}
 
-files {'src/**.h', 'src/**.c'}
+files {'src/**.hpp', 'src/**.cpp'}
 
 filter 'configurations:Debug'
 defines {'DEBUG'}
