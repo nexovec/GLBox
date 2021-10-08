@@ -10,8 +10,8 @@ include './vendor/glad'
 group ''
 project 'HelloWorld'
 kind 'ConsoleApp'
-language 'C'
-cdialect 'C11'
+language 'C++'
+cppdialect 'C++latest'
 targetdir 'bin/%{cfg.buildcfg}'
 includedirs {'./src', './vendor/glad/include', './vendor/glfw/include'}
 links {
