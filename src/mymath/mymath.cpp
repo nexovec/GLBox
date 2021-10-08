@@ -1,4 +1,4 @@
-#include "mymath.h"
+#include "mymath.hpp"
 #include "stdlib.h"
 #include "stdio.h"
 #include "math.h"

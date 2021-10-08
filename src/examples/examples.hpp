@@ -1,4 +1,4 @@
 #pragma once
-#include "graphing/graphing.h"
+#include "graphing/graphing.hpp"
 
 BarChart makeSampleBarChart();

@@ -1,12 +1,12 @@
 #pragma once
 #include "stdint.h"
 // SECTION: Vec3f
-typedef struct Vec3f
+struct Vec3f
 {
     float x;
     float y;
     float z;
-} Vec3f;
+};
 
 Vec3f *Vec3f_print(Vec3f *vec);
 Vec3f *Vec3f_fromFloatArr(Vec3f *s_e_vecArr, float *floatArr, uint32_t num);
@@ -15,10 +15,10 @@ float Vec3f_dot(Vec3f *a, Vec3f *b);
 Vec3f *Vec3f_mult(Vec3f *s_e_vec, Vec3f *b);
 
 // SECTION: Mat4f
-typedef struct Mat4f
+struct Mat4f
 {
     float members[16];
-} Mat4f;
+};
 
 Mat4f *Mat4f_zeroes(Mat4f *mat);
 Mat4f *Mat4f_identity(Mat4f *mat);

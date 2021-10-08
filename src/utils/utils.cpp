@@ -1,13 +1,13 @@
 #define _CRT_SECURE_NO_WARNINGS
-#include "utils.h"
-#include "mymath/mymath.h"
-#include "graphics/graphics.h"
+#include "utils.hpp"
+#include "mymath/mymath.hpp"
+#include "graphics/graphics.hpp"
 #include "stdio.h"
 #include "stdlib.h"
 #include "stdint.h"
 #include "glad/glad.h"
 
-char *readStringFromFile(char *path)
+char *readStringFromFile(const char *path)
 {
     FILE *file = fopen(path, "r"); // FIXME: fissile material
     char *contents = (char *)malloc(1000 * sizeof(char));
@@ -28,13 +28,13 @@ void glfw_errCbck(int code, char *err)
 void gl_printGLError(const uint32_t subject, GLenum pname, char *prefixedMessage)
 {
     uint32_t result;
-    glad_glGetShaderiv(subject, pname, &result);
+    glad_glGetShaderiv(subject, pname, (GLint *)&result);
     if (!result)
     {
         uint32_t maxLength;
-        glad_glGetShaderiv(subject, GL_INFO_LOG_LENGTH, &maxLength);
-        char *message = malloc(maxLength * sizeof(char));
-        glad_glGetShaderInfoLog(subject, maxLength, &maxLength, message);
+        glad_glGetShaderiv(subject, GL_INFO_LOG_LENGTH, (GLint *)&maxLength);
+        char *message = (char *)malloc(maxLength * sizeof(char));
+        glad_glGetShaderInfoLog(subject, maxLength, (GLint *)&maxLength, message);
         fprintf(stderr, "%s\n%s\n", prefixedMessage, message);
         free(message);
         exit(-1);
@@ -50,13 +50,13 @@ const uint32_t gl_buildProgram(char *vertPath, char *fragPath)
     glad_glShaderSource(fShader, 1, &fragShaderSource, NULL);
     glad_glCompileShader(vShader);
     glad_glCompileShader(fShader);
-    gl_printGLError(vShader, GL_COMPILE_STATUS, "Vertex shader Error:");
-    gl_printGLError(fShader, GL_COMPILE_STATUS, "Fragment shader Error:");
+    gl_printGLError(vShader, GL_COMPILE_STATUS, (char *)"Vertex shader Error:");
+    gl_printGLError(fShader, GL_COMPILE_STATUS, (char *)"Fragment shader Error:");
     const uint32_t program = glad_glCreateProgram();
     glad_glAttachShader(program, vShader);
     glad_glAttachShader(program, fShader);
     glad_glLinkProgram(program);
-    gl_printGLError(program, GL_LINK_STATUS, "Linking Error:");
+    gl_printGLError(program, GL_LINK_STATUS, (char *)"Linking Error:");
     free(vertShaderSource);
     free(fragShaderSource);
     return program;
@@ -65,7 +65,7 @@ const uint32_t gl_buildProgram(char *vertPath, char *fragPath)
 float *concatFloatArrays(float *a, size_t aCount, float *b, size_t bCount)
 {
     // FIXME: leaks
-    float *res = malloc(sizeof(float) * (aCount + bCount));
+    float *res = (float *)malloc(sizeof(float) * (aCount + bCount));
     for (int i = 0; i < aCount; i++)
         res[i] = a[i];
     for (int i = 0; i < bCount; i++)
@@ -78,22 +78,22 @@ Vec3f *colorVecFromEnum(Vec3f *colorVec, int col)
     switch (col)
     {
     case COLOR_WHITE:
-        *colorVec = (Vec3f){0.8f, 0.8f, 0.8f};
+        *colorVec = {0.8f, 0.8f, 0.8f};
         break;
     case COLOR_BLACK:
-        *colorVec = (Vec3f){0.12f, 0.12f, 0.12f};
+        *colorVec = {0.12f, 0.12f, 0.12f};
         break;
     case COLOR_BLUE:
-        *colorVec = (Vec3f){0.16f, 0.16f, 0.8f};
+        *colorVec = {0.16f, 0.16f, 0.8f};
         break;
     case COLOR_GREEN:
-        *colorVec = (Vec3f){0.16f, 0.8f, 0.16f};
+        *colorVec = {0.16f, 0.8f, 0.16f};
         break;
     case COLOR_RED:
-        *colorVec = (Vec3f){0.8f, 0.16f, 0.16f};
+        *colorVec = {0.8f, 0.16f, 0.16f};
         break;
     default:
-        *colorVec = (Vec3f){1.0f, 0.0f, 1.0f};
+        *colorVec = {1.0f, 0.0f, 1.0f};
         break;
     }
     return colorVec;

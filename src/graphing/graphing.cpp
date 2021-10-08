@@ -1,7 +1,7 @@
-#include "graphing.h"
-#include "graphics/graphics.h"
-#include "graphics/primitives.h"
-#include "utils/utils.h"
+#include "graphing.hpp"
+#include "graphics/graphics.hpp"
+#include "graphics/primitives.hpp"
+#include "utils/utils.hpp"
 #include "stdlib.h"
 
 Mesh **meshifyChart(BarChart *chart)
@@ -13,18 +13,23 @@ Mesh **meshifyChart(BarChart *chart)
     int spacingWidth = 5;
     float scale = 1.0f;
     // FIXME: leaks
-    Mesh **meshes = malloc((1 + chart->numOfEntries) * sizeof(Mesh *));
+    Mesh **meshes = (Mesh**)malloc((1 + chart->numOfEntries) * sizeof(Mesh *));
     for (int i = 0; i < (int)chart->numOfEntries; i++)
     {
+        // FIXME: naming
         int yCoord = (int)(chart->entries[i] * scale);
+        Vec3f first = { (float)x + spacingWidth + i * (spacingWidth + entryWidth), (float)y - yCoord, 0 };
+        Vec3f second = { (float)entryWidth, (float)yCoord, 0 };
         meshes[i] = makeQuadMesh(
-            &(Vec3f){(float)x + spacingWidth + i * (spacingWidth + entryWidth), (float)y - yCoord, 0},
-            &(Vec3f){(float)entryWidth, (float)yCoord, 0},
+            &first,
+            &second,
             COLOR_BLUE);
     }
+    Vec3f first = { (float)x, (float)y, 0 };
+    Vec3f second = { (float)(chart->numOfEntries + 1) * spacingWidth + chart->numOfEntries * entryWidth, entryWidth * 1.69f, 0 };
     meshes[chart->numOfEntries] = makeQuadMesh(
-        &(Vec3f){(float)x, (float)y, 0},
-        &(Vec3f){(float)(chart->numOfEntries + 1) * spacingWidth + chart->numOfEntries * entryWidth, entryWidth * 1.69f, 0},
+        &first,
+        &second,
         COLOR_BLACK);
     return meshes;
 }

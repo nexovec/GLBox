@@ -9,3 +9,13 @@ HelloWorld.vcxproj.filters
 Test.sln
 
 HelloWorld.vcxproj.user
+
+obj/
+
+vendor/glad/bin/
+
+vendor/glad/bin-int/
+
+*.vcxproj
+
+*.filters

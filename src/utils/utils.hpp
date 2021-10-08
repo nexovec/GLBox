@@ -1,7 +1,7 @@
 #pragma once
 #include "glad/glad.h"
 #include "stdint.h"
-#include "mymath/mymath.h"
+#include "mymath/mymath.hpp"
 char *readStringFromFile(char *path);
 
 void glfw_errCbck(int code, char *err);

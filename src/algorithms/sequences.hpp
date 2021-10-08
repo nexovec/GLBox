@@ -1,4 +1,4 @@
 #pragma once
-
-int *rangeIntSequence(int *arr, int n, int lowerBound, int jump);
-int *randIntSequence(int *arr, int n, int lowerbound, int spread);
+#include <stdint.h>
+int *rangeIntSequence(int32_t *arr, int32_t n, int32_t lowerBound, int32_t jump);
+int *randIntSequence(int32_t *arr, int32_t n, int32_t lowerbound, int32_t spread);

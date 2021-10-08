@@ -1,15 +1,15 @@
 #define GLFW_INCLUDE_NONE
-#include "utils/utils.h"
-#include "mymath/mymath.h"
-#include "graphics/graphics.h"
-#include "examples/examples.h"
-#include "tests.h"
+#include "utils/utils.hpp"
+#include "mymath/mymath.hpp"
+#include "graphics/graphics.hpp"
+#include "examples/examples.hpp"
+#include "tests.hpp"
 #include "stdio.h"
 #include "stdlib.h"
 #include "stdint.h"
 #include "GLFW/glfw3.h"
 #include "glad/glad.h"
-static int startup();
+static int startup(const uint32_t width, const uint32_t height);
 
 int main()
 {
@@ -46,7 +46,7 @@ static int startup(const uint32_t width, const uint32_t height)
     Mat4f_translation(&translation, 0.f, 0.f, 0.f);
 
     // SECTION: GPU init
-    const uint32_t program = gl_buildProgram("res/shaders/vert.glsl", "res/shaders/frag.glsl");
+    const uint32_t program = gl_buildProgram((char*)"res/shaders/vert.glsl", (char *)"res/shaders/frag.glsl");
     // TODO: error handle shader runtime
     glad_glUseProgram(program);
     const int32_t pos_loc = glad_glGetAttribLocation(program, "pos");
