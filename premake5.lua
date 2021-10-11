@@ -1,5 +1,5 @@
 -- premake5.lua
-workspace 'Test'
+workspace 'GLBox'
 configurations {'Debug', 'Release'}
 platforms {'Win32', 'Win64', 'Xbox360'}
 
@@ -8,10 +8,10 @@ group 'Dependencies'
 include './vendor/glfw'
 include './vendor/glad'
 group ''
-project 'HelloWorld'
+project 'Sandbox'
 kind 'ConsoleApp'
 language 'C++'
-cppdialect 'C++latest'
+cppdialect 'C++17'
 targetdir 'bin/%{cfg.buildcfg}'
 includedirs {'./src', './vendor/glad/include', './vendor/glfw/include'}
 links {

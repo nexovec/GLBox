@@ -1,5 +1,4 @@
 #pragma once
-#include "graphing/graphing.hpp"
 #include "stdint.h"
 
 enum Colors
@@ -49,4 +48,6 @@ MeshArray *MeshArray_registerMesh(MeshArray *ma, Mesh *mesh);
 MeshArray *MeshArray_packVBO(MeshArray *ma);
 
 uint32_t getMeshArrayVCount(MeshArray *arr);
+
+typedef struct BarChart;
 MeshArray *makeBasicMeshArray(uint32_t pos_loc, uint32_t color_loc, BarChart* barchart);

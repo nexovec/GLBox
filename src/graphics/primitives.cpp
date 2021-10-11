@@ -26,23 +26,23 @@ Mesh *makeQuadMesh(Vec3f *pos, Vec3f *size, int col)
     Mesh *res = (Mesh *)malloc(sizeof(Mesh));
     Vec3f colorVec;
     colorVecFromEnum(&colorVec, col);
-    Vec3f first_1 = { pos->x, pos->y, 0 };
-    Vec3f first_2 = { pos->x + size->x, pos->y + size->y, 0 };
-    Vec3f first_3 = { pos->x, pos->y + size->y, 0 };
-    Vec3f second_1 = { pos->x, pos->y, 0 };
-    Vec3f second_2 = { pos->x + size->x,size->y, 0 };
-    Vec3f second_3 = { pos->x, pos->y + size->y, 0 };
+    Vec3f first_triangle_v1 = {pos->x, pos->y, 0};
+    Vec3f first_triangle_v2 = {pos->x + size->x, pos->y + size->y, 0};
+    Vec3f first_triangle_v3 = {pos->x, pos->y + size->y, 0};
+    Vec3f second_triangle_v1 = {pos->x, pos->y, 0};
+    Vec3f second_triangle_v2 = {pos->x + size->x, pos->y, 0};
+    Vec3f second_triangle_v3 = {pos->x + size->x, pos->y + size->y, 0};
     res->pointer = concatFloatArrays(
         makeTriangleArr(
-            &first_1,
-            &first_2,
-            &first_3,
+            &first_triangle_v1,
+            &first_triangle_v2,
+            &first_triangle_v3,
             &colorVec),
         18,
         makeTriangleArr(
-            &second_1,
-            &second_2,
-            &second_3,
+            &second_triangle_v1,
+            &second_triangle_v2,
+            &second_triangle_v3,
             &colorVec),
         18);
     res->vCount = 6;
@@ -55,30 +55,30 @@ Mesh *makeSimpleTriangleMesh()
     // FIXME: leaks
     Mesh *res = (Mesh *)malloc(sizeof(Mesh));
     // FIXME: naming
-    Vec3f first = { 20, 20, 0 };
-    Vec3f second = { 350, 350, 0 };
-    Vec3f third = { 20, 350, 0 };
-    Vec3f fourth = { 0.8f, 0.4f, 0.2f };
+    Vec3f first = {20, 20, 0};
+    Vec3f second = {350, 350, 0};
+    Vec3f third = {20, 350, 0};
+    Vec3f fourth = {0.8f, 0.4f, 0.2f};
     res->pointer = makeTriangleArr(&first, &second, &third, &fourth);
     return res;
 }
 // temporary
 Mesh *makeSimpleQuadMesh()
 {
-    Mesh* m1;
-    Mesh* m2;
+    Mesh *m1;
+    Mesh *m2;
     {
-        Vec3f first = { 20, 20, 0 };
-        Vec3f second = { 350, 350, 0 };
+        Vec3f first = {20, 20, 0};
+        Vec3f second = {350, 350, 0};
         m1 = makeQuadMesh(&first, &second, COLOR_BLUE);
     }
     {
-        Vec3f first = { 400, 400, 0 };
-        Vec3f second = { 100, 100, 0 };
+        Vec3f first = {400, 400, 0};
+        Vec3f second = {100, 100, 0};
         m2 = makeQuadMesh(&first, &second, COLOR_BLACK);
     }
     // FIXME: leaks
-    Mesh *res = (Mesh *)malloc(sizeof(Mesh*));
+    Mesh *res = (Mesh *)malloc(sizeof(Mesh *));
     // FIXME: magic numbers
     res->pointer = concatFloatArrays(m1->pointer, 6 * m1->vCount, m2->pointer, 6 * m2->vCount);
     res->vCount = m1->vCount + m2->vCount;
