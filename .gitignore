@@ -6,7 +6,7 @@ HelloWorld.vcxproj
 
 HelloWorld.vcxproj.filters
 
-Test.sln
+**.sln
 
 HelloWorld.vcxproj.user
 
