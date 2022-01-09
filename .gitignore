@@ -17,5 +17,6 @@ vendor/glad/bin/
 vendor/glad/bin-int/
 
 *.vcxproj
+**.vcxproj.user
 
 *.filters

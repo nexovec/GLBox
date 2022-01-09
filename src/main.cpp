@@ -9,6 +9,8 @@
 #include "stdint.h"
 #include "GLFW/glfw3.h"
 #include "glad/glad.h"
+
+#include "super_math.hpp"
 static int startup(const uint32_t width, const uint32_t height);
 
 int main()
@@ -41,12 +43,14 @@ static int startup(const uint32_t width, const uint32_t height)
 
     // SECTION: math
     const float ratio = 4 / 3;
-    Mat4f ortho, translation, rot, MVP;
-    Mat4f_ortho(&ortho, 600.f * ratio, 0.f, 0.f, 600.f, -1.0f, 1.0f);
-    Mat4f_translation(&translation, 0.f, 0.f, 0.f);
+    Mat4_f ortho, translation, rot, MVP;
+    // Mat4f ortho, translation, rot, MVP;
+    // Mat4f_ortho(&ortho, 600.f * ratio, 0.f, 0.f, 600.f, -1.0f, 1.0f);
+    // Mat4f_translation(&translation, 0.f, 0.f, 0.f);
+    ortho = Mat4_f::ortho_projection_matrix(0.f, 600.f * ratio, 0.f, 600.f, 1.0f, -1.0f);
 
     // SECTION: GPU init
-    const uint32_t program = gl_buildProgram((char*)"res/shaders/vert.glsl", (char *)"res/shaders/frag.glsl");
+    const uint32_t program = gl_buildProgram((char *)"res/shaders/vert.glsl", (char *)"res/shaders/frag.glsl");
     // TODO: error handle shader runtime
     glad_glUseProgram(program);
     const int32_t pos_loc = glad_glGetAttribLocation(program, "pos");
@@ -67,9 +71,11 @@ static int startup(const uint32_t width, const uint32_t height)
         if (glfwGetKey(window, GLFW_KEY_ESCAPE))
             glfwSetWindowShouldClose(window, GLFW_TRUE);
         // rot = *Mat4f_rotation(&rot, 0.f, 0.f, (float)glfwGetTime());
-        rot = *Mat4f_identity(&rot);
-        MVP = *Mat4f_multiply(&MVP, Mat4f_multiply(&MVP, &ortho, &translation), &rot);
-        glad_glUniformMatrix4fv(globT_loc, 1, GL_FALSE, MVP.members);
+        // rot = *Mat4f_identity(&rot);
+        // MVP = *Mat4f_multiply(&MVP, Mat4f_multiply(&MVP, &ortho, &translation), &rot);
+        rot = Mat4_f::rotation_matrix(0.f, 0.f, (float)glfwGetTime());
+        MVP = ortho * rot;
+        glad_glUniformMatrix4fv(globT_loc, 1, GL_FALSE, MVP.row_aligned_elems);
         glad_glDrawArrays(GL_TRIANGLES, 0, ma->vbo->vCount);
         glfwSwapBuffers(window);
         // menu screen

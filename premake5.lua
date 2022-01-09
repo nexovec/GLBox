@@ -1,5 +1,6 @@
 -- premake5.lua
 workspace 'GLBox'
+startproject "Sandbox"
 configurations {'Debug', 'Release'}
 platforms {'Win32', 'Win64', 'Xbox360'}
 
@@ -11,7 +12,7 @@ group ''
 project 'Sandbox'
 kind 'ConsoleApp'
 language 'C++'
-cppdialect 'C++17'
+cppdialect 'C++20'
 targetdir 'bin/%{cfg.buildcfg}'
 includedirs {'./src', './vendor/glad/include', './vendor/glfw/include'}
 links {
