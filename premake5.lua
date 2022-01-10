@@ -14,14 +14,19 @@ kind 'ConsoleApp'
 language 'C++'
 cppdialect 'C++20'
 targetdir 'bin/%{cfg.buildcfg}'
-includedirs {'./src', './vendor/glad/include', './vendor/glfw/include'}
+includedirs {'./src', "vendor/glm", './vendor/glad/include', './vendor/glfw/include'}
 links {
     'GLFW',
     'Glad'
 }
 defines {'GLFW_INCLUDE_NONE'}
 
-files {'src/**.hpp', 'src/**.cpp'}
+files {
+    'src/**.hpp',
+    'src/**.cpp',
+    "vendor/glm/glm/**.hpp",
+    "vendor/glm/glm/**.inl"
+}
 
 filter 'configurations:Debug'
 defines {'DEBUG'}

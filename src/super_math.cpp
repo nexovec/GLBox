@@ -4,6 +4,8 @@
 #include "stdint.h"
 #include <string.h>
 #include <cmath> // FIXME: reconsider
+#include <limits>
+#include <assert.h>
 
 Vec2_f Vec2_f::operator+(const Vec2_f &other)
 {
@@ -105,12 +107,12 @@ Vec4_f Mat4_f::operator*(Vec4_f &other) const
 {
     // PERFORMANCE: use SIMD
     Vec4_f result = {};
-    float *res_unpacked = (float *) &result;
+    float *res_unpacked = (float *)&result;
     for (int32_t y = 0; y < 4; y++)
     {
         for (int32_t x = 0; x < 4; x++)
         {
-            res_unpacked[y] += this->row_aligned_elems[y * 4 + x] * ((float*)&other)[x];
+            res_unpacked[y] += this->row_aligned_elems[y * 4 + x] * ((float *)&other)[x];
         }
     }
     return result;
@@ -167,15 +169,12 @@ Mat4_f Mat4_f::unit_matrix()
 
 Mat4_f Mat4_f::ones()
 {
-    return 
-    {
+    return {
         1.f, 1.f, 1.f, 1.f,
         1.f, 1.f, 1.f, 1.f,
         1.f, 1.f, 1.f, 1.f,
-        1.f, 1.f, 1.f, 1.f
-    };
+        1.f, 1.f, 1.f, 1.f};
 }
-
 
 static Mat4_f mat4f_rotation_x(float rot)
 {
@@ -213,7 +212,7 @@ static Mat4_f mat4f_rotation_z(float rot)
     return s_e_mat;
 }
 
-Mat4_f Mat4_f::rotation_matrix(Vec4_f& rot)
+Mat4_f Mat4_f::rotation_matrix(Vec4_f &rot)
 {
     return Mat4_f::rotation_matrix(rot.x, rot.y, rot.z);
 }
@@ -262,7 +261,7 @@ Mat4_f Mat4_f::ortho_projection_matrix(float left, float right, float top, float
 Mat4_f Mat4_f::screen_ortho_projection_matrix(float left, float right, float top, float bottom, float near, float far)
 {
     // PERFORMANCE: slow, make mat4_f::ortho_projection_scaled() that projects into screen space directly
-    return (Mat4_f::ortho_projection_matrix(left, right, top, bottom, near, far) * 0.5f) + Mat4_f::translation_matrix({0.5f,0.5f,0.5f});
+    return (Mat4_f::ortho_projection_matrix(left, right, top, bottom, near, far) * 0.5f) + Mat4_f::translation_matrix({0.5f, 0.5f, 0.5f});
 }
 
 Mat4_f Mat4_f::operator*(float scale) const
@@ -275,7 +274,7 @@ Mat4_f Mat4_f::operator*(float scale) const
 Mat4_f Mat4_f::operator-(Mat4_f other) const
 {
     Mat4_f mat;
-    for(int i = 0; i < 16; i++)
+    for (int i = 0; i < 16; i++)
     {
         mat.row_aligned_elems[i] = this->row_aligned_elems[i] - other.row_aligned_elems[i];
     }
@@ -285,18 +284,17 @@ Mat4_f Mat4_f::operator-(Mat4_f other) const
 Mat4_f Mat4_f::operator-() const
 {
     Mat4_f mat;
-    for(int i = 0; i < 16; i++)
+    for (int i = 0; i < 16; i++)
     {
         mat.row_aligned_elems[i] = -this->row_aligned_elems[i];
     }
     return mat;
 }
 
-
 Mat4_f Mat4_f::operator+(Mat4_f other) const
 {
     Mat4_f mat;
-    for(int i = 0; i < 16; i++)
+    for (int i = 0; i < 16; i++)
     {
         mat.row_aligned_elems[i] = this->row_aligned_elems[i] + other.row_aligned_elems[i];
     }
@@ -307,11 +305,11 @@ Mat4_f Mat4_f::operator*(Mat4_f other) const
 {
     // TODO: test
     Mat4_f mat = Mat4_f::zero_matrix();
-    for(int y = 0; y < 4; y++)
+    for (int y = 0; y < 4; y++)
     {
-        for(int x = 0; x < 4; x++)
+        for (int x = 0; x < 4; x++)
         {
-            for(int i = 0; i < 4; i++)
+            for (int i = 0; i < 4; i++)
             {
                 mat.row_aligned_elems[x + 4 * y] += this->row_aligned_elems[y * 4 + i] * other.row_aligned_elems[x + i * 4];
             }
@@ -320,19 +318,21 @@ Mat4_f Mat4_f::operator*(Mat4_f other) const
     return mat;
 }
 
-Mat4_f Mat4_f::perspective_projection_matrix(float fov, float aspect, float near, float far) {
+Mat4_f Mat4_f::perspective_projection_matrix(float fov, float aspect, float near, float far)
+{
     // fov = math.PI / 180.0;
+    assert(abs(aspect - std::numeric_limits<float>::epsilon()) > static_cast<float>(0));
     float yScale = 1.0 / tan(fov * fov / 2);
     float xScale = yScale / aspect;
-    float nearmfar = near - far;
-    Mat4_f mat = Mat4_f::zero_matrix();
-    float members[] = {
-        xScale, 0.f, 0.f, 0.f,
-        0.f, yScale, 0.f, 0.f,
-        0.f, 0.f, (far + near) / nearmfar, -1,
-        0.f, 0.f, 2*far*near / nearmfar, 0
-    };
-    memcpy(&mat.row_aligned_elems, members, 16 * sizeof(float));
+    // float nearmfar = near - far;
+    float const tanHalfFovy = tan(fov / static_cast<float>(2));
+    Mat4_f mat = Mat4_f::unit_matrix();
+    mat.row_aligned_elems[0 * 4 + 0] = static_cast<float>(1) / (aspect * tanHalfFovy);
+    mat.row_aligned_elems[1 * 4 + 1] = static_cast<float>(1) / (tanHalfFovy);
+    mat.row_aligned_elems[2 * 4 + 2] = far / (far - near);
+    mat.row_aligned_elems[2 * 4 + 3] = static_cast<float>(1);
+    mat.row_aligned_elems[3 * 4 + 2] = -(far * near) / (far - near);
+    // memcpy(&mat.row_aligned_elems, members, 16 * sizeof(float));
     return mat;
 }
 

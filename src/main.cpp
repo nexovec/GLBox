@@ -9,6 +9,8 @@
 #include "stdint.h"
 #include "GLFW/glfw3.h"
 #include "glad/glad.h"
+#include <glm/glm.hpp>
+#include <glm/ext.hpp>
 
 #include "super_math.hpp"
 static int startup(const uint32_t width, const uint32_t height);
@@ -43,11 +45,17 @@ static int startup(const uint32_t width, const uint32_t height)
 
     // SECTION: math
     const float ratio = 4 / 3;
-    Mat4_f ortho, translation, rot, MVP;
+    Mat4_f translation, rot;
     // Mat4f ortho, translation, rot, MVP;
     // Mat4f_ortho(&ortho, 600.f * ratio, 0.f, 0.f, 600.f, -1.0f, 1.0f);
     // Mat4f_translation(&translation, 0.f, 0.f, 0.f);
-    ortho = Mat4_f::ortho_projection_matrix(0.f, 600.f * ratio, 0.f, 600.f, 1.0f, -1.0f);
+    // auto ortho = Mat4_f::ortho_projection_matrix(0.f, 600.f * ratio, 0.f, 600.f, 1.0f, -1.0f);
+    // ! FIXME:
+    // RESEARCH: why the f does the following not work?
+    // ortho = Mat4_f::perspective_projection_matrix(90.f, (GLfloat)width / (GLfloat)height, 1.0f, 300.0f);
+    glm::mat4 ortho = glm::ortho(0.f, (GLfloat)width, (GLfloat)height, 0.f, 0.f, 1000.f);
+    // RESEARCH: why the f does the following not work?
+    // glm::mat4 ortho = glm::ortho(0, 800, 600, 0, 0, 1000);
 
     // SECTION: GPU init
     const uint32_t program = gl_buildProgram((char *)"res/shaders/vert.glsl", (char *)"res/shaders/frag.glsl");
@@ -73,9 +81,11 @@ static int startup(const uint32_t width, const uint32_t height)
         // rot = *Mat4f_rotation(&rot, 0.f, 0.f, (float)glfwGetTime());
         // rot = *Mat4f_identity(&rot);
         // MVP = *Mat4f_multiply(&MVP, Mat4f_multiply(&MVP, &ortho, &translation), &rot);
-        rot = Mat4_f::rotation_matrix(0.f, 0.f, (float)glfwGetTime());
-        MVP = ortho * rot;
-        glad_glUniformMatrix4fv(globT_loc, 1, GL_FALSE, MVP.row_aligned_elems);
+        // rot = Mat4_f::rotation_matrix(0.f, 0.f, (float)glfwGetTime());
+        // MVP = ortho * (Mat4_f::unit_matrix() * (1/2)) *rot;
+        glm::mat4 MVP = ortho;
+        //glad_glUniformMatrix4fv(globT_loc, 1, GL_FALSE, MVP.row_aligned_elems);
+        glad_glUniformMatrix4fv(globT_loc, 1, GL_FALSE, glm::value_ptr(MVP));
         glad_glDrawArrays(GL_TRIANGLES, 0, ma->vbo->vCount);
         glfwSwapBuffers(window);
         // menu screen
