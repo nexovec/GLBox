@@ -17,9 +17,9 @@ struct VBLayout
     uint32_t types[16];
     size_t offsets[16];
     uint32_t stride;
+    VBLayout *init();
+    VBLayout *addAttr(uint32_t attrName, uint32_t compCount, uint32_t type);
 };
-VBLayout *VBLayout_init(VBLayout *vbl);
-VBLayout *VBLayout_addAttr(VBLayout *vbl, uint32_t attrName, uint32_t compCount, uint32_t type);
 struct VBO
 {
     uint32_t id;
@@ -49,5 +49,5 @@ MeshArray *MeshArray_packVBO(MeshArray *ma);
 
 uint32_t getMeshArrayVCount(MeshArray *arr);
 
-typedef struct BarChart;
+struct BarChart;
 MeshArray *makeBasicMeshArray(uint32_t pos_loc, uint32_t color_loc, BarChart* barchart);

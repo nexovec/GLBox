@@ -1,4 +1,4 @@
-#include "graphics.hpp"
+#include "graphics/graphics.hpp"
 #include "primitives.hpp"
 #include "graphing/graphing.hpp"
 #include "utils/utils.hpp"
@@ -7,27 +7,27 @@
 #include "stdlib.h"
 #include "stdio.h"
 
-VBLayout *VBLayout_init(VBLayout *vbl)
+VBLayout *VBLayout::init()
 {
-    vbl->attrCount = 0;
-    vbl->stride = 0;
-    vbl->offsets[0] = 0;
-    return vbl;
+    this->attrCount = 0;
+    this->stride = 0;
+    this->offsets[0] = 0;
+    return this;
 }
 // FIXME: only works for float
-VBLayout *VBLayout_addAttr(VBLayout *vbl, uint32_t attrName, uint32_t compCount, uint32_t type)
+VBLayout *VBLayout::addAttr(uint32_t attrName, uint32_t compCount, uint32_t type)
 {
     // TODO: guards for sizes in debug
-    uint32_t i = vbl->attrCount++;
-    vbl->attrNames[i] = attrName;
-    vbl->compCounts[i] = compCount;
-    vbl->types[i] = type;
+    uint32_t i = this->attrCount++;
+    this->attrNames[i] = attrName;
+    this->compCounts[i] = compCount;
+    this->types[i] = type;
     if (i)
-        vbl->offsets[i] = vbl->offsets[i - 1] + vbl->compCounts[i - 1] * sizeof(float);
+        this->offsets[i] = this->offsets[i - 1] + this->compCounts[i - 1] * sizeof(float);
     if (i == 1)
-        assert(vbl->offsets[i] == 12);
-    vbl->stride += compCount * sizeof(float);
-    return vbl;
+        assert(this->offsets[i] == 12);
+    this->stride += compCount * sizeof(float);
+    return this;
 }
 VBO *VBO_init(VBO *vbo, VBLayout *layout)
 {
@@ -90,14 +90,15 @@ MeshArray *makeBasicMeshArray(uint32_t pos_loc, uint32_t color_loc, BarChart *ba
     glad_glBindVertexArray(vao);
     // FIXME: leaks
     VBLayout *vbl = (VBLayout *)malloc(sizeof(VBLayout));
-    VBLayout_init(vbl);
-    VBLayout_addAttr(vbl, pos_loc, 3, GL_FLOAT);
-    VBLayout_addAttr(vbl, color_loc, 3, GL_FLOAT);
+    vbl->init();
+    vbl->addAttr(pos_loc, 3, GL_FLOAT);
+    vbl->addAttr(color_loc, 3, GL_FLOAT);
     VBO *vbo;
     // FIXME: leaks
     vbo = (VBO *)malloc(sizeof(VBO));
     VBO_init(vbo, vbl);
     MeshArray *ma = (MeshArray *)malloc(sizeof(MeshArray));
+    assert(ma != nullptr);
     MeshArray_initMeshArray(ma, vbo, 1000);
     size_t meshCount = barchart->numOfEntries + 1;
     Mesh **meshes = meshifyChart(barchart);
