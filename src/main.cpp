@@ -73,7 +73,7 @@ static int startup(const uint32_t width, const uint32_t height)
     // MeshArray *ma = makeBasicMeshArray(pos_loc, color_loc, &barchart);
 
     // TODO: use a constructor
-    BarChartExample currentExample = BarChartExample::BarChartExample();
+    BarChartExample currentExample;
 
     // SECTION: main program loop
     glad_glClearColor(40.f / 255, 44.f / 255, 40.f / 255, 1.0f);

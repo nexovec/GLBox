@@ -1,11 +1,6 @@
 #pragma once
 #include "graphing/graphing.hpp"
-
-// BarChart makeSampleBarChart();
-// struct Example{
-//     // virtual void update() = 0;
-//     void update();
-// };
+#include <iostream>
 
 struct BarChartExample{
     BarChart barChart;

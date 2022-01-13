@@ -5,6 +5,8 @@
 #include "utils/utils.hpp"
 #include "glm/glm.hpp"
 #include "glm/ext.hpp"
+
+#include <string>
 #define ENTRIES 10
 BarChart makeSampleBarChart()
 {
@@ -24,7 +26,7 @@ BarChart makeSampleBarChart()
 BarChartExample::BarChartExample(){
     int width = 800;
     int height = 600;
-    const uint32_t program = gl_buildProgram((char *)"res/shaders/vert.glsl", (char *)"res/shaders/frag.glsl");
+    const uint32_t program = gl_buildProgram("res/shaders/vert.glsl","res/shaders/frag.glsl");
     // TODO: error handle shader runtime
     glad_glUseProgram(program);
 

@@ -6,19 +6,36 @@
 #include "stdlib.h"
 #include "stdint.h"
 #include "glad/glad.h"
+#include <fstream>
+#include <cassert>
+#include <iostream>
 
-char *readStringFromFile(const char *path)
-{
-    FILE *file = fopen(path, "r"); // FIXME: fissile material
-    char *contents = (char *)malloc(1000 * sizeof(char));
-    int i = 0;
-    char character;
-    while ((character = fgetc(file)) != EOF)
-    {
-        contents[i++] = character;
-    }
-    contents[i] = '\0';
-    fclose(file);
+// TODO: test performance
+// char *readStringFromFile(const char *path)
+// {
+//     FILE *file = fopen(path, "r"); // FIXME: fissile material
+//     char *contents = (char *)malloc(1000 * sizeof(char));
+//     int i = 0;
+//     char character;
+    // while ((character = fgetc(file)) != EOF)
+//     {
+//         contents[i++] = character;
+//     }
+//     contents[i] = '\0';
+//     fclose(file);
+//     return contents;
+// }
+char *readStringFromFile(const char *path){
+    FILE *file = fopen(path, "r");
+    fseek(file, 0, SEEK_END);
+    uint32_t size = ftell(file);
+    fseek(file, 0, SEEK_SET);
+    char *contents = (char *)malloc((size)*sizeof(char));
+    assert(contents);
+    uint32_t endChar = fread_s(contents, size, sizeof(char), size, file);
+    // NOTE: This errors if fread read more characters than size
+    assert(size >= endChar + 1);
+    contents[endChar] = '\0';
     return contents;
 }
 void glfw_errCbck(int code, char *err)
@@ -40,10 +57,10 @@ void gl_printGLError(const uint32_t subject, GLenum pname, char *prefixedMessage
         exit(-1);
     }
 }
-const uint32_t gl_buildProgram(char *vertPath, char *fragPath)
+const uint32_t gl_buildProgram(const char * const vertPath, const char * const fragPath)
 {
-    char *vertShaderSource = readStringFromFile("res/shaders/vert.glsl");
-    char *fragShaderSource = readStringFromFile("res/shaders/frag.glsl");
+    char *vertShaderSource = readStringFromFile(vertPath);
+    char *fragShaderSource = readStringFromFile(fragPath);
     const uint32_t vShader = glad_glCreateShader(GL_VERTEX_SHADER);
     const uint32_t fShader = glad_glCreateShader(GL_FRAGMENT_SHADER);
     glad_glShaderSource(vShader, 1, &vertShaderSource, NULL);

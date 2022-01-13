@@ -2,7 +2,7 @@
 workspace 'GLBox'
 startproject "Sandbox"
 configurations {'Debug', 'Release'}
-platforms {'Win32', 'Win64', 'Xbox360'}
+platforms {'Win64'}
 
 outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 group 'Dependencies'
