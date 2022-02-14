@@ -1,10 +1,10 @@
 #pragma once
 #include "stdint.h"
 #include "graphics/graphics.hpp"
-struct BarChart
+struct Bar_Chart
 {
-    uint32_t numOfEntries;
+    uint32_t num_of_entries;
     float *entries;
     int *colors;
-    Mesh **meshifyChart();
+    Mesh **meshify_chart();
 };

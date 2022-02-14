@@ -9,53 +9,46 @@ enum Colors
     COLOR_RED,
     COLOR_GREEN
 };
-struct VBLayout
+struct VB_Layout
 {
-    uint32_t attrCount;
-    uint32_t attrNames[16];
-    uint32_t compCounts[16];
+    uint32_t attr_count;
+    uint32_t attr_names[16];
+    uint32_t comp_counts[16];
     uint32_t types[16];
     size_t offsets[16];
     uint32_t stride;
-    VBLayout *init();
-    VBLayout *addAttr(uint32_t attrName, uint32_t compCount, uint32_t type);
+    VB_Layout();
+    VB_Layout *add_attr(uint32_t attrName, uint32_t compCount, uint32_t type);
 };
 struct VBO
 {
     uint32_t id;
-    VBLayout *layout;
+    VB_Layout *layout;
     float *data;
-    uint32_t vCount;
+    uint32_t v_count;
+    VBO(VB_Layout *layout);
+    void upload_buffer(size_t v_count);
 };
-VBO *VBO_init(VBO *vbo, VBLayout *layout);
-VBO *VBO_uploadBuffer(VBO *vbo, size_t vCount);
 
 struct Mesh
 {
     float *pointer;
-    uint32_t vCount;
+    uint32_t v_count;
 };
 
-struct BarChart;
-struct MeshArray
+struct Bar_Chart;
+struct Mesh_Array
 {
     VBO *vbo;
-    size_t meshCount;
-    size_t maxMeshes;
+    size_t mesh_count;
+    size_t max_meshes;
     Mesh **meshes;
-    MeshArray();
-    MeshArray(MeshArray *other);
-    MeshArray(VBO *vbo, size_t maxMeshes);
-    ~MeshArray();
-    void registerMesh(Mesh *mesh);
-    void packVBO();
-    uint32_t getVCount();
-    static MeshArray makeBasicMeshArray(uint32_t pos_loc, uint32_t color_loc, BarChart *barchart);
+    Mesh_Array();
+    Mesh_Array(Mesh_Array *other);
+    Mesh_Array(VBO *vbo, size_t max_meshes);
+    ~Mesh_Array();
+    void register_mesh(Mesh *mesh);
+    void pack_VBO();
+    uint32_t get_vertex_count();
+    static Mesh_Array make_basic_mesh_array(uint32_t pos_loc, uint32_t color_loc, Bar_Chart *barchart);
 };
-// MeshArray *MeshArray_initMeshArray(MeshArray *ma, VBO *vbo, size_t maxMeshes);
-// MeshArray *MeshArray_registerMesh(MeshArray *ma, Mesh *mesh);
-// MeshArray *MeshArray_packVBO(MeshArray *ma);
-
-uint32_t getMeshArrayVCount(MeshArray *arr);
-
-// MeshArray makeBasicMeshArray(uint32_t pos_loc, uint32_t color_loc, BarChart* barchart);

@@ -11,7 +11,7 @@
 #include <iostream>
 
 // TODO: test performance
-// char *readStringFromFile(const char *path)
+// char *read_file(const char *path)
 // {
 //     FILE *file = fopen(path, "r"); // FIXME: fissile material
 //     char *contents = (char *)malloc(1000 * sizeof(char));
@@ -25,25 +25,29 @@
 //     fclose(file);
 //     return contents;
 // }
-char *readStringFromFile(const char *path)
+char *read_file(const char *path)
 {
     FILE *file = fopen(path, "r");
+    if (file == NULL)
+    {
+        // TODO: do something
+    }
     fseek(file, 0, SEEK_END);
     uint32_t size = ftell(file);
     fseek(file, 0, SEEK_SET);
     char *contents = (char *)malloc((size) * sizeof(char));
     assert(contents);
-    uint32_t endChar = fread_s(contents, size, sizeof(char), size, file);
+    uint32_t end_char = fread_s(contents, size, sizeof(char), size, file);
     // NOTE: This errors if fread read more characters than size
-    assert(size >= endChar + 1);
-    contents[endChar] = '\0';
+    assert(size >= end_char + 1);
+    contents[end_char] = '\0';
     return contents;
 }
-void glfw_errCbck(int code, char *err)
+void glfw_err_callback(int code, char *err)
 {
     fprintf(stderr, "GLFW Error %d: %s\n", code, err);
 }
-void gl_printGLError(const uint32_t subject, GLenum pname, char *prefixedMessage)
+void gl_print_GL_error(const uint32_t subject, GLenum pname, char *prefixedMessage)
 {
     uint32_t result;
     glad_glGetShaderiv(subject, pname, (GLint *)&result);
@@ -58,29 +62,29 @@ void gl_printGLError(const uint32_t subject, GLenum pname, char *prefixedMessage
         exit(-1);
     }
 }
-const uint32_t gl_buildProgram(const char *const vertPath, const char *const fragPath)
+const uint32_t gl_build_program(const char *const vertPath, const char *const fragPath)
 {
-    char *vertShaderSource = readStringFromFile(vertPath);
-    char *fragShaderSource = readStringFromFile(fragPath);
-    const uint32_t vShader = glad_glCreateShader(GL_VERTEX_SHADER);
-    const uint32_t fShader = glad_glCreateShader(GL_FRAGMENT_SHADER);
-    glad_glShaderSource(vShader, 1, &vertShaderSource, NULL);
-    glad_glShaderSource(fShader, 1, &fragShaderSource, NULL);
-    glad_glCompileShader(vShader);
-    glad_glCompileShader(fShader);
-    gl_printGLError(vShader, GL_COMPILE_STATUS, (char *)"Vertex shader Error:");
-    gl_printGLError(fShader, GL_COMPILE_STATUS, (char *)"Fragment shader Error:");
+    char *vert_shader_source = read_file(vertPath);
+    char *fragment_shader_source = read_file(fragPath);
+    const uint32_t v_shader = glad_glCreateShader(GL_VERTEX_SHADER);
+    const uint32_t f_shader = glad_glCreateShader(GL_FRAGMENT_SHADER);
+    glad_glShaderSource(v_shader, 1, &vert_shader_source, NULL);
+    glad_glShaderSource(f_shader, 1, &fragment_shader_source, NULL);
+    glad_glCompileShader(v_shader);
+    glad_glCompileShader(f_shader);
+    gl_print_GL_error(v_shader, GL_COMPILE_STATUS, (char *)"Vertex shader Error:");
+    gl_print_GL_error(f_shader, GL_COMPILE_STATUS, (char *)"Fragment shader Error:");
     const uint32_t program = glad_glCreateProgram();
-    glad_glAttachShader(program, vShader);
-    glad_glAttachShader(program, fShader);
+    glad_glAttachShader(program, v_shader);
+    glad_glAttachShader(program, f_shader);
     glad_glLinkProgram(program);
-    gl_printGLError(program, GL_LINK_STATUS, (char *)"Linking Error:");
-    free(vertShaderSource);
-    free(fragShaderSource);
+    gl_print_GL_error(program, GL_LINK_STATUS, (char *)"Linking Error:");
+    free(vert_shader_source);
+    free(fragment_shader_source);
     return program;
 }
 
-float *concatFloatArrays(float *a, size_t aCount, float *b, size_t bCount = 0)
+float *concat_float_arrays(float *a, size_t aCount, float *b, size_t bCount = 0)
 {
     // FIXME: leaks
     float *res = (float *)malloc(sizeof(float) * (aCount + bCount));
@@ -91,7 +95,7 @@ float *concatFloatArrays(float *a, size_t aCount, float *b, size_t bCount = 0)
     return res;
 }
 
-Vec3f *colorVecFromEnum(Vec3f *colorVec, int col)
+Vec3f *color_vec_from_enum(Vec3f *colorVec, int col)
 {
     switch (col)
     {
@@ -116,7 +120,7 @@ Vec3f *colorVecFromEnum(Vec3f *colorVec, int col)
     }
     return colorVec;
 }
-void printFloatArr(float *arr, int n)
+void print_float_arr(float *arr, int n)
 {
     printf("[");
     for (int i = 0; i < n; i++)

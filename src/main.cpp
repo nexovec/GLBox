@@ -1,4 +1,4 @@
-#define GLFW_INCLUDE_NONE
+// #define GLFW_INCLUDE_NONE
 #include "utils/utils.hpp"
 #include "mymath/mymath.hpp"
 #include "graphics/graphics.hpp"
@@ -28,7 +28,7 @@ int main()
 static int startup(const uint32_t width, const uint32_t height)
 {
     // SECTION: initialize OpenGL
-    glfwSetErrorCallback((GLFWerrorfun)glfw_errCbck);
+    glfwSetErrorCallback((GLFWerrorfun)glfw_err_callback);
     if (!glfwInit())
         return -1;
     glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
@@ -61,7 +61,7 @@ static int startup(const uint32_t width, const uint32_t height)
     // glm::mat4 ortho = glm::ortho(0, 800, 600, 0, 0, 1000);
 
     // SECTION: GPU init
-    // const uint32_t program = gl_buildProgram((char *)"res/shaders/vert.glsl", (char *)"res/shaders/frag.glsl");
+    // const uint32_t program = gl_build_program((char *)"res/shaders/vert.glsl", (char *)"res/shaders/frag.glsl");
     // // TODO: error handle shader runtime
     // glad_glUseProgram(program);
     // const int32_t pos_loc = glad_glGetAttribLocation(program, "pos");
@@ -69,11 +69,11 @@ static int startup(const uint32_t width, const uint32_t height)
     // const int32_t globT_loc = glad_glGetUniformLocation(program, "globT");
 
     // SECTION: data instantiation
-    // BarChart barchart = makeSampleBarChart();
-    // MeshArray *ma = makeBasicMeshArray(pos_loc, color_loc, &barchart);
+    // Bar_Chart barchart = make_sample_bar_chart();
+    // Mesh_Array *ma = make_basic_mesh_array(pos_loc, color_loc, &barchart);
 
     // TODO: use a constructor
-    BarChartExample currentExample;
+    Bar_Chart_Example current_example;
 
     // SECTION: main program loop
     glad_glClearColor(40.f / 255, 44.f / 255, 40.f / 255, 1.0f);
@@ -93,7 +93,7 @@ static int startup(const uint32_t width, const uint32_t height)
         // glm::mat4 MVP = ortho;
         // glad_glUniformMatrix4fv(globT_loc, 1, GL_FALSE, MVP.row_aligned_elems);
         // glad_glUniformMatrix4fv(globT_loc, 1, GL_FALSE, glm::value_ptr(MVP));
-        currentExample.update();
+        current_example.update();
         glfwSwapBuffers(window);
         // menu screen
         glfwMakeContextCurrent(menuWindow);

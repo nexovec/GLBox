@@ -8,26 +8,27 @@
 
 #include <string>
 #define ENTRIES 10
-static BarChart makeSampleBarChart()
+static Bar_Chart make_sample_bar_chart()
 {
-    BarChart res;
-    res.numOfEntries = ENTRIES;
-    res.colors = (int *)malloc((res.numOfEntries + 1) * sizeof(int));
+    Bar_Chart res;
+    res.num_of_entries = ENTRIES;
+    res.colors = (int *)malloc((res.num_of_entries + 1) * sizeof(int));
     uint32_t entries[ENTRIES];
-    // rangeIntSequence(entries,res.numOfEntries,1,1);
-    randIntSequence((int32_t *)entries, res.numOfEntries, 1, 300);
-    res.entries = (float *)malloc(res.numOfEntries * sizeof(float));
-    for (uint32_t i = 0; i < res.numOfEntries; i++)
+    // rangeIntSequence(entries,res.num_of_entries,1,1);
+    randIntSequence((int32_t *)entries, res.num_of_entries, 1, 300);
+    // FIXME: leaks
+    res.entries = (float *)malloc(res.num_of_entries * sizeof(float));
+    for (uint32_t i = 0; i < res.num_of_entries; i++)
         res.entries[i] = (float)entries[i];
-    // printFloatArr(res.entries, ENTRIES);
+    // print_float_arr(res.entries, ENTRIES);
     return res;
 }
 
-BarChartExample::BarChartExample()
+Bar_Chart_Example::Bar_Chart_Example()
 {
     int width = 800;
     int height = 600;
-    const uint32_t program = gl_buildProgram("res/shaders/vert.glsl", "res/shaders/frag.glsl");
+    const uint32_t program = gl_build_program("res/shaders/vert.glsl", "res/shaders/frag.glsl");
     // TODO: error handle shader runtime
     glad_glUseProgram(program);
 
@@ -37,11 +38,11 @@ BarChartExample::BarChartExample()
     glm::mat4 ortho = glm::ortho(0.f, (GLfloat)width, (GLfloat)height, 0.f, 0.f, 1000.f);
     glad_glUniformMatrix4fv(globT_loc, 1, GL_FALSE, glm::value_ptr(ortho));
     // TODO: use data
-    barChart = makeSampleBarChart();
-    ma = MeshArray::makeBasicMeshArray(pos_loc, color_loc, &barChart);
+    barChart = make_sample_bar_chart();
+    ma = Mesh_Array::make_basic_mesh_array(pos_loc, color_loc, &barChart);
 }
-void BarChartExample::update()
+void Bar_Chart_Example::update()
 {
     // TODO:
-    glad_glDrawArrays(GL_TRIANGLES, 0, this->ma.vbo->vCount);
+    glad_glDrawArrays(GL_TRIANGLES, 0, this->ma.vbo->v_count);
 }

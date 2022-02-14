@@ -7,136 +7,135 @@
 #include "stdlib.h"
 #include "stdio.h"
 
-VBLayout *VBLayout::init()
+VB_Layout::VB_Layout()
 {
-    this->attrCount = 0;
+    this->attr_count = 0;
     this->stride = 0;
     this->offsets[0] = 0;
-    return this;
 }
 // FIXME: only works for float
-VBLayout *VBLayout::addAttr(uint32_t attrName, uint32_t compCount, uint32_t type)
+VB_Layout *VB_Layout::add_attr(uint32_t attrName, uint32_t compCount, uint32_t type)
 {
     // TODO: guards for sizes in debug
-    uint32_t i = this->attrCount++;
-    this->attrNames[i] = attrName;
-    this->compCounts[i] = compCount;
+    uint32_t i = this->attr_count++;
+    this->attr_names[i] = attrName;
+    this->comp_counts[i] = compCount;
     this->types[i] = type;
     if (i)
-        this->offsets[i] = this->offsets[i - 1] + this->compCounts[i - 1] * sizeof(float);
+        this->offsets[i] = this->offsets[i - 1] + this->comp_counts[i - 1] * sizeof(float);
     if (i == 1)
         assert(this->offsets[i] == 12);
     this->stride += compCount * sizeof(float);
     return this;
 }
-VBO *VBO_init(VBO *vbo, VBLayout *layout)
-{
-    vbo->layout = layout;
-    return vbo;
-}
-// FIXME: depends on VA state creep and pre-enabled attribute names
-VBO *VBO_uploadBuffer(VBO *vbo, size_t vCount)
-{
-    glad_glGenBuffers(1, &vbo->id);
-    glad_glBindBuffer(GL_ARRAY_BUFFER, vbo->id);
-    glad_glBufferData(GL_ARRAY_BUFFER, vCount * vbo->layout->stride, vbo->data, GL_DYNAMIC_DRAW);
-    for (uint32_t i = 0; i < vbo->layout->attrCount; i++)
-    {
-        glad_glEnableVertexAttribArray(vbo->layout->attrNames[i]);
-        glad_glVertexAttribPointer(vbo->layout->attrNames[i], vbo->layout->compCounts[i], vbo->layout->types[i], GL_FALSE, vbo->layout->stride, (const void *)vbo->layout->offsets[i]);
-    }
-    return vbo;
-}
-MeshArray::MeshArray()
+VBO::VBO(VB_Layout *layout) : layout(layout)
 {
     // FIXME: Don't use C++
 }
-MeshArray::MeshArray(MeshArray *other)
+// FIXME: depends on VA state creep and pre-enabled attribute names
+void VBO::upload_buffer(size_t v_count)
+{
+    glad_glGenBuffers(1, &this->id);
+    glad_glBindBuffer(GL_ARRAY_BUFFER, this->id);
+    glad_glBufferData(GL_ARRAY_BUFFER, v_count * this->layout->stride, this->data, GL_DYNAMIC_DRAW);
+    for (uint32_t i = 0; i < this->layout->attr_count; i++)
+    {
+        glad_glEnableVertexAttribArray(this->layout->attr_names[i]);
+        glad_glVertexAttribPointer(this->layout->attr_names[i], this->layout->comp_counts[i], this->layout->types[i], GL_FALSE, this->layout->stride, (const void *)this->layout->offsets[i]);
+    }
+}
+Mesh_Array::Mesh_Array()
+{
+    // FIXME: Don't use C++
+}
+Mesh_Array::Mesh_Array(Mesh_Array *other)
 {
     this->vbo = other->vbo;
-    this->meshCount = other->meshCount;
-    this->maxMeshes = other->maxMeshes;
+    this->mesh_count = other->mesh_count;
+    this->max_meshes = other->max_meshes;
     this->meshes = other->meshes;
 }
 
-MeshArray::MeshArray(VBO *vbo, size_t maxMeshes)
+Mesh_Array::Mesh_Array(VBO *vbo, size_t max_meshes)
 {
     this->vbo = vbo;
-    this->meshCount = 0;
-    this->maxMeshes = maxMeshes;
+    this->mesh_count = 0;
+    this->max_meshes = max_meshes;
     // FIXME: leaks
-    this->meshes = (Mesh **)calloc(sizeof(Mesh), this->maxMeshes);
+    this->meshes = (Mesh **)calloc(sizeof(Mesh), this->max_meshes);
 }
 
-MeshArray::~MeshArray()
+Mesh_Array::~Mesh_Array()
 {
     // TODO:
     // free(this->meshes);
 }
 
-void MeshArray::registerMesh(Mesh *mesh)
+void Mesh_Array::register_mesh(Mesh *mesh)
 {
-    if (this->maxMeshes == this->meshCount - 1)
+    if (this->max_meshes == this->mesh_count - 1)
     {
-        printf("MeshArray is full");
+        printf("Mesh_Array is full");
         return;
     }
-    this->meshes[this->meshCount++] = mesh;
+    this->meshes[this->mesh_count++] = mesh;
     return;
 }
 
-void MeshArray::packVBO()
+void Mesh_Array::pack_VBO()
 {
     int vCounter = 0;
-    for (int i = 0; i < this->meshCount; i++)
+    for (int i = 0; i < this->mesh_count; i++)
     {
         int v1 = vCounter;
-        int v2 = 6 * (this->meshes[i]->vCount);
+        int v2 = 6 * (this->meshes[i]->v_count);
         // FIXME: leaks BIG TIME
-        this->vbo->data = concatFloatArrays(this->vbo->data, v1, this->meshes[i]->pointer, v2);
+        this->vbo->data = concat_float_arrays(this->vbo->data, v1, this->meshes[i]->pointer, v2);
         vCounter += v2;
     }
-    this->vbo->vCount = this->getVCount();
-    VBO_uploadBuffer(this->vbo, this->vbo->vCount);
+    this->vbo->v_count = this->get_vertex_count();
+    this->vbo->upload_buffer(this->vbo->v_count);
     return;
 }
 
-MeshArray MeshArray::makeBasicMeshArray(uint32_t pos_loc, uint32_t color_loc, BarChart *barchart)
+Mesh_Array Mesh_Array::make_basic_mesh_array(uint32_t pos_loc, uint32_t color_loc, Bar_Chart *barchart)
 {
     uint32_t vao;
     glad_glGenVertexArrays(1, &vao);
     glad_glBindVertexArray(vao);
     // FIXME: leaks
-    VBLayout *vbl = (VBLayout *)malloc(sizeof(VBLayout));
-    vbl->init();
-    vbl->addAttr(pos_loc, 3, GL_FLOAT);
-    vbl->addAttr(color_loc, 3, GL_FLOAT);
-    VBO *vbo;
+    VB_Layout *vbl = new VB_Layout();
+    // VB_Layout *vbl = (VB_Layout *)malloc(sizeof(VB_Layout));
+    // vbl->init();
+    vbl->add_attr(pos_loc, 3, GL_FLOAT);
+    vbl->add_attr(color_loc, 3, GL_FLOAT);
     // FIXME: leaks
-    vbo = (VBO *)malloc(sizeof(VBO));
-    VBO_init(vbo, vbl);
-    // MeshArray *ma = (MeshArray *)malloc(sizeof(MeshArray));
-    MeshArray *ma = new MeshArray(vbo, 1000);
+    VBO *vbo = new VBO(vbl);
+    // vbo = (VBO *)malloc(sizeof(VBO));
+    // VBO_init(vbo, vbl);
+    // vbo->init(vbl);
+    // Mesh_Array *ma = (Mesh_Array *)malloc(sizeof(Mesh_Array));
+    Mesh_Array ma = Mesh_Array(vbo, 1000);
     // assert(ma != nullptr);
-    // MeshArray_initMeshArray(ma, vbo, 1000);
-    size_t meshCount = barchart->numOfEntries + 1;
-    Mesh **meshes = barchart->meshifyChart();
-    for (int i = 0; i < meshCount; i++)
-        ma->registerMesh(meshes[i]);
+    // MeshArray_initMeshArray(ma, this, 1000);
+    size_t mesh_count = barchart->num_of_entries + 1;
+    Mesh **meshes = barchart->meshify_chart();
+    for (int i = 0; i < mesh_count; i++)
+        ma.register_mesh(meshes[i]);
     // MeshArray_registerMesh(&ma, meshes[i]);
-    ma->packVBO();
+    ma.pack_VBO();
     // MeshArray_packVBO(&ma);
-    return MeshArray(ma);
+    return ma;
 }
-// uint32_t getMeshArrayVCount(MeshArray *arr)
-uint32_t MeshArray::getVCount()
+// uint32_t getMeshArrayVCount(Mesh_Array *arr)
+uint32_t Mesh_Array::get_vertex_count()
 {
     uint32_t res = 0;
-    for (int i = 0; i < this->meshCount; i++)
+    for (int i = 0; i < this->mesh_count; i++)
     {
         if (this->meshes[i] == 0)
             break;
-        res += this->meshes[i]->vCount;
+        res += this->meshes[i]->v_count;
     }
     return res;
 }
