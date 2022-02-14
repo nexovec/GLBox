@@ -17,7 +17,7 @@
 //     char *contents = (char *)malloc(1000 * sizeof(char));
 //     int i = 0;
 //     char character;
-    // while ((character = fgetc(file)) != EOF)
+// while ((character = fgetc(file)) != EOF)
 //     {
 //         contents[i++] = character;
 //     }
@@ -25,12 +25,13 @@
 //     fclose(file);
 //     return contents;
 // }
-char *readStringFromFile(const char *path){
+char *readStringFromFile(const char *path)
+{
     FILE *file = fopen(path, "r");
     fseek(file, 0, SEEK_END);
     uint32_t size = ftell(file);
     fseek(file, 0, SEEK_SET);
-    char *contents = (char *)malloc((size)*sizeof(char));
+    char *contents = (char *)malloc((size) * sizeof(char));
     assert(contents);
     uint32_t endChar = fread_s(contents, size, sizeof(char), size, file);
     // NOTE: This errors if fread read more characters than size
@@ -57,7 +58,7 @@ void gl_printGLError(const uint32_t subject, GLenum pname, char *prefixedMessage
         exit(-1);
     }
 }
-const uint32_t gl_buildProgram(const char * const vertPath, const char * const fragPath)
+const uint32_t gl_buildProgram(const char *const vertPath, const char *const fragPath)
 {
     char *vertShaderSource = readStringFromFile(vertPath);
     char *fragShaderSource = readStringFromFile(fragPath);

@@ -2,9 +2,10 @@
 #include "graphing/graphing.hpp"
 #include <iostream>
 
-struct BarChartExample{
+struct BarChartExample
+{
     BarChart barChart;
-    MeshArray *ma;
+    MeshArray ma;
     BarChartExample();
     void update();
 };

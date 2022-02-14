@@ -8,7 +8,7 @@
 
 #include <string>
 #define ENTRIES 10
-BarChart makeSampleBarChart()
+static BarChart makeSampleBarChart()
 {
     BarChart res;
     res.numOfEntries = ENTRIES;
@@ -19,14 +19,15 @@ BarChart makeSampleBarChart()
     res.entries = (float *)malloc(res.numOfEntries * sizeof(float));
     for (uint32_t i = 0; i < res.numOfEntries; i++)
         res.entries[i] = (float)entries[i];
-    printFloatArr(res.entries, ENTRIES);
+    // printFloatArr(res.entries, ENTRIES);
     return res;
 }
 
-BarChartExample::BarChartExample(){
+BarChartExample::BarChartExample()
+{
     int width = 800;
     int height = 600;
-    const uint32_t program = gl_buildProgram("res/shaders/vert.glsl","res/shaders/frag.glsl");
+    const uint32_t program = gl_buildProgram("res/shaders/vert.glsl", "res/shaders/frag.glsl");
     // TODO: error handle shader runtime
     glad_glUseProgram(program);
 
@@ -37,9 +38,10 @@ BarChartExample::BarChartExample(){
     glad_glUniformMatrix4fv(globT_loc, 1, GL_FALSE, glm::value_ptr(ortho));
     // TODO: use data
     barChart = makeSampleBarChart();
-    ma = makeBasicMeshArray(pos_loc, color_loc, &barChart);
+    ma = MeshArray::makeBasicMeshArray(pos_loc, color_loc, &barChart);
 }
-void BarChartExample::update(){
+void BarChartExample::update()
+{
     // TODO:
-    glad_glDrawArrays(GL_TRIANGLES, 0, this->ma->vbo->vCount);
+    glad_glDrawArrays(GL_TRIANGLES, 0, this->ma.vbo->vCount);
 }

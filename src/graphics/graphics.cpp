@@ -47,43 +47,61 @@ VBO *VBO_uploadBuffer(VBO *vbo, size_t vCount)
     }
     return vbo;
 }
-
-MeshArray *MeshArray_initMeshArray(MeshArray *ma, VBO *vbo, size_t maxMeshes)
+MeshArray::MeshArray()
 {
-    ma->vbo = vbo;
-    ma->meshCount = 0;
-    ma->maxMeshes = maxMeshes;
-    //FIXME: leaks
-    ma->meshes = (Mesh **)calloc(sizeof(Mesh), ma->maxMeshes);
-    return ma;
+    // FIXME: Don't use C++
+}
+MeshArray::MeshArray(MeshArray *other)
+{
+    this->vbo = other->vbo;
+    this->meshCount = other->meshCount;
+    this->maxMeshes = other->maxMeshes;
+    this->meshes = other->meshes;
 }
 
-MeshArray *MeshArray_registerMesh(MeshArray *ma, Mesh *mesh)
+MeshArray::MeshArray(VBO *vbo, size_t maxMeshes)
 {
-    if (ma->maxMeshes == ma->meshCount - 1)
+    this->vbo = vbo;
+    this->meshCount = 0;
+    this->maxMeshes = maxMeshes;
+    // FIXME: leaks
+    this->meshes = (Mesh **)calloc(sizeof(Mesh), this->maxMeshes);
+}
+
+MeshArray::~MeshArray()
+{
+    // TODO:
+    // free(this->meshes);
+}
+
+void MeshArray::registerMesh(Mesh *mesh)
+{
+    if (this->maxMeshes == this->meshCount - 1)
     {
         printf("MeshArray is full");
-        return ma;
+        return;
     }
-    ma->meshes[ma->meshCount++] = mesh;
-    return ma;
+    this->meshes[this->meshCount++] = mesh;
+    return;
 }
-MeshArray *MeshArray_packVBO(MeshArray *ma)
+
+void MeshArray::packVBO()
 {
     int vCounter = 0;
-    for (int i = 0; i < ma->meshCount; i++)
+    for (int i = 0; i < this->meshCount; i++)
     {
         int v1 = vCounter;
-        int v2 = 6 * (ma->meshes[i]->vCount);
+        int v2 = 6 * (this->meshes[i]->vCount);
         // FIXME: leaks BIG TIME
-        ma->vbo->data = concatFloatArrays(ma->vbo->data, v1, ma->meshes[i]->pointer, v2);
+        this->vbo->data = concatFloatArrays(this->vbo->data, v1, this->meshes[i]->pointer, v2);
         vCounter += v2;
     }
-    ma->vbo->vCount = getMeshArrayVCount(ma);
-    VBO_uploadBuffer(ma->vbo, ma->vbo->vCount);
-    return ma;
+    this->vbo->vCount = this->getVCount();
+    VBO_uploadBuffer(this->vbo, this->vbo->vCount);
+    return;
 }
-MeshArray *makeBasicMeshArray(uint32_t pos_loc, uint32_t color_loc, BarChart *barchart)
+
+MeshArray MeshArray::makeBasicMeshArray(uint32_t pos_loc, uint32_t color_loc, BarChart *barchart)
 {
     uint32_t vao;
     glad_glGenVertexArrays(1, &vao);
@@ -97,24 +115,28 @@ MeshArray *makeBasicMeshArray(uint32_t pos_loc, uint32_t color_loc, BarChart *ba
     // FIXME: leaks
     vbo = (VBO *)malloc(sizeof(VBO));
     VBO_init(vbo, vbl);
-    MeshArray *ma = (MeshArray *)malloc(sizeof(MeshArray));
-    assert(ma != nullptr);
-    MeshArray_initMeshArray(ma, vbo, 1000);
+    // MeshArray *ma = (MeshArray *)malloc(sizeof(MeshArray));
+    MeshArray *ma = new MeshArray(vbo, 1000);
+    // assert(ma != nullptr);
+    // MeshArray_initMeshArray(ma, vbo, 1000);
     size_t meshCount = barchart->numOfEntries + 1;
-    Mesh **meshes = meshifyChart(barchart);
+    Mesh **meshes = barchart->meshifyChart();
     for (int i = 0; i < meshCount; i++)
-        MeshArray_registerMesh(ma, meshes[i]);
-    MeshArray_packVBO(ma);
-    return ma;
+        ma->registerMesh(meshes[i]);
+    // MeshArray_registerMesh(&ma, meshes[i]);
+    ma->packVBO();
+    // MeshArray_packVBO(&ma);
+    return MeshArray(ma);
 }
-uint32_t getMeshArrayVCount(MeshArray *arr)
+// uint32_t getMeshArrayVCount(MeshArray *arr)
+uint32_t MeshArray::getVCount()
 {
     uint32_t res = 0;
-    for (int i = 0; i < arr->meshCount; i++)
+    for (int i = 0; i < this->meshCount; i++)
     {
-        if (arr->meshes[i] == 0)
+        if (this->meshes[i] == 0)
             break;
-        res += arr->meshes[i]->vCount;
+        res += this->meshes[i]->vCount;
     }
     return res;
 }

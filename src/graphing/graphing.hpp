@@ -6,5 +6,5 @@ struct BarChart
     uint32_t numOfEntries;
     float *entries;
     int *colors;
+    Mesh **meshifyChart();
 };
-Mesh ** meshifyChart(BarChart *chart);

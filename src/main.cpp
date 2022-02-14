@@ -46,8 +46,8 @@ static int startup(const uint32_t width, const uint32_t height)
     gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
 
     // SECTION: math
-    //const float ratio = 4 / 3;
-    //Mat4_f translation, rot;
+    // const float ratio = 4 / 3;
+    // Mat4_f translation, rot;
     // Mat4f ortho, translation, rot, MVP;
     // Mat4f_ortho(&ortho, 600.f * ratio, 0.f, 0.f, 600.f, -1.0f, 1.0f);
     // Mat4f_translation(&translation, 0.f, 0.f, 0.f);
@@ -91,7 +91,7 @@ static int startup(const uint32_t width, const uint32_t height)
         // rot = Mat4_f::rotation_matrix(0.f, 0.f, (float)glfwGetTime());
         // MVP = ortho * (Mat4_f::unit_matrix() * (1/2)) *rot;
         // glm::mat4 MVP = ortho;
-        //glad_glUniformMatrix4fv(globT_loc, 1, GL_FALSE, MVP.row_aligned_elems);
+        // glad_glUniformMatrix4fv(globT_loc, 1, GL_FALSE, MVP.row_aligned_elems);
         // glad_glUniformMatrix4fv(globT_loc, 1, GL_FALSE, glm::value_ptr(MVP));
         currentExample.update();
         glfwSwapBuffers(window);

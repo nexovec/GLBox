@@ -36,18 +36,26 @@ struct Mesh
     uint32_t vCount;
 };
 
+struct BarChart;
 struct MeshArray
 {
     VBO *vbo;
     size_t meshCount;
     size_t maxMeshes;
     Mesh **meshes;
+    MeshArray();
+    MeshArray(MeshArray *other);
+    MeshArray(VBO *vbo, size_t maxMeshes);
+    ~MeshArray();
+    void registerMesh(Mesh *mesh);
+    void packVBO();
+    uint32_t getVCount();
+    static MeshArray makeBasicMeshArray(uint32_t pos_loc, uint32_t color_loc, BarChart *barchart);
 };
-MeshArray *MeshArray_initMeshArray(MeshArray *ma, VBO *vbo, size_t maxMeshes);
-MeshArray *MeshArray_registerMesh(MeshArray *ma, Mesh *mesh);
-MeshArray *MeshArray_packVBO(MeshArray *ma);
+// MeshArray *MeshArray_initMeshArray(MeshArray *ma, VBO *vbo, size_t maxMeshes);
+// MeshArray *MeshArray_registerMesh(MeshArray *ma, Mesh *mesh);
+// MeshArray *MeshArray_packVBO(MeshArray *ma);
 
 uint32_t getMeshArrayVCount(MeshArray *arr);
 
-struct BarChart;
-MeshArray *makeBasicMeshArray(uint32_t pos_loc, uint32_t color_loc, BarChart* barchart);
+// MeshArray makeBasicMeshArray(uint32_t pos_loc, uint32_t color_loc, BarChart* barchart);
