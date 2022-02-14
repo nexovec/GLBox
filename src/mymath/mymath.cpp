@@ -1,3 +1,4 @@
+#include "pch.hpp"
 #include "mymath.hpp"
 #include "stdlib.h"
 #include "stdio.h"

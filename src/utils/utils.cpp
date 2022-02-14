@@ -1,4 +1,5 @@
 #define _CRT_SECURE_NO_WARNINGS
+#include "pch.hpp"
 #include "utils.hpp"
 #include "mymath/mymath.hpp"
 #include "graphics/graphics.hpp"

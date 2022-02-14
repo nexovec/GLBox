@@ -13,7 +13,7 @@ project 'Sandbox'
 kind 'ConsoleApp'
 language 'C++'
 cppdialect 'C++20'
-pchheader "pch.h"
+-- pchheader "pch.hpp"
 targetdir 'bin/%{cfg.buildcfg}'
 includedirs {'./src', "vendor/glm", './vendor/glad/include', './vendor/glfw/include'}
 links {

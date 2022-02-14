@@ -1,3 +1,4 @@
+#include "pch.hpp"
 #include "stdlib.h"
 #include "examples/examples.hpp"
 #include "graphing/graphing.hpp"

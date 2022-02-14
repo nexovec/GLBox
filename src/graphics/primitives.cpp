@@ -1,3 +1,4 @@
+#include "pch.hpp"
 #include "graphics.hpp"
 #include "mymath/mymath.hpp"
 #include "utils/utils.hpp"

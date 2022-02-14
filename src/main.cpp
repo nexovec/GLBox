@@ -1,4 +1,5 @@
 // #define GLFW_INCLUDE_NONE
+#include "pch.hpp"
 #include "utils/utils.hpp"
 #include "mymath/mymath.hpp"
 #include "graphics/graphics.hpp"
@@ -77,6 +78,7 @@ static int startup(const uint32_t width, const uint32_t height)
 
     // SECTION: main program loop
     glad_glClearColor(40.f / 255, 44.f / 255, 40.f / 255, 1.0f);
+
     while (glfwWindowShouldClose(window) == GLFW_FALSE)
     {
         glfwPollEvents();

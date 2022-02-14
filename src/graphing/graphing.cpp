@@ -1,3 +1,4 @@
+#include "pch.hpp"
 #include "graphing.hpp"
 #include "graphics/graphics.hpp"
 #include "graphics/primitives.hpp"
