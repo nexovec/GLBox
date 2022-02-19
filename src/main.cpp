@@ -13,98 +13,59 @@
 #include <glm/glm.hpp>
 #include <glm/ext.hpp>
 
-#include "super_math.hpp"
-static int startup(const uint32_t width, const uint32_t height);
+#include "super_math/super_math.hpp"
+static int startup(int argc, char *argv[]);
 #ifdef GLBOX_RUN_TESTS
 #include "tests.h"
 #endif
 
-int main()
+static int width = 800;
+static int height = 600;
+static bool running = true;
+
+int main(int argc, char *argv[])
 {
 #ifdef GLBOX_RUN_TESTS
     runTests();
 #endif
-    return startup(800, 600);
+    return startup(argc, argv);
 }
-static int startup(const uint32_t width, const uint32_t height)
-{
-    // SECTION: initialize OpenGL
-    glfwSetErrorCallback((GLFWerrorfun)glfw_err_callback);
-    if (!glfwInit())
-        return -1;
-    glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
-    GLFWwindow *window = glfwCreateWindow(width, height, "GLBox 0.0.1 dev", NULL, NULL);
-    glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
-    GLFWwindow *menuWindow = glfwCreateWindow(300, height, "Menu", NULL, NULL);
-    if (!(window && menuWindow))
-        return -1;
-    const GLFWvidmode *v = glfwGetVideoMode(glfwGetPrimaryMonitor());
-    int centerW = v->width / 2 - width / 2, centerH = v->height / 2 - height / 2;
-    glfwSetWindowPos(window, centerW, centerH);
-    glfwSetWindowPos(menuWindow, centerW - 50 - 300, centerH - 10);
 
+static int startup(int argc, char *argv[])
+{
+
+    glfwInitHint(GLFW_VERSION_MAJOR, 4);
+    glfwInitHint(GLFW_VERSION_MINOR, 6);
+    if (!glfwInit())
+    {
+        printf("Couldn't initialize glfw.");
+        return -1;
+    }
+    glfwSetErrorCallback((GLFWerrorfun)glfw_err_callback);
+    GLFWwindow *window = glfwCreateWindow(width, height, "GLBox v0.0.1", NULL, NULL);
+    if (window == nullptr)
+    {
+        printf("Couldn't create a window.");
+        return -1;
+    }
     glfwMakeContextCurrent(window);
     gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
+    glClearColor(40.f / 255, 44.f / 255, 40.f / 255, 1.0f);
 
-    // SECTION: math
-    // const float ratio = 4 / 3;
-    // Mat4_f translation, rot;
-    // Mat4f ortho, translation, rot, MVP;
-    // Mat4f_ortho(&ortho, 600.f * ratio, 0.f, 0.f, 600.f, -1.0f, 1.0f);
-    // Mat4f_translation(&translation, 0.f, 0.f, 0.f);
-    // auto ortho = Mat4_f::ortho_projection_matrix(0.f, 600.f * ratio, 0.f, 600.f, 1.0f, -1.0f);
-    // ! FIXME:
-    // RESEARCH: why the f does the following not work?
-    // Mat4_f ortho = Mat4_f::perspective_projection_matrix(80.f, (GLfloat)width / (GLfloat)height, 0.f, 1000.0f);
-    // glm::mat4 ortho = glm::perspective(80.f, (GLfloat)width / (GLfloat)height, 0.f, 1000.0f);
-    // glm::mat4 ortho = glm::ortho(0.f, (GLfloat)width, (GLfloat)height, 0.f, 0.f, 1000.f);
-    // RESEARCH: why the f does the following not work?
-    // glm::mat4 ortho = glm::ortho(0, 800, 600, 0, 0, 1000);
+    Bar_Chart_Example example_1 = Bar_Chart_Example();
+    Example *current_example = &example_1;
 
-    // SECTION: GPU init
-    // const uint32_t program = gl_build_program((char *)"res/shaders/vert.glsl", (char *)"res/shaders/frag.glsl");
-    // // TODO: error handle shader runtime
-    // glad_glUseProgram(program);
-    // const int32_t pos_loc = glad_glGetAttribLocation(program, "pos");
-    // const int32_t color_loc = glad_glGetAttribLocation(program, "color");
-    // const int32_t globT_loc = glad_glGetUniformLocation(program, "globT");
-
-    // SECTION: data instantiation
-    // Bar_Chart barchart = make_sample_bar_chart();
-    // Mesh_Array *ma = make_basic_mesh_array(pos_loc, color_loc, &barchart);
-
-    // TODO: use a constructor
-    Bar_Chart_Example current_example;
-
-    // SECTION: main program loop
-    glad_glClearColor(40.f / 255, 44.f / 255, 40.f / 255, 1.0f);
-
-    while (glfwWindowShouldClose(window) == GLFW_FALSE)
+    while (running)
     {
         glfwPollEvents();
-        // canvas screen
-        glfwMakeContextCurrent(window);
-        glad_glClear(GL_COLOR_BUFFER_BIT);
-        if (glfwGetKey(window, GLFW_KEY_ESCAPE))
-            glfwSetWindowShouldClose(window, GLFW_TRUE);
-        // rot = *Mat4f_rotation(&rot, 0.f, 0.f, (float)glfwGetTime());
-        // rot = *Mat4f_identity(&rot);
-        // MVP = *Mat4f_multiply(&MVP, Mat4f_multiply(&MVP, &ortho, &translation), &rot);
-        // rot = Mat4_f::rotation_matrix(0.f, 0.f, (float)glfwGetTime());
-        // MVP = ortho * (Mat4_f::unit_matrix() * (1/2)) *rot;
-        // glm::mat4 MVP = ortho;
-        // glad_glUniformMatrix4fv(globT_loc, 1, GL_FALSE, MVP.row_aligned_elems);
-        // glad_glUniformMatrix4fv(globT_loc, 1, GL_FALSE, glm::value_ptr(MVP));
-        current_example.update();
+        // code goes here
+        glClear(GL_COLOR_BUFFER_BIT | GL_STENCIL_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        current_example->update();
         glfwSwapBuffers(window);
-        // menu screen
-        glfwMakeContextCurrent(menuWindow);
-        glad_glClearColor(40.f / 255, 44.f / 255, 40.f / 255, 1.0f);
-        if (glfwGetKey(menuWindow, GLFW_KEY_ESCAPE))
-            glfwSetWindowShouldClose(window, GLFW_TRUE);
-        glad_glClear(GL_COLOR_BUFFER_BIT);
-        glfwSwapBuffers(menuWindow);
-        continue;
+        if (glfwWindowShouldClose(window) == GLFW_TRUE)
+        {
+            running = false;
+        }
     }
     return 0;
 }

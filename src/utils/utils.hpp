@@ -7,7 +7,7 @@ char *read_file(char *path);
 
 void glfw_err_callback(int code, char *err);
 
-void gl_print_GL_error(const uint32_t subject, GLenum pname, char *prefixedMessage);
+void utils_print_GL_error(const uint32_t subject, GLenum pname, char *prefixedMessage);
 // const uint32_t gl_build_program(char *vertPath, char *fragPath);
 const uint32_t gl_build_program(const char * const vertPath, const char * const fragPath);
 

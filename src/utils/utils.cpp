@@ -48,16 +48,16 @@ void glfw_err_callback(int code, char *err)
 {
     fprintf(stderr, "GLFW Error %d: %s\n", code, err);
 }
-void gl_print_GL_error(const uint32_t subject, GLenum pname, char *prefixedMessage)
+void utils_print_GL_error(const uint32_t subject, GLenum pname, char *prefixedMessage)
 {
     uint32_t result;
-    glad_glGetShaderiv(subject, pname, (GLint *)&result);
+    glGetShaderiv(subject, pname, (GLint *)&result);
     if (!result)
     {
         uint32_t maxLength;
-        glad_glGetShaderiv(subject, GL_INFO_LOG_LENGTH, (GLint *)&maxLength);
+        glGetShaderiv(subject, GL_INFO_LOG_LENGTH, (GLint *)&maxLength);
         char *message = (char *)malloc(maxLength * sizeof(char));
-        glad_glGetShaderInfoLog(subject, maxLength, (GLint *)&maxLength, message);
+        glGetShaderInfoLog(subject, maxLength, (GLint *)&maxLength, message);
         fprintf(stderr, "%s\n%s\n", prefixedMessage, message);
         free(message);
         exit(-1);
@@ -69,17 +69,17 @@ const uint32_t gl_build_program(const char *const vertPath, const char *const fr
     char *fragment_shader_source = read_file(fragPath);
     const uint32_t v_shader = glad_glCreateShader(GL_VERTEX_SHADER);
     const uint32_t f_shader = glad_glCreateShader(GL_FRAGMENT_SHADER);
-    glad_glShaderSource(v_shader, 1, &vert_shader_source, NULL);
-    glad_glShaderSource(f_shader, 1, &fragment_shader_source, NULL);
-    glad_glCompileShader(v_shader);
-    glad_glCompileShader(f_shader);
-    gl_print_GL_error(v_shader, GL_COMPILE_STATUS, (char *)"Vertex shader Error:");
-    gl_print_GL_error(f_shader, GL_COMPILE_STATUS, (char *)"Fragment shader Error:");
-    const uint32_t program = glad_glCreateProgram();
-    glad_glAttachShader(program, v_shader);
-    glad_glAttachShader(program, f_shader);
-    glad_glLinkProgram(program);
-    gl_print_GL_error(program, GL_LINK_STATUS, (char *)"Linking Error:");
+    glShaderSource(v_shader, 1, &vert_shader_source, NULL);
+    glShaderSource(f_shader, 1, &fragment_shader_source, NULL);
+    glCompileShader(v_shader);
+    glCompileShader(f_shader);
+    utils_print_GL_error(v_shader, GL_COMPILE_STATUS, (char *)"Vertex shader Error:");
+    utils_print_GL_error(f_shader, GL_COMPILE_STATUS, (char *)"Fragment shader Error:");
+    const uint32_t program = glCreateProgram();
+    glAttachShader(program, v_shader);
+    glAttachShader(program, f_shader);
+    glLinkProgram(program);
+    utils_print_GL_error(program, GL_LINK_STATUS, (char *)"Linking Error:");
     free(vert_shader_source);
     free(fragment_shader_source);
     return program;
