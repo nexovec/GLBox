@@ -1,4 +1,4 @@
-#version 430
+#version 450
 out vec3 out_color;
 uniform mat4 globT;
 in vec3 pos;

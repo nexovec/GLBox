@@ -11,17 +11,24 @@ Example_Data_Container::Example_Data_Container()
     // FIXME: magic numbers EVERYWHERE
     this->positions = (float *)malloc(9 * sizeof(float));
     this->colors = (float *)malloc(9 * sizeof(float));
-
-    float p[] = {
-        0.5f, 0.0f, 0.0f,
-        0.0f, 0.5f, 0.0f,
-        0.0f, 0.0f, 0.5f,
-    };
-    memcpy(this->positions, p, 9 * sizeof(float));
-    for (int i = 0; i < 9; i++)
+    if (this->positions == 0 || this->colors == 0)
     {
-        colors[i] = 1.0f;
+        std::cout << "Bad Alloc!" << std::endl;
+        __debugbreak();
+        std::terminate();
     }
+
+    float p1[] = {
+        -0.5f, -0.5f, 0.0f,
+        0.5f, -0.5f, 0.0f,
+        0.0f, 0.5f, 0.f};
+    memcpy(this->positions, p1, 9 * sizeof(float));
+
+    float p2[] = {
+        0.8f, 0.0f, 0.0f,
+        0.0f, 0.8f, 0.0f,
+        0.0f, 0.0f, 0.8f};
+    memcpy(this->colors, p2, 9 * sizeof(float));
     std::cout << "data container spawned." << std::endl;
 }
 Example_Data_Container::~Example_Data_Container()
@@ -46,7 +53,7 @@ New_Vbo_Example::New_Vbo_Example()
     glBindVertexArray(this->vao);
 
     // NOTE: I don't know what the difference between offset in glAttribPointer and glBindVertexBuffer is
-    glVertexAttribPointer(this->pos_loc, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), 0);
+    glVertexAttribPointer(this->pos_loc, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (const void *)0);
     glVertexAttribBinding(this->pos_loc, this->position_buffer_binding_point);
 
     // FIXME: crashes:
@@ -54,7 +61,7 @@ New_Vbo_Example::New_Vbo_Example()
     // glEnableVertexAttribArray(0);
 
     // glVertexAttribPointer(this->color_loc, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (const void *)(3 * sizeof(float)));
-    glVertexAttribPointer(this->color_loc, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), 0);
+    glVertexAttribPointer(this->color_loc, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (const void *)(0));
     glVertexAttribBinding(this->color_loc, this->color_buffer_binding_point);
 
     // FIXME: crashes:
@@ -65,7 +72,7 @@ New_Vbo_Example::New_Vbo_Example()
     glGenBuffers(1, &this->vbo_indices.colors);
 
     // FIXME: magic numbers
-    glBindBuffer(GL_ARRAY_BUFFER,this->vbo_indices.positions);
+    glBindBuffer(GL_ARRAY_BUFFER, this->vbo_indices.positions);
     glBufferData(GL_ARRAY_BUFFER, 9 * sizeof(float), this->data_containers.positions, GL_STATIC_DRAW);
 
     glBindBuffer(GL_ARRAY_BUFFER, this->vbo_indices.colors);
@@ -73,7 +80,7 @@ New_Vbo_Example::New_Vbo_Example()
 }
 void New_Vbo_Example::update()
 {
-    glDisable(GL_CULL_FACE);
+    // glDisable(GL_CULL_FACE);
     glBindVertexBuffer(this->position_buffer_binding_point, this->vbo_indices.positions, 0, 3 * sizeof(float));
     glBindVertexBuffer(this->color_buffer_binding_point, this->vbo_indices.colors, 0, 3 * sizeof(float));
 
