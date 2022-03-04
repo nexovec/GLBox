@@ -40,6 +40,8 @@ New_Vbo_Example::New_Vbo_Example()
     this->pos_loc = glGetAttribLocation(this->program, "pos");
     this->color_loc = glGetAttribLocation(this->program, "color");
 
+    // std::cout << this->color_loc << std::endl;
+
     glGenVertexArrays(1, &this->vao);
     glBindVertexArray(this->vao);
 
@@ -47,7 +49,6 @@ New_Vbo_Example::New_Vbo_Example()
     glVertexAttribPointer(this->pos_loc, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), 0);
     glVertexAttribBinding(this->pos_loc, this->position_buffer_binding_point);
 
-    // FIXME: crashes:
     // FIXME: crashes:
     glEnableVertexAttribArray(this->pos_loc);
     // glEnableVertexAttribArray(0);
@@ -58,7 +59,7 @@ New_Vbo_Example::New_Vbo_Example()
 
     // FIXME: crashes:
     glEnableVertexAttribArray(this->color_loc);
-    // glEnableVertexAttribArray(0);
+    // glEnableVertexAttribArray(1);
 
     glGenBuffers(1, &this->vbo_indices.positions);
     glGenBuffers(1, &this->vbo_indices.colors);
