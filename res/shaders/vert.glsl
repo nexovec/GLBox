@@ -1,10 +1,14 @@
 #version 450
-out vec3 out_color;
-uniform mat4 globT;
-in vec3 pos;
-in vec3 color;
+
+in vec3 i_pos;
+in vec3 i_color;
+
+out vec3 o_color;
+
+uniform mat4 i_globT;
+
 void main(){
-    out_color = vec3(color);
-    // gl_Position = globT*vec4(pos,1.0);
-    gl_Position = vec4(pos,1.0);
+    o_color = vec3(i_color);
+    // gl_Position = i_globT*vec4(i_pos,1.0);
+    gl_Position = vec4(i_pos,1.0);
 }

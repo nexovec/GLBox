@@ -1,11 +1,11 @@
 #include "examples/examples.hpp"
+#include <vector>
 #include <cstdint>
 struct Example_Data_Container
 {
-    float *positions;
-    float *colors;
+    std::vector<float> positions;
+    std::vector<float> colors;
     Example_Data_Container();
-    ~Example_Data_Container();
 };
 struct Vbo_Indices
 {

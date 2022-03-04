@@ -8,46 +8,26 @@
 
 Example_Data_Container::Example_Data_Container()
 {
-    // FIXME: magic numbers EVERYWHERE
-    this->positions = (float *)malloc(9 * sizeof(float));
-    this->colors = (float *)malloc(9 * sizeof(float));
-    if (this->positions == 0 || this->colors == 0)
-    {
-        std::cout << "Bad Alloc!" << std::endl;
-        __debugbreak();
-        std::terminate();
-    }
-
-    float p1[] = {
+    float pos_data[] = {
         -0.5f, -0.5f, 0.0f,
         0.5f, -0.5f, 0.0f,
         0.0f, 0.5f, 0.f};
-    memcpy(this->positions, p1, 9 * sizeof(float));
-
-    float p2[] = {
+    float color_data[] = {
         0.8f, 0.0f, 0.0f,
         0.0f, 0.8f, 0.0f,
         0.0f, 0.0f, 0.8f};
-    memcpy(this->colors, p2, 9 * sizeof(float));
-    std::cout << "data container spawned." << std::endl;
-}
-Example_Data_Container::~Example_Data_Container()
-{
-    free(this->positions);
-    free(this->colors);
-    std::cout << "data container Destructed." << std::endl;
+    this->positions = std::vector<float>(pos_data, pos_data + (sizeof(pos_data) / sizeof(pos_data[0])));
+    this->colors = std::vector<float>(color_data, color_data + (sizeof(color_data) / sizeof(color_data[0])));
 }
 New_Vbo_Example::New_Vbo_Example()
 {
     this->program = gl_build_program(PATH_TO_VEREX_SHADER, PATH_TO_FRAGMENT_SHADER);
-    this->matrix_loc = glGetUniformLocation(this->program, "globT");
+    this->matrix_loc = glGetUniformLocation(this->program, "i_globT");
     glm::mat4 ortho = glm::ortho(0.f, (GLfloat)WIDTH, (GLfloat)HEIGHT, 0.f, 0.f, 1000.f);
     glUniformMatrix4fv(this->matrix_loc, 1, false, glm::value_ptr(ortho));
 
-    this->pos_loc = glGetAttribLocation(this->program, "pos");
-    this->color_loc = glGetAttribLocation(this->program, "color");
-
-    // std::cout << this->color_loc << std::endl;
+    this->pos_loc = glGetAttribLocation(this->program, "i_pos");
+    this->color_loc = glGetAttribLocation(this->program, "i_color");
 
     glGenVertexArrays(1, &this->vao);
     glBindVertexArray(this->vao);
@@ -55,28 +35,21 @@ New_Vbo_Example::New_Vbo_Example()
     // NOTE: I don't know what the difference between offset in glAttribPointer and glBindVertexBuffer is
     glVertexAttribPointer(this->pos_loc, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (const void *)0);
     glVertexAttribBinding(this->pos_loc, this->position_buffer_binding_point);
-
-    // FIXME: crashes:
     glEnableVertexAttribArray(this->pos_loc);
-    // glEnableVertexAttribArray(0);
 
-    // glVertexAttribPointer(this->color_loc, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (const void *)(3 * sizeof(float)));
     glVertexAttribPointer(this->color_loc, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (const void *)(0));
     glVertexAttribBinding(this->color_loc, this->color_buffer_binding_point);
-
-    // FIXME: crashes:
     glEnableVertexAttribArray(this->color_loc);
-    // glEnableVertexAttribArray(1);
 
     glGenBuffers(1, &this->vbo_indices.positions);
     glGenBuffers(1, &this->vbo_indices.colors);
 
     // FIXME: magic numbers
     glBindBuffer(GL_ARRAY_BUFFER, this->vbo_indices.positions);
-    glBufferData(GL_ARRAY_BUFFER, 9 * sizeof(float), this->data_containers.positions, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, 9 * sizeof(float), this->data_containers.positions.data(), GL_STATIC_DRAW);
 
     glBindBuffer(GL_ARRAY_BUFFER, this->vbo_indices.colors);
-    glBufferData(GL_ARRAY_BUFFER, 9 * sizeof(float), this->data_containers.colors, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, 9 * sizeof(float), this->data_containers.colors.data(), GL_STATIC_DRAW);
 }
 void New_Vbo_Example::update()
 {
