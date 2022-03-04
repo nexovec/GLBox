@@ -8,16 +8,14 @@
 
 Example_Data_Container::Example_Data_Container()
 {
-    float pos_data[] = {
+    this->positions = {
         -0.5f, -0.5f, 0.0f,
         0.5f, -0.5f, 0.0f,
         0.0f, 0.5f, 0.f};
-    float color_data[] = {
+    this->colors = std::vector<float>{
         0.8f, 0.0f, 0.0f,
         0.0f, 0.8f, 0.0f,
         0.0f, 0.0f, 0.8f};
-    this->positions = std::vector<float>(pos_data, pos_data + (sizeof(pos_data) / sizeof(pos_data[0])));
-    this->colors = std::vector<float>(color_data, color_data + (sizeof(color_data) / sizeof(color_data[0])));
 }
 New_Vbo_Example::New_Vbo_Example()
 {
