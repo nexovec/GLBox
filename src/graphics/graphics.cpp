@@ -34,7 +34,7 @@ VBO::VBO(VB_Layout *layout) : layout(layout)
     // FIXME: Don't use C++
 }
 // FIXME: depends on VA state creep and pre-enabled attribute names
-void VBO::upload_buffer(size_t v_count)
+void VBO::upload_buffer()
 {
     glad_glGenBuffers(1, &this->id);
     glad_glBindBuffer(GL_ARRAY_BUFFER, this->id);
@@ -95,7 +95,7 @@ void Mesh_Array::pack_VBO()
         vCounter += v2;
     }
     this->vbo->v_count = this->get_vertex_count();
-    this->vbo->upload_buffer(this->vbo->v_count);
+    this->vbo->upload_buffer();
     return;
 }
 

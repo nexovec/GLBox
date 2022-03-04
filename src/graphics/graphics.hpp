@@ -27,7 +27,7 @@ struct VBO
     float *data;
     uint32_t v_count;
     VBO(VB_Layout *layout);
-    void upload_buffer(size_t v_count);
+    void upload_buffer();
 };
 
 struct Mesh

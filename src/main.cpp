@@ -4,6 +4,7 @@
 #include "mymath/mymath.hpp"
 #include "graphics/graphics.hpp"
 #include "examples/examples.hpp"
+#include "examples/new_vbo.hpp"
 #include "tests.hpp"
 #include "stdio.h"
 #include "stdlib.h"
@@ -11,6 +12,7 @@
 #include "GLFW/glfw3.h"
 #include "glad/glad.h"
 #include <glm/glm.hpp>
+#include <memory>
 #include <glm/ext.hpp>
 
 #include "super_math/super_math.hpp"
@@ -19,8 +21,6 @@ static int startup(int argc, char *argv[]);
 #include "tests.h"
 #endif
 
-static int width = 800;
-static int height = 600;
 static bool running = true;
 
 int main(int argc, char *argv[])
@@ -42,7 +42,7 @@ static int startup(int argc, char *argv[])
         return -1;
     }
     glfwSetErrorCallback((GLFWerrorfun)glfw_err_callback);
-    GLFWwindow *window = glfwCreateWindow(width, height, "GLBox v0.0.1", NULL, NULL);
+    GLFWwindow *window = glfwCreateWindow(WIDTH, HEIGHT, "GLBox v0.0.1", NULL, NULL);
     if (window == nullptr)
     {
         printf("Couldn't create a window.");
@@ -52,15 +52,18 @@ static int startup(int argc, char *argv[])
     gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
     glClearColor(40.f / 255, 44.f / 255, 40.f / 255, 1.0f);
 
-    Bar_Chart_Example example_1 = Bar_Chart_Example();
-    Example *current_example = &example_1;
+    // Bar_Chart_Example example_1 = Bar_Chart_Example();
+    // Example *current_example = &example_1;
+
+    std::unique_ptr<New_Vbo_Example> new_vbo_rendering_example = std::make_unique<New_Vbo_Example>();
 
     while (running)
     {
         glfwPollEvents();
         // code goes here
         glClear(GL_COLOR_BUFFER_BIT | GL_STENCIL_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        current_example->update();
+        // current_example->update();
+        new_vbo_rendering_example->update();
         glfwSwapBuffers(window);
         if (glfwWindowShouldClose(window) == GLFW_TRUE)
         {

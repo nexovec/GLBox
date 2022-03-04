@@ -29,7 +29,7 @@ Bar_Chart_Example::Bar_Chart_Example()
 {
     int width = 800;
     int height = 600;
-    const uint32_t program = gl_build_program("res/shaders/vert.glsl", "res/shaders/frag.glsl");
+    const uint32_t program = gl_build_program(PATH_TO_VEREX_SHADER, PATH_TO_FRAGMENT_SHADER);
     // TODO: error handle shader runtime
     glad_glUseProgram(program);
 

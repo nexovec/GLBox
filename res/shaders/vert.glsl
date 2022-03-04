@@ -5,5 +5,6 @@ in vec3 pos;
 in vec3 color;
 void main(){
     out_color = vec3(color);
-    gl_Position = globT*vec4(pos,1.0);
+    // gl_Position = globT*vec4(pos,1.0);
+    gl_Position = vec4(pos,1.0);
 }
