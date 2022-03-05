@@ -31,14 +31,15 @@ New_Vbo_Example::New_Vbo_Example()
 
     glGenVertexArrays(1, &this->vao);
     glBindVertexArray(this->vao);
-    glBindVertexBuffer(this->position_buffer_binding_point, this->vbo_indices.positions, 0, 3 * sizeof(float));
 
+    glBindVertexBuffer(this->position_buffer_binding_point, this->vbo_indices.positions, 0, 3 * sizeof(float));
     glVertexAttribFormat(this->pos_loc, 3, GL_FLOAT, false, 0);
-    glVertexAttribBinding(this->pos_loc, this->position_buffer_binding_point);
+    // glVertexAttribBinding(this->pos_loc, this->position_buffer_binding_point);
     glEnableVertexAttribArray(this->pos_loc);
 
     glBindVertexBuffer(this->color_buffer_binding_point, this->vbo_indices.colors, 0, 3 * sizeof(float));
-    glVertexAttribBinding(this->color_loc, this->color_buffer_binding_point);
+    glVertexAttribFormat(this->color_loc, 3, GL_FLOAT, false, 0);
+    // glVertexAttribBinding(this->color_loc, this->color_buffer_binding_point);
     glEnableVertexAttribArray(this->color_loc);
 
     glBindBuffer(GL_ARRAY_BUFFER, this->vbo_indices.positions);
@@ -54,6 +55,7 @@ void New_Vbo_Example::update()
     // glBindVertexBuffer(this->color_buffer_binding_point, this->vbo_indices.colors, 0, 3 * sizeof(float));
 
     // FIXME: magic number 3
+    glUseProgram(this->program);
     glDrawArrays(GL_TRIANGLES, 0, 3);
     // glDrawElements()
     // std::cout << "updating" << std::endl;

@@ -3,7 +3,7 @@
 in vec3 i_pos;
 in vec3 i_color;
 
-layout(location = 0) out vec3 o_color;
+layout(location = 0)out vec3 o_color;
 
 uniform mat4 i_globT;
 
