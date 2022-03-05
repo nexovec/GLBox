@@ -26,23 +26,20 @@ New_Vbo_Example::New_Vbo_Example()
 
     this->pos_loc = glGetAttribLocation(this->program, "i_pos");
     this->color_loc = glGetAttribLocation(this->program, "i_color");
+    glGenBuffers(1, &this->vbo_indices.positions);
+    glGenBuffers(1, &this->vbo_indices.colors);
 
     glGenVertexArrays(1, &this->vao);
     glBindVertexArray(this->vao);
+    glBindVertexBuffer(this->position_buffer_binding_point, this->vbo_indices.positions, 0, 3 * sizeof(float));
 
-    // glVertexArrayAttribFormat(this->vao, this->pos_loc, 3, GL_FLOAT, false, 0);
-    // NOTE: I don't know what the difference between offset in glAttribPointer and glBindVertexBuffer is
-    glVertexAttribPointer(this->pos_loc, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (const void *)0);
+    glVertexAttribFormat(this->pos_loc, 3, GL_FLOAT, false, 0);
     glVertexAttribBinding(this->pos_loc, this->position_buffer_binding_point);
     glEnableVertexAttribArray(this->pos_loc);
 
-    // glVertexArrayAttribFormat(this->vao, this->color_loc, 3, GL_FLOAT, false, 0);
-    glVertexAttribPointer(this->color_loc, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (const void *)(0 * sizeof(float)));
+    glBindVertexBuffer(this->color_buffer_binding_point, this->vbo_indices.colors, 0, 3 * sizeof(float));
     glVertexAttribBinding(this->color_loc, this->color_buffer_binding_point);
     glEnableVertexAttribArray(this->color_loc);
-
-    glGenBuffers(1, &this->vbo_indices.positions);
-    glGenBuffers(1, &this->vbo_indices.colors);
 
     glBindBuffer(GL_ARRAY_BUFFER, this->vbo_indices.positions);
     glBufferData(GL_ARRAY_BUFFER, this->data_containers.positions.size() * sizeof(float), this->data_containers.positions.data(), GL_STATIC_DRAW);
@@ -53,8 +50,8 @@ New_Vbo_Example::New_Vbo_Example()
 void New_Vbo_Example::update()
 {
     // glDisable(GL_CULL_FACE);
-    glBindVertexBuffer(this->position_buffer_binding_point, this->vbo_indices.positions, 0, 3 * sizeof(float));
-    glBindVertexBuffer(this->color_buffer_binding_point, this->vbo_indices.colors, 0, 3 * sizeof(float));
+    // glBindVertexBuffer(this->position_buffer_binding_point, this->vbo_indices.positions, 0, 3 * sizeof(float));
+    // glBindVertexBuffer(this->color_buffer_binding_point, this->vbo_indices.colors, 0, 3 * sizeof(float));
 
     // FIXME: magic number 3
     glDrawArrays(GL_TRIANGLES, 0, 3);
