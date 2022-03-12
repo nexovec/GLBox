@@ -59,7 +59,9 @@ static int startup(int argc, char *argv[])
     std::unique_ptr<New_Vbo_Example> new_vbo_rendering_example = std::make_unique<New_Vbo_Example>();
     std::unique_ptr<New_Ebo_Example> new_ebo_rendering_example = std::make_unique<New_Ebo_Example>();
 
-    Example *current_example = new_vbo_rendering_example.get();
+    Example *current_example;
+    current_example = new_vbo_rendering_example.get();
+    // current_example = new_ebo_rendering_example.get();
 
     while (running)
     {

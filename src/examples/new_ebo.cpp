@@ -4,6 +4,8 @@
 #include "glad/glad.h"
 #include "glm/ext.hpp"
 #include <vector>
+#include <iostream>
+#include <chrono>
 #include "stdlib.h"
 
 Ebo_Data_Container::Ebo_Data_Container()
@@ -74,6 +76,7 @@ New_Ebo_Example::New_Ebo_Example()
     glBindBuffer(GL_ARRAY_BUFFER, this->vbo_indices.colors);
     glBufferData(GL_ARRAY_BUFFER, this->data_containers.colors.size() * sizeof(float), this->data_containers.colors.data(), GL_STATIC_DRAW);
 
+    // FIXME:
     glVertexArrayElementBuffer(this->vao, this->vbo_indices.elements);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->vbo_indices.elements);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, this->data_containers.elements.size() * sizeof(float), this->data_containers.elements.data(), GL_STATIC_DRAW);
@@ -84,15 +87,19 @@ New_Ebo_Example::New_Ebo_Example()
 }
 void New_Ebo_Example::update()
 {
-    glDisable(GL_CULL_FACE);
+    // glDisable(GL_CULL_FACE);
 
     glBindVertexArray(this->vao);
     glBindVertexBuffer(this->position_buffer_binding_point, this->vbo_indices.positions, 0, 3 * sizeof(float));
     glBindVertexBuffer(this->color_buffer_binding_point, this->vbo_indices.colors, 0, 3 * sizeof(float));
 
     glUseProgram(this->program);
-    glDrawArrays(GL_TRIANGLES, 0, this->data_containers.positions.size());
-    // glDrawArrays(GL_TRIANGLES, 0, this->data_containers.elements.size());
+    glm::mat4 ortho = glm::ortho(0.f, (GLfloat)WIDTH, (GLfloat)HEIGHT, 0.f, 0.f, 1000.f);
+    glm::mat4 view = glm::identity<glm::mat4>();
+    glm::mat4 rotated = glm::rotate<glm::f32>(view, (glm::f32)((double)std::chrono::high_resolution_clock::now().time_since_epoch().count() / 1000000000.0), glm::vec3(0.f, 1.f, 1.f));
+    glUniformMatrix4fv(this->matrix_loc, 1, false, glm::value_ptr(rotated));
+    // glDrawArrays(GL_TRIANGLES, 0, this->data_containers.positions.size());
+    glDrawArrays(GL_TRIANGLES, 0, this->data_containers.elements.size());
     // glDrawElements()
     // std::cout << "updating" << std::endl;
 }

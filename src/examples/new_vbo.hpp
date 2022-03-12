@@ -6,7 +6,6 @@ struct Vbo_Data_Container : Example_Data_Container
 {
     std::vector<float> positions;
     std::vector<float> colors;
-    std::vector<float> elements;
     Vbo_Data_Container();
 };
 

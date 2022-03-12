@@ -146,7 +146,7 @@ New_Vbo_Example::New_Vbo_Example()
 }
 void New_Vbo_Example::update()
 {
-    glDisable(GL_CULL_FACE);
+    // glDisable(GL_CULL_FACE);
 
     glBindVertexArray(this->vao);
     glBindVertexBuffer(this->position_buffer_binding_point, this->vbo_indices.positions, 0, 3 * sizeof(float));
@@ -157,7 +157,7 @@ void New_Vbo_Example::update()
     glm::mat4 view = glm::identity<glm::mat4>();
     glm::mat4 rotated = glm::rotate<glm::f32>(view, (glm::f32)((double)std::chrono::high_resolution_clock::now().time_since_epoch().count() / 1000000000.0), glm::vec3(0.f, 1.f, 1.f));
     glUniformMatrix4fv(this->matrix_loc, 1, false, glm::value_ptr(rotated));
-    glDrawArrays(GL_TRIANGLES, 0, this->data_containers.positions.size());
+    glDrawArrays(GL_TRIANGLES, 0, this->data_containers.positions.size()/3);
     // glDrawElements()
     // std::cout << "updating" << std::endl;
 }
