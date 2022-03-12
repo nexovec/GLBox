@@ -1,113 +1,47 @@
 #include "pch.hpp"
-#include "examples/new_vbo.hpp"
+#include "examples/new_ebo.hpp"
 #include "utils/utils.hpp"
 #include "glad/glad.h"
 #include "glm/ext.hpp"
 #include <vector>
 #include "stdlib.h"
 
-Vbo_Data_Container::Vbo_Data_Container()
+Ebo_Data_Container::Ebo_Data_Container()
 {
     this->positions = {
-        0.0f, 0.0f, 0.0f,
-        0.5f, 0.0f, 0.0f,
-        0.5f, 0.0f, 0.5f,
-
-        0.5f, 0.0f, 0.5f,
-        0.0f, 0.0f, 0.5f,
-        0.0f, 0.0f, 0.0f,
-
-        0.5f, 0.5f, 0.0f,
-        0.5f, 0.5f, 0.5f,
-        0.0f, 0.5f, 0.0f,
-
-        0.0f, 0.5f, 0.5f,
-        0.0f, 0.5f, 0.0f,
-        0.5f, 0.5f, 0.5f,
-
-        0.0f, 0.0f, 0.5f,
-        0.5f, 0.0f, 0.5f,
-        0.5f, 0.5f, 0.5f,
-
-        0.0f, 0.5f, 0.5f,
-        0.0f, 0.0f, 0.5f,
-        0.5f, 0.5f, 0.5f,
-
-        0.0f, 0.5f, 0.0f,
-        0.0f, 0.5f, 0.5f,
-        0.0f, 0.0f, 0.0f,
-
-        0.0f, 0.0f, 0.5f,
-        0.0f, 0.0f, 0.0f,
-        0.0f, 0.5f, 0.5f,
-
         0.5f, 0.0f, 0.0f,
         0.5f, 0.5f, 0.0f,
-        0.0f, 0.5f, 0.0f,
-
-        0.0f, 0.0f, 0.0f,
-        0.5f, 0.0f, 0.0f,
-        0.0f, 0.5f, 0.0f,
-
-        0.5f, 0.0f, 0.0f,
-        0.5f, 0.5f, 0.0f,
-        0.5f, 0.5f, 0.5f,
-
         0.5f, 0.0f, 0.5f,
-        0.5f, 0.0f, 0.0f,
         0.5f, 0.5f, 0.5f,
-    };
-    this->colors = {
-        1.0f, 0.0f, 1.0f,
-        1.0f, 0.0f, 1.0f,
-        1.0f, 0.0f, 1.0f,
-
-        1.0f, 0.0f, 1.0f,
-        1.0f, 0.0f, 1.0f,
-        1.0f, 0.0f, 1.0f,
-
-        1.0f, 0.0f, 1.0f,
-        1.0f, 0.0f, 1.0f,
-        1.0f, 0.0f, 1.0f,
-
-        1.0f, 0.0f, 1.0f,
-        1.0f, 0.0f, 1.0f,
-        1.0f, 0.0f, 1.0f,
-
-        1.0f, 0.0f, 1.0f,
-        1.0f, 0.0f, 1.0f,
-        1.0f, 0.0f, 1.0f,
-
-        1.0f, 0.0f, 1.0f,
-        1.0f, 0.0f, 1.0f,
-        1.0f, 0.0f, 1.0f,
-
-        1.0f, 0.0f, 1.0f,
-        1.0f, 0.0f, 1.0f,
-        1.0f, 0.0f, 1.0f,
-
-        1.0f, 0.0f, 1.0f,
-        1.0f, 0.0f, 1.0f,
-        1.0f, 0.0f, 1.0f,
-
-        1.0f, 0.0f, 1.0f,
-        1.0f, 0.0f, 1.0f,
-        1.0f, 0.0f, 1.0f,
-
-        1.0f, 0.0f, 1.0f,
-        1.0f, 0.0f, 1.0f,
-        1.0f, 0.0f, 1.0f,
-
-        1.0f, 0.0f, 1.0f,
-        1.0f, 0.0f, 1.0f,
-        1.0f, 0.0f, 1.0f,
-
-        1.0f, 0.0f, 1.0f,
-        1.0f, 0.0f, 1.0f,
-        1.0f, 0.0f, 1.0f
-    };
+        0.0f, 0.0f, 0.0f,
+        0.0f, 0.5f, 0.0f,
+        0.0f, 0.0f, 0.5f,
+        0.0f, 0.5f, 0.5f
+        };
+    this->colors = std::vector<float>{
+        0.8f, 0.0f, 0.0f,
+        0.0f, 0.8f, 0.0f,
+        0.0f, 0.0f, 0.8f,
+        0.5f, 0.5f, 0.5f,
+        0.5f, 0.3f, 0.5f,
+        1.0f, 0.5f, 0.5f,
+        1.0f, 0.3f, 0.5f,
+        0.5f, 0.8f, 0.5f};
+    this->elements = std::vector<float>{
+        5,1,3,
+        3,7,5,
+        2,4,6,
+        8,6,4,
+        7,3,4,
+        8,7,4,
+        6,8,5,
+        7,5,8,
+        1,2,6,
+        5,1,6,
+        1,2,4,
+        3,1,4};
 }
-New_Vbo_Example::New_Vbo_Example()
+New_Ebo_Example::New_Ebo_Example()
 {
     this->program = gl_build_program(PATH_TO_VEREX_SHADER, PATH_TO_FRAGMENT_SHADER);
     this->matrix_loc = glGetUniformLocation(this->program, "i_globT");
@@ -133,16 +67,22 @@ New_Vbo_Example::New_Vbo_Example()
     // glVertexAttribBinding(this->color_loc, this->color_buffer_binding_point);
     glEnableVertexAttribArray(this->color_loc);
 
+
     glBindBuffer(GL_ARRAY_BUFFER, this->vbo_indices.positions);
     glBufferData(GL_ARRAY_BUFFER, this->data_containers.positions.size() * sizeof(float), this->data_containers.positions.data(), GL_STATIC_DRAW);
 
     glBindBuffer(GL_ARRAY_BUFFER, this->vbo_indices.colors);
     glBufferData(GL_ARRAY_BUFFER, this->data_containers.colors.size() * sizeof(float), this->data_containers.colors.data(), GL_STATIC_DRAW);
 
+    glVertexArrayElementBuffer(this->vao, this->vbo_indices.elements);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->vbo_indices.elements);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, this->data_containers.elements.size() * sizeof(float), this->data_containers.elements.data(), GL_STATIC_DRAW);
+
     // NOTE: not mandatory
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
     glBindVertexArray(0);
 }
-void New_Vbo_Example::update()
+void New_Ebo_Example::update()
 {
     glDisable(GL_CULL_FACE);
 
@@ -152,6 +92,7 @@ void New_Vbo_Example::update()
 
     glUseProgram(this->program);
     glDrawArrays(GL_TRIANGLES, 0, this->data_containers.positions.size());
+    // glDrawArrays(GL_TRIANGLES, 0, this->data_containers.elements.size());
     // glDrawElements()
     // std::cout << "updating" << std::endl;
 }

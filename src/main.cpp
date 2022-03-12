@@ -5,6 +5,7 @@
 #include "graphics/graphics.hpp"
 #include "examples/examples.hpp"
 #include "examples/new_vbo.hpp"
+#include "examples/new_ebo.hpp"
 #include "tests.hpp"
 #include "stdio.h"
 #include "stdlib.h"
@@ -56,14 +57,16 @@ static int startup(int argc, char *argv[])
     // Example *current_example = &example_1;
 
     std::unique_ptr<New_Vbo_Example> new_vbo_rendering_example = std::make_unique<New_Vbo_Example>();
+    std::unique_ptr<New_Ebo_Example> new_ebo_rendering_example = std::make_unique<New_Ebo_Example>();
+
+    Example *current_example = new_vbo_rendering_example.get();
 
     while (running)
     {
         glfwPollEvents();
         // code goes here
         glClear(GL_COLOR_BUFFER_BIT | GL_STENCIL_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        // current_example->update();
-        new_vbo_rendering_example->update();
+        current_example->update();
         glfwSwapBuffers(window);
         if (glfwWindowShouldClose(window) == GLFW_TRUE)
         {
