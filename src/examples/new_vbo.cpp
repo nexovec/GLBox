@@ -4,7 +4,10 @@
 #include "glad/glad.h"
 #include "glm/ext.hpp"
 #include <vector>
+#include <chrono>
+#include <iostream>
 #include "stdlib.h"
+#include "time.h"
 
 Vbo_Data_Container::Vbo_Data_Container()
 {
@@ -111,11 +114,10 @@ New_Vbo_Example::New_Vbo_Example()
 {
     this->program = gl_build_program(PATH_TO_VEREX_SHADER, PATH_TO_FRAGMENT_SHADER);
     this->matrix_loc = glGetUniformLocation(this->program, "i_globT");
-    glm::mat4 ortho = glm::ortho(0.f, (GLfloat)WIDTH, (GLfloat)HEIGHT, 0.f, 0.f, 1000.f);
-    glUniformMatrix4fv(this->matrix_loc, 1, false, glm::value_ptr(ortho));
 
     this->pos_loc = glGetAttribLocation(this->program, "i_pos");
     this->color_loc = glGetAttribLocation(this->program, "i_color");
+
     glGenBuffers(1, &this->vbo_indices.positions);
     glGenBuffers(1, &this->vbo_indices.colors);
     glGenBuffers(1, &this->vbo_indices.elements);
@@ -151,6 +153,10 @@ void New_Vbo_Example::update()
     glBindVertexBuffer(this->color_buffer_binding_point, this->vbo_indices.colors, 0, 3 * sizeof(float));
 
     glUseProgram(this->program);
+    glm::mat4 ortho = glm::ortho(0.f, (GLfloat)WIDTH, (GLfloat)HEIGHT, 0.f, 0.f, 1000.f);
+    glm::mat4 view = glm::identity<glm::mat4>();
+    glm::mat4 rotated = glm::rotate<glm::f32>(view, (glm::f32)((double)std::chrono::high_resolution_clock::now().time_since_epoch().count() / 1000000000.0), glm::vec3(0.f, 1.f, 1.f));
+    glUniformMatrix4fv(this->matrix_loc, 1, false, glm::value_ptr(rotated));
     glDrawArrays(GL_TRIANGLES, 0, this->data_containers.positions.size());
     // glDrawElements()
     // std::cout << "updating" << std::endl;
