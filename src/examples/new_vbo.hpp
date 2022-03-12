@@ -5,12 +5,14 @@ struct Example_Data_Container
 {
     std::vector<float> positions;
     std::vector<float> colors;
+    std::vector<float> elements;
     Example_Data_Container();
 };
 struct Vbo_Indices
 {
     uint32_t positions;
     uint32_t colors;
+    uint32_t elements;
 };
 
 struct New_Vbo_Example : Example

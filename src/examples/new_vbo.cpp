@@ -9,13 +9,28 @@
 Example_Data_Container::Example_Data_Container()
 {
     this->positions = {
-        -0.5f, -0.5f, 0.0f,
-        0.5f, -0.5f, 0.0f,
-        0.0f, 0.5f, 0.f};
+        0.5f, 0.0f, 0.0f,
+        0.5f, 0.5f, 0.0f,
+        0.5f, 0.0f, 0.5f,
+        0.5f, 0.5f, 0.5f,
+        0.0f, 0.0f, 0.0f,
+        0.0f, 0.5f, 0.0f,
+        0.0f, 0.0f, 0.5f,
+        0.0f, 0.5f, 0.5f};
     this->colors = std::vector<float>{
         0.8f, 0.0f, 0.0f,
         0.0f, 0.8f, 0.0f,
-        0.0f, 0.0f, 0.8f};
+        0.0f, 0.0f, 0.8f,
+        0.5f, 0.5f, 0.5f,
+        0.5f, 0.3f, 0.5f,
+        1.0f, 0.5f, 0.5f,
+        1.0f, 0.3f, 0.5f,
+        0.5f, 0.8f, 0.5f};
+    this->elements = std::vector<float>{
+        5, 6, 7,
+        8, 7, 6,
+        1, 2, 3,
+        4, 3, 2};
 }
 New_Vbo_Example::New_Vbo_Example()
 {
@@ -28,6 +43,7 @@ New_Vbo_Example::New_Vbo_Example()
     this->color_loc = glGetAttribLocation(this->program, "i_color");
     glGenBuffers(1, &this->vbo_indices.positions);
     glGenBuffers(1, &this->vbo_indices.colors);
+    glGenBuffers(1, &this->vbo_indices.elements);
 
     glGenVertexArrays(1, &this->vao);
     glBindVertexArray(this->vao);
@@ -47,16 +63,22 @@ New_Vbo_Example::New_Vbo_Example()
 
     glBindBuffer(GL_ARRAY_BUFFER, this->vbo_indices.colors);
     glBufferData(GL_ARRAY_BUFFER, this->data_containers.colors.size() * sizeof(float), this->data_containers.colors.data(), GL_STATIC_DRAW);
+
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->vbo_indices.elements);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, this->data_containers.elements.size() * sizeof(float), this->data_containers.elements.data(), GL_STATIC_DRAW);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 }
 void New_Vbo_Example::update()
 {
-    // glDisable(GL_CULL_FACE);
-    // glBindVertexBuffer(this->position_buffer_binding_point, this->vbo_indices.positions, 0, 3 * sizeof(float));
-    // glBindVertexBuffer(this->color_buffer_binding_point, this->vbo_indices.colors, 0, 3 * sizeof(float));
+    glDisable(GL_CULL_FACE);
 
-    // FIXME: magic number 3
+    glBindBuffer(GL_ARRAY_BUFFER, this->vao);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->vbo_indices.elements);
+    glBindVertexBuffer(this->position_buffer_binding_point, this->vbo_indices.positions, 0, 3 * sizeof(float));
+    glBindVertexBuffer(this->color_buffer_binding_point, this->vbo_indices.colors, 0, 3 * sizeof(float));
+
     glUseProgram(this->program);
-    glDrawArrays(GL_TRIANGLES, 0, 3);
+    glDrawArrays(GL_TRIANGLES, 0, this->data_containers.elements.size());
     // glDrawElements()
     // std::cout << "updating" << std::endl;
 }
