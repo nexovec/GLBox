@@ -61,7 +61,7 @@ static int startup(int argc, char *argv[])
 
     Example *current_example;
     current_example = new_vbo_rendering_example.get();
-    // current_example = new_ebo_rendering_example.get();
+    current_example = new_ebo_rendering_example.get();
 
     while (running)
     {

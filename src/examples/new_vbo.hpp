@@ -1,3 +1,4 @@
+#pragma once
 #include "examples/examples.hpp"
 #include <vector>
 #include <cstdint>
