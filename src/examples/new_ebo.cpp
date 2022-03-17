@@ -88,20 +88,19 @@ void New_Ebo_Example::update()
     glBindVertexBuffer(this->color_buffer_binding_point, this->vao_binding_indices.colors, 0, 3 * sizeof(float));
 
     glUseProgram(this->program);
-    glm::mat4 ortho = glm::ortho(0.f, (GLfloat)WIDTH, (GLfloat)HEIGHT, 0.f, 0.f, 1000.f);
-    glm::mat4 scale = glm::scale(glm::identity<glm::mat4>(), glm::vec3(0.5f, 0.5f, 0.5f));
+    glm::mat4 ortho = glm::ortho(-10.f, (GLfloat)10, (GLfloat)10, -10.f, 1.0f, 1000.f);
+    glm::mat4 scale = glm::scale(glm::identity<glm::mat4>(), glm::vec3(1.f, 1.f, 1.f));
     glm::mat4 translation = glm::translate(glm::identity<glm::mat4>(), glm::vec3(-0.5f, -0.5f, -0.5f));
     double time = (double)std::chrono::high_resolution_clock::now().time_since_epoch().count() / 1000000000.0 - start_time;
     glm::mat4 rotation = glm::rotate(glm::identity<glm::mat4>(), (glm::f32)(time), glm::normalize(glm::vec3(0.f, 1.f, 1.f)));
-    glm::mat4 inverse_translation = glm::translate(glm::identity<glm::mat4>(), glm::vec3(0.5f, 0.f, 20.0f));
-    glm::mat4 final_transform = (inverse_translation * (rotation * (translation * scale)));
+    glm::mat4 inverse_translation = glm::translate(glm::identity<glm::mat4>(), glm::vec3(0.5f, 0.5f, 0.5f));
+    glm::mat4 position_matrix = glm::translate(glm::identity<glm::mat4>(), glm::vec3(0.f, 0.f, -10.f));
+    glm::mat4 final_transform = ortho * (position_matrix * (inverse_translation * (rotation * (translation * scale))));
+    // glm::mat4 final_transform = inverse_translation * (rotation * (translation * scale));
     // final_transform = glm::identity<glm::mat4>();
-    final_transform = rotation;
+    // final_transform = rotation;
 
     glUniformMatrix4fv(this->matrix_loc, 1, false, glm::value_ptr(final_transform));
-    // glDrawArrays(GL_TRIANGLES, 0, this->data_containers.positions.size());
-    // glDrawArrays(GL_TRIANGLES, 0, this->data_containers.elements.size());
     glDrawElements(GL_TRIANGLES, this->data_containers.elements.size(), GL_UNSIGNED_INT, 0);
-    // glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, 0);
     // std::cout << "updating" << std::endl;
 }
