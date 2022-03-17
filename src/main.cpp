@@ -63,6 +63,7 @@ static int startup(int argc, char *argv[])
     current_example = new_vbo_rendering_example.get();
     current_example = new_ebo_rendering_example.get();
 
+    glEnable(GL_DEPTH_TEST);
     while (running)
     {
         glfwPollEvents();

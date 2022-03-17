@@ -18,30 +18,23 @@ Ebo_Data_Container::Ebo_Data_Container()
         0.0f, 0.0f, 0.0f,
         0.0f, 1.0f, 0.0f,
         0.0f, 0.0f, 1.0f,
-        0.0f, 1.0f, 1.0f
-        };
+        0.0f, 1.0f, 1.0f};
     this->colors = std::vector<float>{
         0.8f, 0.0f, 0.0f,
         0.0f, 0.8f, 0.0f,
         0.0f, 0.0f, 0.8f,
-        0.8f, 0.0f, 0.0f,
-        0.0f, 0.8f, 0.0f,
-        1.0f, 0.0f, 0.0f,
-        1.0f, 0.8f, 0.5f,
-        1.0f, 0.8f, 0.8f};
+        0.8f, 0.8f, 0.8f,
+        0.0f, 0.8f, 0.8f,
+        0.8f, 0.8f, 0.0f,
+        0.8f, 0.0f, 0.8f,
+        0.0f, 0.0f, 0.0f};
     this->elements = std::vector<uint32_t>{
-        4,0,2,
-        2,6,4,
-        1,3,5,
-        7,5,3,
-        6,2,3,
-        7,6,3,
-        5,7,4,
-        6,4,7,
-        0,1,5,
-        4,0,5,
-        0,1,3,
-        2,0,3};
+        4, 0, 2, 4, 2, 6,
+        5, 3, 1, 5, 7, 3,
+        7, 2, 3, 7, 6, 2,
+        5, 1, 0, 5, 0, 4,
+        3, 1, 0, 3, 0, 2,
+        7, 5, 4, 7, 4, 6};
 }
 New_Ebo_Example::New_Ebo_Example()
 {
@@ -68,7 +61,6 @@ New_Ebo_Example::New_Ebo_Example()
     glVertexAttribFormat(this->color_loc, 3, GL_FLOAT, false, 0);
     // glVertexAttribBinding(this->color_loc, this->color_buffer_binding_point);
     glEnableVertexAttribArray(this->color_loc);
-
 
     glBindBuffer(GL_ARRAY_BUFFER, this->vao_binding_indices.positions);
     glBufferData(GL_ARRAY_BUFFER, this->data_containers.positions.size() * sizeof(float), this->data_containers.positions.data(), GL_STATIC_DRAW);
@@ -97,12 +89,12 @@ void New_Ebo_Example::update()
 
     glUseProgram(this->program);
     glm::mat4 ortho = glm::ortho(0.f, (GLfloat)WIDTH, (GLfloat)HEIGHT, 0.f, 0.f, 1000.f);
-    glm::mat4 scale = glm::scale(glm::identity<glm::mat4>(), glm::vec3(0.25f, 0.25f, 0.25f));
+    glm::mat4 scale = glm::scale(glm::identity<glm::mat4>(), glm::vec3(0.5f, 0.5f, 0.5f));
     glm::mat4 translation = glm::translate(glm::identity<glm::mat4>(), glm::vec3(-0.5f, -0.5f, -0.5f));
     double time = (double)std::chrono::high_resolution_clock::now().time_since_epoch().count() / 1000000000.0 - start_time;
     glm::mat4 rotation = glm::rotate(glm::identity<glm::mat4>(), (glm::f32)(time), glm::normalize(glm::vec3(0.f, 1.f, 1.f)));
     glm::mat4 inverse_translation = glm::translate(glm::identity<glm::mat4>(), glm::vec3(0.5f, 0.f, 20.0f));
-    glm::mat4 final_transform = ortho * (inverse_translation * (rotation * (translation * scale)));
+    glm::mat4 final_transform = (inverse_translation * (rotation * (translation * scale)));
     // final_transform = glm::identity<glm::mat4>();
     final_transform = rotation;
 
