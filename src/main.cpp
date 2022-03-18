@@ -15,6 +15,7 @@
 #include <glm/glm.hpp>
 #include <memory>
 #include <glm/ext.hpp>
+#include <unordered_map>
 
 #include "super_math/super_math.hpp"
 static int startup(int argc, char *argv[]);
@@ -30,6 +31,34 @@ int main(int argc, char *argv[])
     runTests();
 #endif
     return startup(argc, argv);
+}
+
+static std::unordered_map<int, bool> pressed_key_map;
+
+bool get_key_state(int key)
+{
+    if (pressed_key_map.contains(key))
+        return true;
+    return false;
+}
+
+static void key_callback(GLFWwindow *window, int key, int scancode, int action, int mods)
+{
+    if (action == GLFW_PRESS || action == GLFW_REPEAT)
+        std::cout << key << "\t|\t" << glfwGetKeyScancode(key) << "\t|\t" << (int)'E' << std::endl;
+
+    switch (action)
+    {
+    case GLFW_RELEASE:
+        if (pressed_key_map.contains(key))
+        {
+            pressed_key_map.erase(key);
+        }
+        break;
+    default:
+        pressed_key_map.insert_or_assign(key, true);
+        break;
+    }
 }
 
 static int startup(int argc, char *argv[])
@@ -49,6 +78,7 @@ static int startup(int argc, char *argv[])
         printf("Couldn't create a window.");
         return -1;
     }
+    glfwSetKeyCallback(window, key_callback);
     glfwMakeContextCurrent(window);
     gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
     glClearColor(40.f / 255, 44.f / 255, 40.f / 255, 1.0f);
