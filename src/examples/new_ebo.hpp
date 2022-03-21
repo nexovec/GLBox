@@ -3,7 +3,7 @@
 #include <vector>
 #include <cstdint>
 
-struct Ebo_Data_Container :Example_Data_Container
+struct Ebo_Data_Container : Example_Data_Container
 {
     std::vector<float> positions;
     std::vector<float> colors;

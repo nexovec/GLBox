@@ -6,6 +6,7 @@
 #include "examples/examples.hpp"
 #include "examples/new_vbo.hpp"
 #include "examples/new_ebo.hpp"
+#include "examples/uv_test.hpp"
 #include "tests.hpp"
 #include "stdio.h"
 #include "stdlib.h"
@@ -88,6 +89,7 @@ static int startup(int argc, char *argv[])
 
     std::unique_ptr<New_Vbo_Example> new_vbo_rendering_example = std::make_unique<New_Vbo_Example>();
     std::unique_ptr<New_Ebo_Example> new_ebo_rendering_example = std::make_unique<New_Ebo_Example>();
+    std::unique_ptr<Uv_Test_Example> uv_test_example = std::make_unique<Uv_Test_Example>();
 
     Example *current_example;
     current_example = new_vbo_rendering_example.get();
