@@ -39,11 +39,12 @@ Ebo_Data_Container::Ebo_Data_Container()
         0.0f, 0.0f, 0.0f};
     this->elements = std::vector<uint32_t>{
         4, 0, 2, 4, 2, 6,
-        5, 3, 1, 5, 7, 3,
-        7, 2, 3, 7, 6, 2,
-        5, 1, 0, 5, 0, 4,
-        3, 1, 0, 3, 0, 2,
-        7, 5, 4, 7, 4, 6};
+        3, 5, 1, 3, 7, 5,
+        2, 7, 3, 2, 6, 7,
+        5, 0, 1, 5, 4, 0,
+        2, 3, 0, 0, 3, 1,
+        7, 4, 5, 7, 6, 4
+        };
 }
 New_Ebo_Example::New_Ebo_Example()
 {
@@ -91,8 +92,9 @@ static float cube_scale_factor = 5.0f;
 void New_Ebo_Example::update()
 {
     // glDisable(GL_CULL_FACE);
-    glEnable(GL_CULL_FACE);
     glCullFace(GL_BACK);
+    glEnable(GL_DEPTH_TEST);
+    // glEnable(GL_CULL_FACE);
 
     glBindVertexArray(this->vao);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->vao_binding_indices.elements);
