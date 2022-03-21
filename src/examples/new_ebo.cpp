@@ -9,9 +9,9 @@
 #include "stdlib.h"
 #include "main.h"
 
-Ebo_Data_Container::Ebo_Data_Container()
+void populate_unit_cube_vertex_positions(std::vector<float> &vec)
 {
-    this->positions = {
+    float data[] = {
         1.0f, 0.0f, 0.0f,
         1.0f, 1.0f, 0.0f,
         1.0f, 0.0f, 1.0f,
@@ -20,6 +20,14 @@ Ebo_Data_Container::Ebo_Data_Container()
         0.0f, 1.0f, 0.0f,
         0.0f, 0.0f, 1.0f,
         0.0f, 1.0f, 1.0f};
+    for (const float &thing : data)
+    {
+        vec.push_back(thing);
+    }
+}
+Ebo_Data_Container::Ebo_Data_Container()
+{
+    populate_unit_cube_vertex_positions(this->positions);
     this->colors = std::vector<float>{
         0.8f, 0.0f, 0.0f,
         0.0f, 0.8f, 0.0f,
@@ -83,6 +91,8 @@ static float cube_scale_factor = 5.0f;
 void New_Ebo_Example::update()
 {
     // glDisable(GL_CULL_FACE);
+    glEnable(GL_CULL_FACE);
+    glCullFace(GL_BACK);
 
     glBindVertexArray(this->vao);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->vao_binding_indices.elements);

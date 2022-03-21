@@ -49,39 +49,3 @@ Mesh *make_quad_mesh(Vec3f *pos, Vec3f *size, int col)
     res->v_count = 6;
     return res;
 }
-
-// temporary
-Mesh *make_simple_triangle_mesh()
-{
-    // FIXME: leaks
-    Mesh *res = (Mesh *)malloc(sizeof(Mesh));
-    // FIXME: naming
-    Vec3f first = {20, 20, 0};
-    Vec3f second = {350, 350, 0};
-    Vec3f third = {20, 350, 0};
-    Vec3f fourth = {0.8f, 0.4f, 0.2f};
-    res->pointer = make_triangle_arr(&first, &second, &third, &fourth);
-    return res;
-}
-// temporary
-Mesh *make_simple_quad_mesh()
-{
-    Mesh *m1;
-    Mesh *m2;
-    {
-        Vec3f first = {20, 20, 0};
-        Vec3f second = {350, 350, 0};
-        m1 = make_quad_mesh(&first, &second, COLOR_BLUE);
-    }
-    {
-        Vec3f first = {400, 400, 0};
-        Vec3f second = {100, 100, 0};
-        m2 = make_quad_mesh(&first, &second, COLOR_BLACK);
-    }
-    // FIXME: leaks
-    Mesh *res = (Mesh *)malloc(sizeof(Mesh *));
-    // FIXME: magic numbers
-    res->pointer = concat_float_arrays(m1->pointer, 6 * m1->v_count, m2->pointer, 6 * m2->v_count);
-    res->v_count = m1->v_count + m2->v_count;
-    return res;
-}

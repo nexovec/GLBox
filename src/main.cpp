@@ -94,6 +94,7 @@ static int startup(int argc, char *argv[])
     current_example = new_ebo_rendering_example.get();
 
     glEnable(GL_DEPTH_TEST);
+    glEnable(GL_CULL_FACE);
     while (running)
     {
         glfwPollEvents();
