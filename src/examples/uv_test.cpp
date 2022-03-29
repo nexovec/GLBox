@@ -8,6 +8,11 @@
 #include <chrono>
 #include "stdlib.h"
 #include "main.h"
+#define STB_IMAGE_IMPLEMENTATION
+#include "stb_image.h"
+
+#define FRAGMENT_PATH "res/shaders/frag_uv.glsl"
+#define VERTEX_PATH "res/shaders/vert_uv.glsl"
 
 // TODO: integrate, change
 Uv_Test_Data_Container::Uv_Test_Data_Container()
@@ -22,6 +27,16 @@ Uv_Test_Data_Container::Uv_Test_Data_Container()
         0.8f, 0.8f, 0.0f,
         0.8f, 0.0f, 0.8f,
         0.0f, 0.0f, 0.0f};
+    this->tex_coords = std::vector<float>{
+        // TODO: probably change this
+        0.0f, 1.0f,
+        1.0f, 0.0f,
+        1.0f, 0.0f,
+        1.0f, 1.0f,
+        1.0f, 0.0f,
+        0.0f, 1.0f,
+        0.0f, 1.0f,
+        0.0f, 0.0f};
     this->elements = std::vector<uint32_t>{
         4, 0, 2, 4, 2, 6,
         3, 5, 1, 3, 7, 5,
@@ -32,13 +47,14 @@ Uv_Test_Data_Container::Uv_Test_Data_Container()
 }
 Uv_Test_Example::Uv_Test_Example()
 {
-    this->program = gl_build_program(PATH_TO_VEREX_SHADER, PATH_TO_FRAGMENT_SHADER);
+    this->program = gl_build_program(VERTEX_PATH, FRAGMENT_PATH);
     this->matrix_loc = glGetUniformLocation(this->program, "i_globT");
     glm::mat4 ortho = glm::ortho(0.f, (GLfloat)WIDTH, (GLfloat)HEIGHT, 0.f, 0.f, 1000.f);
     glUniformMatrix4fv(this->matrix_loc, 1, false, glm::value_ptr(ortho));
 
     this->pos_loc = glGetAttribLocation(this->program, "i_pos");
     this->color_loc = glGetAttribLocation(this->program, "i_color");
+    this->tex_coord_loc = glGetAttribLocation(this->program, "i_tex_coord");
     glGenBuffers(1, &this->vao_binding_indices.positions);
     glGenBuffers(1, &this->vao_binding_indices.colors);
     glGenBuffers(1, &this->vao_binding_indices.elements);
@@ -59,6 +75,21 @@ Uv_Test_Example::Uv_Test_Example()
 
     glBindBuffer(GL_ARRAY_BUFFER, this->vao_binding_indices.colors);
     glBufferData(GL_ARRAY_BUFFER, this->data_containers.colors.size() * sizeof(float), this->data_containers.colors.data(), GL_STATIC_DRAW);
+
+    int width, height, nrChannels;
+    unsigned char *data = stbi_load("container.jpg", &width, &height, &nrChannels, 0);
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+    unsigned int texture;
+    glGenTextures(1, &texture);
+    glBindTexture(GL_TEXTURE_2D, texture);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+    glGenerateMipmap(GL_TEXTURE_2D);
+    stbi_image_free(data);
+    // TODO: get rid of color attribute
+    // FIXME: cube is black, probably texture not bound correctly
 
     glVertexArrayElementBuffer(this->vao, this->vao_binding_indices.elements);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->vao_binding_indices.elements);

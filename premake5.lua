@@ -16,7 +16,7 @@ cppdialect 'C++20'
 warnings "Extra"
 -- pchheader "pch.hpp"
 targetdir 'bin/%{cfg.buildcfg}'
-includedirs {'./src', "vendor/glm", './vendor/glad/include', './vendor/glfw/include'}
+includedirs {'./src', "vendor/glm", './vendor/glad/include', './vendor/glfw/include', "./vendor/stb"}
 links {
     'GLFW',
     'Glad'

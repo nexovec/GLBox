@@ -94,6 +94,7 @@ static int startup(int argc, char *argv[])
     Example *current_example;
     current_example = new_vbo_rendering_example.get();
     current_example = new_ebo_rendering_example.get();
+    current_example = uv_test_example.get();
 
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_CULL_FACE);
