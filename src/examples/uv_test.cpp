@@ -84,9 +84,8 @@ Uv_Test_Example::Uv_Test_Example()
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-    unsigned int texture;
-    glGenTextures(1, &texture);
-    glBindTexture(GL_TEXTURE_2D, texture);
+    glGenTextures(1, &this->texture_id);
+    glBindTexture(GL_TEXTURE_2D, this->texture_id);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
     glGenerateMipmap(GL_TEXTURE_2D);
     stbi_image_free(data);
@@ -149,6 +148,8 @@ void Uv_Test_Example::update()
     glm::mat4 final_transform_m = ortho_m * camera_position_m * cube_position * cube_inverse_origin_translation * cube_scale * cube_rotation * cube_origin_translation;
 
     glUniformMatrix4fv(this->matrix_loc, 1, false, glm::value_ptr(final_transform_m));
+    glBindTextureUnit(0, this->texture_id);
+
     glDrawElements(GL_TRIANGLES, this->data_containers.elements.size(), GL_UNSIGNED_INT, 0);
 
     // NOTE: not mandatory
