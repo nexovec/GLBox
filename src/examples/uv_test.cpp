@@ -13,6 +13,8 @@
 
 #define FRAGMENT_PATH "res/shaders/frag_uv.glsl"
 #define VERTEX_PATH "res/shaders/vert_uv.glsl"
+#define PATH_TO_CUBE_TEXTURE "res/images/wood.jpg"
+// #define PATH_TO_CUBE_TEXTURE "res/images/bunga.jpg"
 
 // TODO: integrate, change
 Uv_Test_Data_Container::Uv_Test_Data_Container()
@@ -77,7 +79,7 @@ Uv_Test_Example::Uv_Test_Example()
     glBufferData(GL_ARRAY_BUFFER, this->data_containers.colors.size() * sizeof(float), this->data_containers.colors.data(), GL_STATIC_DRAW);
 
     int width, height, nrChannels;
-    unsigned char *data = stbi_load("res/images/wood.jpg", &width, &height, &nrChannels, 0);
+    unsigned char *data = stbi_load(PATH_TO_CUBE_TEXTURE, &width, &height, &nrChannels, 0);
 
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
