@@ -1,4 +1,4 @@
-#include "examples/new_ebo.hpp"
+#include "examples/dsa_example.hpp"
 #include "glad/glad.h"
 #include "glm/ext.hpp"
 #include "main.h"
@@ -9,7 +9,7 @@
 #include <iostream>
 #include <vector>
 
-Ebo_Data_Container::Ebo_Data_Container()
+DSA_Test_Data_Container::DSA_Test_Data_Container()
 {
     populate_unit_cube_vertex_positions(this->positions);
     this->colors = std::vector<float>{
@@ -19,7 +19,7 @@ Ebo_Data_Container::Ebo_Data_Container()
                                            2, 7, 3, 2, 6, 7, 5, 0, 1, 5, 4, 0,
                                            2, 3, 0, 0, 3, 1, 7, 4, 5, 7, 6, 4};
 }
-New_Ebo_Example::New_Ebo_Example()
+DSA_Test_Example::DSA_Test_Example()
 {
     this->program =
         gl_build_program(PATH_TO_VEREX_SHADER, PATH_TO_FRAGMENT_SHADER);
@@ -29,41 +29,67 @@ New_Ebo_Example::New_Ebo_Example()
 
     this->pos_loc = glGetAttribLocation(this->program, "i_pos");
     this->color_loc = glGetAttribLocation(this->program, "i_color");
-    glGenBuffers(1, &this->vao_attrib_indices.positions);
-    glGenBuffers(1, &this->vao_attrib_indices.colors);
-    glGenBuffers(1, &this->vao_attrib_indices.elements);
 
-    glGenVertexArrays(1, &this->vao);
+    // non-DSA:
+    // glGenBuffers(1, &this->vao_attrib_indices.positions);
+    // glGenBuffers(1, &this->vao_attrib_indices.colors);
+    // glGenBuffers(1, &this->vao_attrib_indices.elements);
+    // DSA:
+    glCreateBuffers(1, &this->vao_attrib_indices.positions);
+    glCreateBuffers(1, &this->vao_attrib_indices.colors);
+    glCreateBuffers(1, &this->vao_attrib_indices.elements);
+
+    // non-DSA:
+    // glGenVertexArrays(1, &this->vao);
+    // glBindVertexArray(this->vao);
+    // DSA:
+    glCreateVertexArrays(1, &this->vao);
+
+    // non-DSA:
     glBindVertexArray(this->vao);
-
     glBindVertexBuffer(this->position_buffer_binding_point,
                        this->vao_attrib_indices.positions, 0, 3 * sizeof(float));
     glVertexAttribFormat(this->pos_loc, 3, GL_FLOAT, false, 0);
     glEnableVertexAttribArray(this->pos_loc);
+    // DSA:
+    // glEnableVertexArrayAttrib(this->vao, this->pos_loc);
+    // glVertexArrayAttribBinding(this->vao, this->vao_attrib_indices.positions, this->position_buffer_binding_point);
+    // glVertexArrayAttribFormat(this->vao, this->pos_loc, 3, GL_FLOAT, GL_FALSE, 0);
 
+    // non-DSA:
     glBindVertexBuffer(this->color_buffer_binding_point,
                        this->vao_attrib_indices.colors, 0, 3 * sizeof(float));
     glVertexAttribFormat(this->color_loc, 3, GL_FLOAT, false, 0);
     glEnableVertexAttribArray(this->color_loc);
+    // DSA:
+    // TODO:
 
-    glBindBuffer(GL_ARRAY_BUFFER, this->vao_attrib_indices.positions);
-    glBufferData(GL_ARRAY_BUFFER,
-                 this->data_containers.positions.size() * sizeof(float),
-                 this->data_containers.positions.data(), GL_STATIC_DRAW);
+    // non-DSA:
+    // glBindBuffer(GL_ARRAY_BUFFER, this->vao_attrib_indices.positions);
+    // glBufferData(GL_ARRAY_BUFFER,
+    //              this->data_containers.positions.size() * sizeof(float),
+    //              this->data_containers.positions.data(), GL_STATIC_DRAW);
+    // glBindBuffer(GL_ARRAY_BUFFER, this->vao_attrib_indices.colors);
+    // glBufferData(GL_ARRAY_BUFFER,
+    //              this->data_containers.colors.size() * sizeof(float),
+    //              this->data_containers.colors.data(), GL_STATIC_DRAW);
+    // DSA:
+    glNamedBufferData(this->vao_attrib_indices.positions, this->data_containers.positions.size() * sizeof(float), this->data_containers.positions.data(), GL_STATIC_DRAW);
+    glNamedBufferData(this->vao_attrib_indices.colors, this->data_containers.colors.size() * sizeof(float), this->data_containers.colors.data(),
+                      GL_STATIC_DRAW);
 
-    glBindBuffer(GL_ARRAY_BUFFER, this->vao_attrib_indices.colors);
-    glBufferData(GL_ARRAY_BUFFER,
-                 this->data_containers.colors.size() * sizeof(float),
-                 this->data_containers.colors.data(), GL_STATIC_DRAW);
-
-    glVertexArrayElementBuffer(this->vao, this->vao_attrib_indices.elements);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->vao_attrib_indices.elements);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER,
-                 this->data_containers.elements.size() * sizeof(float),
-                 this->data_containers.elements.data(), GL_STATIC_DRAW);
+    // non-DSA:
+    // glVertexArrayElementBuffer(this->vao, this->vao_attrib_indices.elements);
+    // glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->vao_attrib_indices.elements);
+    // glBufferData(GL_ELEMENT_ARRAY_BUFFER,
+    //              this->data_containers.elements.size() * sizeof(float),
+    //              this->data_containers.elements.data(), GL_STATIC_DRAW);
+    // DSA:
+    glNamedBufferData(this->vao_attrib_indices.elements, this->data_containers.elements.size() * sizeof(float), this->data_containers.elements.data(),
+                      GL_STATIC_DRAW);
 
     // NOTE: not mandatory
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->vao_attrib_indices.elements);
     glBindVertexArray(0);
 }
 static double start_time = (double)std::chrono::high_resolution_clock::now()
@@ -74,7 +100,7 @@ static glm::vec3 camera_position = glm::vec3(0.f, 0.f, 0.f);
 static float camera_speed = 0.08f;
 static float cube_scale_factor = 5.0f;
 
-void New_Ebo_Example::update()
+void DSA_Test_Example::update()
 {
     // glDisable(GL_CULL_FACE);
     glCullFace(GL_BACK);
@@ -140,6 +166,6 @@ void New_Ebo_Example::update()
                    GL_UNSIGNED_INT, 0);
 
     // NOTE: not mandatory
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->vao_attrib_indices.elements);
     glBindVertexArray(0);
 }

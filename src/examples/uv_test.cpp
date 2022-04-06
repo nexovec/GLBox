@@ -57,25 +57,25 @@ Uv_Test_Example::Uv_Test_Example()
     this->pos_loc = glGetAttribLocation(this->program, "i_pos");
     this->color_loc = glGetAttribLocation(this->program, "i_color");
     this->tex_coord_loc = glGetAttribLocation(this->program, "i_tex_coord");
-    glGenBuffers(1, &this->vao_binding_indices.positions);
-    glGenBuffers(1, &this->vao_binding_indices.colors);
-    glGenBuffers(1, &this->vao_binding_indices.elements);
+    glGenBuffers(1, &this->vao_attrib_indices.positions);
+    glGenBuffers(1, &this->vao_attrib_indices.colors);
+    glGenBuffers(1, &this->vao_attrib_indices.elements);
 
     glGenVertexArrays(1, &this->vao);
     glBindVertexArray(this->vao);
 
-    glBindVertexBuffer(this->position_buffer_binding_point, this->vao_binding_indices.positions, 0, 3 * sizeof(float));
+    glBindVertexBuffer(this->position_buffer_binding_point, this->vao_attrib_indices.positions, 0, 3 * sizeof(float));
     glVertexAttribFormat(this->pos_loc, 3, GL_FLOAT, false, 0);
     glEnableVertexAttribArray(this->pos_loc);
 
-    glBindVertexBuffer(this->color_buffer_binding_point, this->vao_binding_indices.colors, 0, 3 * sizeof(float));
+    glBindVertexBuffer(this->color_buffer_binding_point, this->vao_attrib_indices.colors, 0, 3 * sizeof(float));
     glVertexAttribFormat(this->color_loc, 3, GL_FLOAT, false, 0);
     glEnableVertexAttribArray(this->color_loc);
 
-    glBindBuffer(GL_ARRAY_BUFFER, this->vao_binding_indices.positions);
+    glBindBuffer(GL_ARRAY_BUFFER, this->vao_attrib_indices.positions);
     glBufferData(GL_ARRAY_BUFFER, this->data_containers.positions.size() * sizeof(float), this->data_containers.positions.data(), GL_STATIC_DRAW);
 
-    glBindBuffer(GL_ARRAY_BUFFER, this->vao_binding_indices.colors);
+    glBindBuffer(GL_ARRAY_BUFFER, this->vao_attrib_indices.colors);
     glBufferData(GL_ARRAY_BUFFER, this->data_containers.colors.size() * sizeof(float), this->data_containers.colors.data(), GL_STATIC_DRAW);
 
     int width, height, nrChannels;
@@ -92,8 +92,8 @@ Uv_Test_Example::Uv_Test_Example()
     // TODO: get rid of color attribute
     // FIXME: cube is black, probably texture not bound correctly
 
-    glVertexArrayElementBuffer(this->vao, this->vao_binding_indices.elements);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->vao_binding_indices.elements);
+    glVertexArrayElementBuffer(this->vao, this->vao_attrib_indices.elements);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->vao_attrib_indices.elements);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, this->data_containers.elements.size() * sizeof(float), this->data_containers.elements.data(), GL_STATIC_DRAW);
 
     // NOTE: not mandatory
@@ -113,9 +113,9 @@ void Uv_Test_Example::update()
     // glEnable(GL_CULL_FACE);
 
     glBindVertexArray(this->vao);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->vao_binding_indices.elements);
-    glBindVertexBuffer(this->position_buffer_binding_point, this->vao_binding_indices.positions, 0, 3 * sizeof(float));
-    glBindVertexBuffer(this->color_buffer_binding_point, this->vao_binding_indices.colors, 0, 3 * sizeof(float));
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->vao_attrib_indices.elements);
+    glBindVertexBuffer(this->position_buffer_binding_point, this->vao_attrib_indices.positions, 0, 3 * sizeof(float));
+    glBindVertexBuffer(this->color_buffer_binding_point, this->vao_attrib_indices.colors, 0, 3 * sizeof(float));
 
     glUseProgram(this->program);
 

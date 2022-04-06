@@ -3,17 +3,17 @@
 #include <vector>
 #include <cstdint>
 
-struct Ebo_Data_Container : Example_Data_Container
+struct DSA_Test_Data_Container : Example_Data_Container
 {
     std::vector<float> positions;
     std::vector<float> colors;
     std::vector<uint32_t> elements;
-    Ebo_Data_Container();
+    DSA_Test_Data_Container();
 };
 
-struct New_Ebo_Example : Example
+struct DSA_Test_Example : Example
 {
-    Ebo_Data_Container data_containers;
+    DSA_Test_Data_Container data_containers;
     Vbo_Indices vao_attrib_indices;
     uint32_t program;
     uint32_t position_buffer_binding_point = 0;
@@ -22,6 +22,6 @@ struct New_Ebo_Example : Example
     uint32_t color_loc;
     uint32_t matrix_loc;
     uint32_t vao;
-    New_Ebo_Example();
+    DSA_Test_Example();
     virtual void update();
 };
