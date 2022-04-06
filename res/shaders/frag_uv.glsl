@@ -1,4 +1,4 @@
-#version 450
+#version 450 core
 
 layout(location = 1) in vec2 i_tex_coord;
 out vec4 o_FragColor;

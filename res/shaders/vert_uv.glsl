@@ -1,4 +1,4 @@
-#version 450
+#version 450 core
 
 in vec3 i_pos;
 in vec3 i_color;
