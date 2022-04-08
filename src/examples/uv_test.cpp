@@ -93,6 +93,7 @@ void Uv_Test_Example::update()
 {
     glCullFace(GL_BACK);
     glEnable(GL_DEPTH_TEST);
+
     glDisable(GL_CULL_FACE);
     // glEnable(GL_CULL_FACE);
 
@@ -100,8 +101,6 @@ void Uv_Test_Example::update()
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->attrib_buffer_indices.elements);
     glBindVertexBuffer(this->position_buffer_binding_point, this->attrib_buffer_indices.positions, 0, 3 * sizeof(float));
     glBindVertexBuffer(this->tex_coords_binding_point, this->attrib_buffer_indices.tex_coords, 0, 2 * sizeof(float));
-    // glBindTexture(GL_TEXTURE_2D, this->texture_id);
-    // glBindTextureUnit(0, this->texture_id);
     glActiveTexture(0);
     glBindTextureUnit(0, this->texture_id);
     glUseProgram(this->program);
@@ -112,7 +111,7 @@ void Uv_Test_Example::update()
     glm::mat4 cube_position = glm::translate(glm::identity<glm::mat4>(), glm::vec3(0.f, 0.f, -10.f));
     glm::mat4 cube_inverse_origin_translation = glm::inverse(cube_origin_translation);
     double time = std::chrono::high_resolution_clock::now().time_since_epoch().count() / 1000000000.0 - start_time;
-    glm::mat4 cube_rotation = glm::rotate(glm::identity<glm::mat4>(), (glm::f32)(time), glm::normalize(glm::vec3(1.98f, 0.f, 0.f)));
+    glm::mat4 cube_rotation = glm::rotate(glm::identity<glm::mat4>(), (glm::f32)(time), glm::normalize(glm::vec3(1.0f, 0.3f, 0.1f * time)));
     if (get_key_state('W'))
     {
         std::cout << "W pressed!" << std::endl;
@@ -131,8 +130,8 @@ void Uv_Test_Example::update()
         camera_position.x += camera_speed;
     }
     glm::mat4 camera_position_m = glm::translate(glm::identity<glm::mat4>(), -camera_position);
-    glm::mat4 camera_rotation_m = glm::rotate(glm::identity<glm::mat4>(), (glm::f32)(time), glm::normalize(glm::vec3(0.f, 1.f, 1.f)));
-    glm::mat4 final_transform_m = ortho_m * camera_position_m * cube_position * cube_inverse_origin_translation * cube_scale * cube_rotation * cube_origin_translation;
+    glm::mat4 camera_rotation_m = glm::rotate(glm::identity<glm::mat4>(), (glm::f32)(time), glm::normalize(glm::vec3(0.f, 0.f, 1.f)));
+    glm::mat4 final_transform_m = ortho_m * camera_rotation_m * camera_position_m * cube_position * cube_inverse_origin_translation * cube_scale * cube_rotation * cube_origin_translation;
 
     glUniformMatrix4fv(this->matrix_loc, 1, false, glm::value_ptr(final_transform_m));
 
