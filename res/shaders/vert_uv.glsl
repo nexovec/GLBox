@@ -1,7 +1,6 @@
 #version 450 core
 
 in vec3 i_pos;
-in vec3 i_color;
 in vec2 i_tex_coord;
 
 out vec2 o_tex_coord;

@@ -32,8 +32,7 @@ static void populate_unit_cube_vertex_positions(std::vector<float> &vec)
         0.0f, 0.0f, 0.0f,
         0.0f, 1.0f, 0.0f,
         0.0f, 0.0f, 1.0f,
-        0.0f, 1.0f, 1.0f
-        };
+        0.0f, 1.0f, 1.0f};
     for (const float &thing : data)
     {
         vec.push_back(thing);

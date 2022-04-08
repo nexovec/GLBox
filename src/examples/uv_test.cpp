@@ -19,33 +19,18 @@
 // TODO: integrate, change
 Uv_Test_Data_Container::Uv_Test_Data_Container()
 {
-    populate_unit_cube_vertex_positions(this->positions);
-    this->colors = std::vector<float>{
-        0.8f, 0.0f, 0.0f,
-        0.0f, 0.8f, 0.0f,
-        0.0f, 0.0f, 0.8f,
-        0.8f, 0.8f, 0.8f,
-        0.0f, 0.8f, 0.8f,
-        0.8f, 0.8f, 0.0f,
-        0.8f, 0.0f, 0.8f,
-        0.0f, 0.0f, 0.0f};
+    this->positions = std::vector<float>{
+        1.0f, 0.0f, 0.0f,
+        1.0f, 1.0f, 0.0f,
+        0.0f, 0.0f, 0.0f,
+        0.0f, 1.0f, 0.0f};
     this->tex_coords = std::vector<float>{
         // TODO: probably change this
         0.0f, 1.0f,
         1.0f, 0.0f,
-        0.0f, 1.0f,
-        1.0f, 1.0f,
-        1.0f, 1.0f,
-        1.0f, 1.0f,
-        0.0f, 1.0f,
-        0.0f, 0.0f};
-    this->elements = std::vector<uint32_t>{
-        4, 0, 2, 4, 2, 6,
-        3, 5, 1, 3, 7, 5,
-        2, 7, 3, 2, 6, 7,
-        5, 0, 1, 5, 4, 0,
-        2, 3, 0, 0, 3, 1,
-        7, 4, 5, 7, 6, 4};
+        0.0f, 0.0f,
+        1.0f, 1.0f};
+    this->elements = std::vector<uint32_t>{2, 0, 1, 1, 3, 2};
 }
 Uv_Test_Example::Uv_Test_Example()
 {
@@ -55,11 +40,10 @@ Uv_Test_Example::Uv_Test_Example()
     glUniformMatrix4fv(this->matrix_loc, 1, false, glm::value_ptr(ortho));
 
     this->pos_loc = glGetAttribLocation(this->program, "i_pos");
-    this->color_loc = glGetAttribLocation(this->program, "i_color");
     this->tex_coord_loc = glGetAttribLocation(this->program, "i_tex_coord");
     glGenBuffers(1, &this->vao_attrib_indices.positions);
-    glGenBuffers(1, &this->vao_attrib_indices.colors);
     glGenBuffers(1, &this->vao_attrib_indices.elements);
+    glGenBuffers(1, &this->vao_attrib_indices.tex_coords);
 
     glGenVertexArrays(1, &this->vao);
     glBindVertexArray(this->vao);
@@ -68,19 +52,12 @@ Uv_Test_Example::Uv_Test_Example()
     glVertexAttribFormat(this->pos_loc, 3, GL_FLOAT, false, 0);
     glEnableVertexAttribArray(this->pos_loc);
 
-    glBindVertexBuffer(this->color_buffer_binding_point, this->vao_attrib_indices.colors, 0, 3 * sizeof(float));
-    glVertexAttribFormat(this->color_loc, 3, GL_FLOAT, false, 0);
-    glEnableVertexAttribArray(this->color_loc);
-
     glBindVertexBuffer(this->tex_coords_binding_point, this->vao_attrib_indices.tex_coords, 0, 3 * sizeof(float));
     glVertexAttribFormat(this->tex_coord_loc, 2, GL_FLOAT, false, 0);
     glEnableVertexAttribArray(this->tex_coord_loc);
 
     glBindBuffer(GL_ARRAY_BUFFER, this->vao_attrib_indices.positions);
     glBufferData(GL_ARRAY_BUFFER, this->data_containers.positions.size() * sizeof(float), this->data_containers.positions.data(), GL_STATIC_DRAW);
-
-    glBindBuffer(GL_ARRAY_BUFFER, this->vao_attrib_indices.colors);
-    glBufferData(GL_ARRAY_BUFFER, this->data_containers.colors.size() * sizeof(float), this->data_containers.colors.data(), GL_STATIC_DRAW);
 
     glBindBuffer(GL_ARRAY_BUFFER, this->vao_attrib_indices.tex_coords);
     glBufferData(GL_ARRAY_BUFFER, this->data_containers.tex_coords.size() * sizeof(float), this->data_containers.tex_coords.data(), GL_STATIC_DRAW);
@@ -114,15 +91,15 @@ static float cube_scale_factor = 5.0f;
 
 void Uv_Test_Example::update()
 {
-    // glDisable(GL_CULL_FACE);
     glCullFace(GL_BACK);
     glEnable(GL_DEPTH_TEST);
+    glDisable(GL_CULL_FACE);
     // glEnable(GL_CULL_FACE);
 
     glBindVertexArray(this->vao);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->vao_attrib_indices.elements);
     glBindVertexBuffer(this->position_buffer_binding_point, this->vao_attrib_indices.positions, 0, 3 * sizeof(float));
-    glBindVertexBuffer(this->color_buffer_binding_point, this->vao_attrib_indices.colors, 0, 3 * sizeof(float));
+    glBindVertexBuffer(this->tex_coords_binding_point, this->vao_attrib_indices.tex_coords, 0, 3 * sizeof(float));
     // glBindTexture(GL_TEXTURE_2D, this->texture_id);
     // glBindTextureUnit(0, this->texture_id);
     glActiveTexture(0);
@@ -135,7 +112,7 @@ void Uv_Test_Example::update()
     glm::mat4 cube_position = glm::translate(glm::identity<glm::mat4>(), glm::vec3(0.f, 0.f, -10.f));
     glm::mat4 cube_inverse_origin_translation = glm::inverse(cube_origin_translation);
     double time = std::chrono::high_resolution_clock::now().time_since_epoch().count() / 1000000000.0 - start_time;
-    glm::mat4 cube_rotation = glm::rotate(glm::identity<glm::mat4>(), (glm::f32)(time), glm::normalize(glm::vec3(0.5f, 1.f, 1.f)));
+    glm::mat4 cube_rotation = glm::rotate(glm::identity<glm::mat4>(), (glm::f32)(time), glm::normalize(glm::vec3(1.98f, 0.f, 0.f)));
     if (get_key_state('W'))
     {
         std::cout << "W pressed!" << std::endl;
