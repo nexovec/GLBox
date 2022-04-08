@@ -33,13 +33,13 @@ DSA_Test_Example::DSA_Test_Example()
     this->color_loc = glGetAttribLocation(this->program, "i_color");
 
     // non-DSA:
-    // glGenBuffers(1, &this->vao_attrib_indices.positions);
-    // glGenBuffers(1, &this->vao_attrib_indices.colors);
-    // glGenBuffers(1, &this->vao_attrib_indices.elements);
+    // glGenBuffers(1, &this->attrib_buffer_indices.positions);
+    // glGenBuffers(1, &this->attrib_buffer_indices.colors);
+    // glGenBuffers(1, &this->attrib_buffer_indices.elements);
     // DSA:
-    glCreateBuffers(1, &this->vao_attrib_indices.positions);
-    glCreateBuffers(1, &this->vao_attrib_indices.colors);
-    glCreateBuffers(1, &this->vao_attrib_indices.elements);
+    glCreateBuffers(1, &this->attrib_buffer_indices.positions);
+    glCreateBuffers(1, &this->attrib_buffer_indices.colors);
+    glCreateBuffers(1, &this->attrib_buffer_indices.elements);
 
     // non-DSA:
     // glGenVertexArrays(1, &this->vao);
@@ -50,51 +50,51 @@ DSA_Test_Example::DSA_Test_Example()
     // non-DSA:
     // glBindVertexArray(this->vao);
     // glBindVertexBuffer(this->position_buffer_binding_point,
-    //                    this->vao_attrib_indices.positions, 0, 3 * sizeof(float));
+    //                    this->attrib_buffer_indices.positions, 0, 3 * sizeof(float));
     // glVertexAttribFormat(this->pos_loc, 3, GL_FLOAT, false, 0);
     // glEnableVertexAttribArray(this->pos_loc);
     // DSA:
     glEnableVertexArrayAttrib(this->vao, this->pos_loc);
-    glVertexArrayAttribBinding(this->vao, this->vao_attrib_indices.positions, this->position_buffer_binding_point);
+    glVertexArrayAttribBinding(this->vao, this->attrib_buffer_indices.positions, this->position_buffer_binding_point);
     glVertexArrayAttribFormat(this->vao, this->pos_loc, 3, GL_FLOAT, GL_FALSE, 0);
 
     // non-DSA:
     // glBindVertexArray(this->vao);
     // glBindVertexBuffer(this->color_buffer_binding_point,
-    //                    this->vao_attrib_indices.colors, 0, 3 * sizeof(float));
+    //                    this->attrib_buffer_indices.colors, 0, 3 * sizeof(float));
     // glVertexAttribFormat(this->color_loc, 3, GL_FLOAT, false, 0);
     // glEnableVertexAttribArray(this->color_loc);
     // DSA:
     glEnableVertexArrayAttrib(this->vao, this->color_loc);
-    glVertexArrayAttribBinding(this->vao, this->vao_attrib_indices.colors, this->color_buffer_binding_point);
+    glVertexArrayAttribBinding(this->vao, this->attrib_buffer_indices.colors, this->color_buffer_binding_point);
     glVertexArrayAttribFormat(this->vao, this->color_loc, 3, GL_FLOAT, GL_FALSE, 0);
 
     // non-DSA:
-    // glBindBuffer(GL_ARRAY_BUFFER, this->vao_attrib_indices.positions);
+    // glBindBuffer(GL_ARRAY_BUFFER, this->attrib_buffer_indices.positions);
     // glBufferData(GL_ARRAY_BUFFER,
     //              this->data_containers.positions.size() * sizeof(float),
     //              this->data_containers.positions.data(), GL_STATIC_DRAW);
-    // glBindBuffer(GL_ARRAY_BUFFER, this->vao_attrib_indices.colors);
+    // glBindBuffer(GL_ARRAY_BUFFER, this->attrib_buffer_indices.colors);
     // glBufferData(GL_ARRAY_BUFFER,
     //              this->data_containers.colors.size() * sizeof(float),
     //              this->data_containers.colors.data(), GL_STATIC_DRAW);
     // DSA:
-    glNamedBufferData(this->vao_attrib_indices.positions, this->data_containers.positions.size() * sizeof(float), this->data_containers.positions.data(), GL_STATIC_DRAW);
-    glNamedBufferData(this->vao_attrib_indices.colors, this->data_containers.colors.size() * sizeof(float), this->data_containers.colors.data(),
+    glNamedBufferData(this->attrib_buffer_indices.positions, this->data_containers.positions.size() * sizeof(float), this->data_containers.positions.data(), GL_STATIC_DRAW);
+    glNamedBufferData(this->attrib_buffer_indices.colors, this->data_containers.colors.size() * sizeof(float), this->data_containers.colors.data(),
                       GL_STATIC_DRAW);
 
     // non-DSA:
-    // glVertexArrayElementBuffer(this->vao, this->vao_attrib_indices.elements);
-    // glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->vao_attrib_indices.elements);
+    // glVertexArrayElementBuffer(this->vao, this->attrib_buffer_indices.elements);
+    // glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->attrib_buffer_indices.elements);
     // glBufferData(GL_ELEMENT_ARRAY_BUFFER,
     //              this->data_containers.elements.size() * sizeof(float),
     //              this->data_containers.elements.data(), GL_STATIC_DRAW);
     // DSA:
-    glNamedBufferData(this->vao_attrib_indices.elements, this->data_containers.elements.size() * sizeof(float), this->data_containers.elements.data(),
+    glNamedBufferData(this->attrib_buffer_indices.elements, this->data_containers.elements.size() * sizeof(float), this->data_containers.elements.data(),
                       GL_STATIC_DRAW);
 
     // NOTE: not mandatory
-    // glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->vao_attrib_indices.elements);
+    // glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->attrib_buffer_indices.elements);
     // glBindVertexArray(0);
 }
 static double start_time = (double)std::chrono::high_resolution_clock::now()
@@ -153,22 +153,22 @@ void DSA_Test_Example::update()
 
     glBindVertexArray(this->vao);
     // non-DSA:
-    // glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->vao_attrib_indices.elements);
+    // glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->attrib_buffer_indices.elements);
     // glBindVertexBuffer(this->position_buffer_binding_point,
-    //                    this->vao_attrib_indices.positions, 0, 3 * sizeof(float));
+    //                    this->attrib_buffer_indices.positions, 0, 3 * sizeof(float));
     // glBindVertexBuffer(this->color_buffer_binding_point,
-    //                    this->vao_attrib_indices.colors, 0, 3 * sizeof(float));
+    //                    this->attrib_buffer_indices.colors, 0, 3 * sizeof(float));
     // DSA:
-    glVertexArrayVertexBuffer(this->vao, this->position_buffer_binding_point, this->vao_attrib_indices.positions, 0, 3 * sizeof(float));
-    glVertexArrayVertexBuffer(this->vao, this->color_buffer_binding_point, this->vao_attrib_indices.colors, 0, 3 * sizeof(float));
-    glVertexArrayElementBuffer(this->vao, this->vao_attrib_indices.elements);
+    glVertexArrayVertexBuffer(this->vao, this->position_buffer_binding_point, this->attrib_buffer_indices.positions, 0, 3 * sizeof(float));
+    glVertexArrayVertexBuffer(this->vao, this->color_buffer_binding_point, this->attrib_buffer_indices.colors, 0, 3 * sizeof(float));
+    glVertexArrayElementBuffer(this->vao, this->attrib_buffer_indices.elements);
 
     glUseProgram(this->program);
     glUniformMatrix4fv(this->matrix_loc, 1, false, glm::value_ptr(final_transform_m));
 
     glDrawElements(GL_TRIANGLES, this->data_containers.elements.size(), GL_UNSIGNED_INT, 0);
     // // NOTE: not mandatory
-    // glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->vao_attrib_indices.elements);
+    // glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->attrib_buffer_indices.elements);
     // glBindVertexArray(0);
 
     // NOTE: not mandatory

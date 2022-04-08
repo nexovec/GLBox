@@ -14,7 +14,7 @@ struct Uv_Test_Data_Container : Example_Data_Container
 struct Uv_Test_Example : Example
 {
   Uv_Test_Data_Container data_containers;
-  Vbo_Indices vao_attrib_indices;
+  Vbo_Indices attrib_buffer_indices;
   uint32_t program;
   uint32_t position_buffer_binding_point = 0;
   uint32_t tex_coords_binding_point = 1;
