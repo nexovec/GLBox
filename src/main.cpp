@@ -65,15 +65,25 @@ static void key_callback(GLFWwindow *window, int key, int scancode, int action, 
 
 static int startup(int argc, char *argv[])
 {
-
-    glfwInitHint(GLFW_VERSION_MAJOR, 4);
-    glfwInitHint(GLFW_VERSION_MINOR, 6);
     if (!glfwInit())
     {
         printf("Couldn't initialize glfw.");
         return -1;
     }
+    struct glfwWindowCreateInfo
+    {
+        bool maximize;
+        bool decorate;
+    };
+    glfwWindowCreateInfo createInfo = {false, true};
     glfwSetErrorCallback((GLFWerrorfun)glfw_err_callback);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
+    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+    glfwWindowHint(GLFW_MAXIMIZED, createInfo.maximize);
+    glfwWindowHint(GLFW_DECORATED, createInfo.decorate);
+    glfwWindowHint(GLFW_DOUBLEBUFFER, GLFW_TRUE);
+    glfwWindowHint(GLFW_SRGB_CAPABLE, GLFW_TRUE);
     GLFWwindow *window = glfwCreateWindow(WIDTH, HEIGHT, "GLBox v0.0.1", NULL, NULL);
     if (window == nullptr)
     {
@@ -83,6 +93,8 @@ static int startup(int argc, char *argv[])
     glfwSetKeyCallback(window, key_callback);
     glfwMakeContextCurrent(window);
     gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
+    // std::cout << glGetString(GL_VERSION) << std::endl;
+    // std::cout << glGetString (GL_SHADING_LANGUAGE_VERSION) << std::endl;
     glClearColor(40.f / 255, 44.f / 255, 40.f / 255, 1.0f);
 
     // Bar_Chart_Example example_1 = Bar_Chart_Example();
@@ -96,8 +108,8 @@ static int startup(int argc, char *argv[])
     Example *current_example;
     current_example = new_vbo_rendering_example.get();
     current_example = new_ebo_rendering_example.get();
-    current_example = uv_test_example.get();
     current_example = DSA_example.get();
+    current_example = uv_test_example.get();
 
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_CULL_FACE);
