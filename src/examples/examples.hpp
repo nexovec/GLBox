@@ -19,6 +19,7 @@ struct Vbo_Indices
     uint32_t positions;
     uint32_t colors;
     uint32_t elements;
+    uint32_t tex_coords;
 };
 
 static void populate_unit_cube_vertex_positions(std::vector<float> &vec)
@@ -31,7 +32,8 @@ static void populate_unit_cube_vertex_positions(std::vector<float> &vec)
         0.0f, 0.0f, 0.0f,
         0.0f, 1.0f, 0.0f,
         0.0f, 0.0f, 1.0f,
-        0.0f, 1.0f, 1.0f};
+        0.0f, 1.0f, 1.0f
+        };
     for (const float &thing : data)
     {
         vec.push_back(thing);

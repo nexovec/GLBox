@@ -4,7 +4,7 @@ in vec3 i_pos;
 in vec3 i_color;
 in vec2 i_tex_coord;
 
-layout(location = 1) out vec2 o_tex_coord;
+out vec2 o_tex_coord;
 
 uniform mat4 i_globT;
 

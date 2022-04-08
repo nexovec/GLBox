@@ -19,6 +19,7 @@ struct Uv_Test_Example : Example
   uint32_t program;
   uint32_t position_buffer_binding_point = 0;
   uint32_t color_buffer_binding_point = 1;
+  uint32_t tex_coords_binding_point = 2;
   uint32_t texture_id;
   uint32_t pos_loc;
   uint32_t tex_coord_loc;
