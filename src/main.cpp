@@ -39,9 +39,7 @@ static std::unordered_map<int, bool> pressed_key_map;
 
 bool get_key_state(int key)
 {
-    if (pressed_key_map.contains(key))
-        return true;
-    return false;
+    return pressed_key_map.contains(key);
 }
 
 static void key_callback(GLFWwindow *window, int key, int scancode, int action, int mods)

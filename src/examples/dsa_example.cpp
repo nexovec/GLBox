@@ -144,9 +144,9 @@ void DSA_Test_Example::update()
     }
     glm::mat4 camera_position_m =
         glm::translate(glm::identity<glm::mat4>(), -camera_position);
-    glm::mat4 camera_rotation_m =
-        glm::rotate(glm::identity<glm::mat4>(), (glm::f32)(time),
-                    glm::normalize(glm::vec3(0.f, 1.f, 1.f)));
+    // glm::mat4 camera_rotation_m =
+    //     glm::rotate(glm::identity<glm::mat4>(), (glm::f32)(time),
+    //                 glm::normalize(glm::vec3(0.f, 1.f, 1.f)));
     glm::mat4 final_transform_m = ortho_m * camera_position_m * cube_position *
                                   cube_inverse_origin_translation * cube_scale *
                                   cube_rotation * cube_origin_translation;

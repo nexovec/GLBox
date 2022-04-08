@@ -35,7 +35,7 @@ Uv_Test_Data_Container::Uv_Test_Data_Container()
         1.0f, 0.0f,
         1.0f, 0.0f,
         1.0f, 1.0f,
-        1.0f, 0.0f,
+        1.0f, 1.0f,
         0.0f, 1.0f,
         0.0f, 1.0f,
         0.0f, 0.0f};
@@ -78,7 +78,7 @@ Uv_Test_Example::Uv_Test_Example()
     glBindBuffer(GL_ARRAY_BUFFER, this->vao_attrib_indices.colors);
     glBufferData(GL_ARRAY_BUFFER, this->data_containers.colors.size() * sizeof(float), this->data_containers.colors.data(), GL_STATIC_DRAW);
 
-    int width, height, nrChannels;
+    int width{}, height{}, nrChannels{};
     unsigned char *data = stbi_load(PATH_TO_CUBE_TEXTURE, &width, &height, &nrChannels, 0);
 
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
@@ -116,7 +116,7 @@ void Uv_Test_Example::update()
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->vao_attrib_indices.elements);
     glBindVertexBuffer(this->position_buffer_binding_point, this->vao_attrib_indices.positions, 0, 3 * sizeof(float));
     glBindVertexBuffer(this->color_buffer_binding_point, this->vao_attrib_indices.colors, 0, 3 * sizeof(float));
-
+    glBindTexture(GL_TEXTURE_2D, this->texture_id);
     glUseProgram(this->program);
 
     glm::mat4 ortho_m = glm::ortho(-10.f, (GLfloat)10, (GLfloat)10, -10.f, 1.0f, 1000.f);
