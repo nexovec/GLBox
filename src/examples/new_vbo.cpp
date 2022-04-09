@@ -183,7 +183,7 @@ Vbo_Data_Container::Vbo_Data_Container()
 }
 New_Vbo_Example::New_Vbo_Example()
 {
-    this->program = gl_build_program(PATH_TO_VEREX_SHADER, PATH_TO_FRAGMENT_SHADER);
+    this->program = gl_build_program(PATH_TO_BASIC_VEREX_SHADER, PATH_TO_BASIC_FRAGMENT_SHADER);
     this->matrix_loc = glGetUniformLocation(this->program, "i_globT");
 
     this->pos_loc = glGetAttribLocation(this->program, "i_pos");

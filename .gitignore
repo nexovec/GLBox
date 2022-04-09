@@ -1,6 +1,7 @@
 
 .vs
 .vscode
+!.vscode/c_cpp_properties.json
 bin/**
 HelloWorld.vcxproj
 

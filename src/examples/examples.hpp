@@ -14,10 +14,16 @@ struct Example_Data_Container
     std::vector<float> colors;
     std::vector<float> elements;
 };
-struct Vbo_Indices
+struct Basic_Shader_Vbo_Indices
 {
     uint32_t positions;
     uint32_t colors;
+    uint32_t elements;
+};
+
+struct Vbo_Indices_Uv
+{
+    uint32_t positions;
     uint32_t elements;
     uint32_t tex_coords;
 };

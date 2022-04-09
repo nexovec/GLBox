@@ -40,7 +40,7 @@ Uv_Test_Example::Uv_Test_Example()
     glUniformMatrix4fv(this->matrix_loc, 1, false, glm::value_ptr(ortho));
 
     this->pos_loc = glGetAttribLocation(this->program, "i_pos");
-    this->tex_coord_loc = glGetAttribLocation(this->program, "i_tex_coord");
+    this->tex_coord_loc = glGetAttribLocation(this->program, "i_tex_coords");
     glGenBuffers(1, &this->attrib_buffer_indices.positions);
     glGenBuffers(1, &this->attrib_buffer_indices.elements);
     glGenBuffers(1, &this->attrib_buffer_indices.tex_coords);

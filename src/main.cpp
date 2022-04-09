@@ -8,6 +8,7 @@
 #include "examples/new_ebo.hpp"
 #include "examples/uv_test.hpp"
 #include "examples/dsa_example.hpp"
+#include "examples/dsa_uv.hpp"
 #include "tests.hpp"
 #include "stdio.h"
 #include "stdlib.h"
@@ -102,12 +103,14 @@ static int startup(int argc, char *argv[])
     std::unique_ptr<New_Ebo_Example> new_ebo_rendering_example = std::make_unique<New_Ebo_Example>();
     std::unique_ptr<DSA_Test_Example> DSA_example = std::make_unique<DSA_Test_Example>();
     std::unique_ptr<Uv_Test_Example> uv_test_example = std::make_unique<Uv_Test_Example>();
+    std::unique_ptr<DSA_Uv_Example> DSA_uv_example = std::make_unique<DSA_Uv_Example>();
 
     Example *current_example;
     current_example = new_vbo_rendering_example.get();
     current_example = new_ebo_rendering_example.get();
     current_example = DSA_example.get();
     current_example = uv_test_example.get();
+    current_example = DSA_uv_example.get();
 
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_CULL_FACE);

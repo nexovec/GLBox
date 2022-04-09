@@ -24,7 +24,7 @@ DSA_Test_Data_Container::DSA_Test_Data_Container()
 DSA_Test_Example::DSA_Test_Example()
 {
     this->program =
-        gl_build_program(PATH_TO_VEREX_SHADER, PATH_TO_FRAGMENT_SHADER);
+        gl_build_program(PATH_TO_BASIC_VEREX_SHADER, PATH_TO_BASIC_FRAGMENT_SHADER);
     this->matrix_loc = glGetUniformLocation(this->program, "i_globT");
     glm::mat4 ortho = glm::ortho(0.f, (GLfloat)WIDTH, (GLfloat)HEIGHT, 0.f, 0.f, 1000.f);
     glUniformMatrix4fv(this->matrix_loc, 1, false, glm::value_ptr(ortho));

@@ -3,7 +3,7 @@
 #include <vector>
 #include <cstdint>
 
-struct DSA_Test_Data_Container : Example_Data_Container
+struct DSA_Test_Data_Container
 {
     std::vector<float> positions;
     std::vector<float> colors;
@@ -14,7 +14,7 @@ struct DSA_Test_Data_Container : Example_Data_Container
 struct DSA_Test_Example : Example
 {
     DSA_Test_Data_Container data_containers;
-    Vbo_Indices attrib_buffer_indices;
+    Basic_Shader_Vbo_Indices attrib_buffer_indices;
     uint32_t program;
     uint32_t position_buffer_binding_point = 0;
     uint32_t color_buffer_binding_point = 1;
