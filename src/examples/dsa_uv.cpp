@@ -143,60 +143,19 @@ DSA_Uv_Example::DSA_Uv_Example()
 
     this->pos_loc = glGetAttribLocation(this->program, "i_pos");
     this->tex_coords_loc = glGetAttribLocation(this->program, "i_tex_coords");
-
-    // non-DSA:
-    // glGenBuffers(1, &this->attrib_buffer_indices.positions);
-    // glGenBuffers(1, &this->attrib_buffer_indices.colors);
-    // glGenBuffers(1, &this->attrib_buffer_indices.elements);
-    // DSA:
     glCreateBuffers(1, &this->attrib_buffer_indices.positions);
     glCreateBuffers(1, &this->attrib_buffer_indices.tex_coords);
     glCreateBuffers(1, &this->attrib_buffer_indices.elements);
-
-    // non-DSA:
-    // glGenVertexArrays(1, &this->vao);
-    // glBindVertexArray(this->vao);
-    // DSA:
     glCreateVertexArrays(1, &this->vao);
-
-    // non-DSA:
-    // glBindVertexArray(this->vao);
-    // glBindVertexBuffer(this->position_buffer_binding_point,
-    //                    this->attrib_buffer_indices.positions, 0, 3 * sizeof(float));
-    // glVertexAttribFormat(this->pos_loc, 3, GL_FLOAT, false, 0);
-    // glEnableVertexAttribArray(this->pos_loc);
-    // DSA:
     glEnableVertexArrayAttrib(this->vao, this->pos_loc);
     glVertexArrayAttribBinding(this->vao, this->attrib_buffer_indices.positions, this->position_buffer_binding_point);
     glVertexArrayAttribFormat(this->vao, this->pos_loc, 3, GL_FLOAT, GL_FALSE, 0);
-
-    // non-DSA:
-    // glBindVertexArray(this->vao);
-    // glBindVertexBuffer(this->color_buffer_binding_point,
-    //                    this->attrib_buffer_indices.colors, 0, 3 * sizeof(float));
-    // glVertexAttribFormat(this->color_loc, 3, GL_FLOAT, false, 0);
-    // glEnableVertexAttribArray(this->color_loc);
-    // DSA:
     glEnableVertexArrayAttrib(this->vao, this->tex_coords_loc);
     glVertexArrayAttribBinding(this->vao, this->attrib_buffer_indices.tex_coords, this->tex_coords_buffer_binding_point);
     glVertexArrayAttribFormat(this->vao, this->tex_coords_loc, 2, GL_FLOAT, GL_FALSE, 0);
-
-    // non-DSA:
-    // glBindBuffer(GL_ARRAY_BUFFER, this->attrib_buffer_indices.positions);
-    // glBufferData(GL_ARRAY_BUFFER,
-    //              this->data_containers.positions.size() * sizeof(float),
-    //              this->data_containers.positions.data(), GL_STATIC_DRAW);
-    // glBindBuffer(GL_ARRAY_BUFFER, this->attrib_buffer_indices.colors);
-    // glBufferData(GL_ARRAY_BUFFER,
-    //              this->data_containers.colors.size() * sizeof(float),
-    //              this->data_containers.colors.data(), GL_STATIC_DRAW);
-    // DSA:
     glNamedBufferData(this->attrib_buffer_indices.positions, this->data_containers.positions.size() * sizeof(float), this->data_containers.positions.data(), GL_STATIC_DRAW);
-    glNamedBufferData(this->attrib_buffer_indices.tex_coords, this->data_containers.tex_coords.size() * sizeof(float), this->data_containers.tex_coords.data(),
-                      GL_STATIC_DRAW);
-
+    glNamedBufferData(this->attrib_buffer_indices.tex_coords, this->data_containers.tex_coords.size() * sizeof(float), this->data_containers.tex_coords.data(), GL_STATIC_DRAW);
     // TODO: use index buffer
-    // TODO: use DSA
     int width{}, height{}, nrChannels{};
     unsigned char *data = stbi_load(PATH_TO_CUBE_TEXTURE, &width, &height, &nrChannels, 0);
 
@@ -210,20 +169,8 @@ DSA_Uv_Example::DSA_Uv_Example()
     // glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
     glGenerateTextureMipmap(this->texture_id);
     stbi_image_free(data);
-
-    // non-DSA:
-    // glVertexArrayElementBuffer(this->vao, this->attrib_buffer_indices.elements);
-    // glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->attrib_buffer_indices.elements);
-    // glBufferData(GL_ELEMENT_ARRAY_BUFFER,
-    //              this->data_containers.elements.size() * sizeof(float),
-    //              this->data_containers.elements.data(), GL_STATIC_DRAW);
-    // DSA:
     glNamedBufferData(this->attrib_buffer_indices.elements, this->data_containers.elements.size() * sizeof(float), this->data_containers.elements.data(),
                       GL_STATIC_DRAW);
-
-    // NOTE: not mandatory
-    // glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->attrib_buffer_indices.elements);
-    // glBindVertexArray(0);
 }
 static double start_time = (double)std::chrono::high_resolution_clock::now()
                                .time_since_epoch()
@@ -281,30 +228,15 @@ void DSA_Uv_Example::update()
     glm::mat4 final_transform_m = ortho_m * camera_rotation_m * camera_position_m * cube_position * cube_inverse_origin_translation * cube_scale * cube_rotation * cube_origin_translation;
 
     glBindVertexArray(this->vao);
-    // non-DSA:
-    // glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->attrib_buffer_indices.elements);
-    // glBindVertexBuffer(this->position_buffer_binding_point,
-    //                    this->attrib_buffer_indices.positions, 0, 3 * sizeof(float));
-    // glBindVertexBuffer(this->color_buffer_binding_point,
-    //                    this->attrib_buffer_indices.colors, 0, 3 * sizeof(float));
-    // DSA:
     glVertexArrayVertexBuffer(this->vao, this->position_buffer_binding_point, this->attrib_buffer_indices.positions, 0, 3 * sizeof(float));
     glVertexArrayVertexBuffer(this->vao, this->tex_coords_buffer_binding_point, this->attrib_buffer_indices.tex_coords, 0, 2 * sizeof(float));
     glVertexArrayElementBuffer(this->vao, this->attrib_buffer_indices.elements);
 
-    // glActiveTexture(0);
     glUseProgram(this->program);
     glBindTextureUnit(0, this->texture_id);
-    // glBindTexture(GL_TEXTURE_2D, this->texture_id);
     glUniform1i(glGetUniformLocation(this->program, "our_texture"), 0);
 
     glUniformMatrix4fv(this->matrix_loc, 1, false, glm::value_ptr(final_transform_m));
-
     // glDrawElements(GL_TRIANGLES, this->data_containers.elements.size(), GL_UNSIGNED_INT, 0);
     glDrawArrays(GL_TRIANGLES, 0, this->data_containers.positions.size() / 3);
-    // // NOTE: not mandatory
-    // glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->attrib_buffer_indices.elements);
-    // glBindVertexArray(0);
-
-    // NOTE: not mandatory
 }
