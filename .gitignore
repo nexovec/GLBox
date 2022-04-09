@@ -11,6 +11,7 @@ HelloWorld.vcxproj.filters
 HelloWorld.vcxproj.user
 
 obj/
+libs/
 
 vendor/glad/bin/
 

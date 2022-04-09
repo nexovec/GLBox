@@ -11,8 +11,8 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 
-#define FRAGMENT_PATH "res/shaders/frag_uv.glsl"
-#define VERTEX_PATH "res/shaders/vert_uv.glsl"
+#define FRAGMENT_PATH "res/shaders/uv.frag"
+#define VERTEX_PATH "res/shaders/uv.vert"
 #define PATH_TO_CUBE_TEXTURE "res/images/wood.jpg"
 // #define PATH_TO_CUBE_TEXTURE "res/images/bunga.jpg"
 
@@ -73,8 +73,6 @@ Uv_Test_Example::Uv_Test_Example()
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
     glGenerateMipmap(GL_TEXTURE_2D);
     stbi_image_free(data);
-    // TODO: get rid of color attribute
-    // FIXME: cube is black, probably texture not bound correctly
 
     glVertexArrayElementBuffer(this->vao, this->attrib_buffer_indices.elements);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->attrib_buffer_indices.elements);

@@ -31,7 +31,7 @@ char *read_file(const char *path)
     FILE *file = fopen(path, "r");
     if (file == NULL)
     {
-        // TODO: do something
+        return nullptr;
     }
     fseek(file, 0, SEEK_END);
     uint32_t size = ftell(file);
@@ -67,6 +67,17 @@ const uint32_t gl_build_program(const char *const vertPath, const char *const fr
 {
     char *vert_shader_source = read_file(vertPath);
     char *fragment_shader_source = read_file(fragPath);
+    // TODO: test fail cases
+    if (vert_shader_source == nullptr)
+    {
+        std::cout << "Shader file " << vert_shader_source << " can't be read." << std::endl;
+        terminate();
+    }
+    else if (fragment_shader_source == nullptr)
+    {
+        std::cout << "Shader file " << fragment_shader_source << " can't be read." << std::endl;
+        terminate();
+    }
     const uint32_t v_shader = glad_glCreateShader(GL_VERTEX_SHADER);
     const uint32_t f_shader = glad_glCreateShader(GL_FRAGMENT_SHADER);
     glShaderSource(v_shader, 1, &vert_shader_source, NULL);
