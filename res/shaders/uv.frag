@@ -11,7 +11,3 @@ void main() {
   float light_multiplier = abs(dot(normalize(vec3(0.0f, 1.0f, 1.0f)), normal));
   o_FragColor = vec4(tex_color.xyz, 1.0f);
 }
-// void main() {
-//     o_FragColor = vec4(o_tex_coords.xy, 0.0, 1.0f);
-// }
-// void main() { o_FragColor = vec4(1.0f, 0.0f, 0.0f, 1.0f); }

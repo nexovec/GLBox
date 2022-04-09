@@ -116,18 +116,9 @@ DSA_Uv_Data_Container::DSA_Uv_Data_Container()
         1.0f, 0.0f, //
     };
     this->elements = std::vector<uint32_t>{
-        4, 0, 2,
-        4, 2, 6,
-        3, 5, 1,
-        3, 7, 5,
-        2, 7, 3,
-        2, 6, 7,
-        5, 0, 1,
-        5, 4, 0,
-        2, 3, 0,
-        0, 3, 1,
-        7, 4, 5,
-        7, 6, 4};
+        0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11,
+        12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23,
+        24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35};
     glCullFace(GL_BACK);
     glEnable(GL_DEPTH_TEST);
     // DEBUG:
@@ -166,7 +157,6 @@ DSA_Uv_Example::DSA_Uv_Example()
 
     glTextureStorage2D(this->texture_id, 1, GL_RGB8, width, height);
     glTextureSubImage2D(this->texture_id, 0, 0, 0, width, height, GL_RGB, GL_UNSIGNED_BYTE, data);
-    // glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
     glGenerateTextureMipmap(this->texture_id);
     stbi_image_free(data);
     glNamedBufferData(this->attrib_buffer_indices.elements, this->data_containers.elements.size() * sizeof(float), this->data_containers.elements.data(),
@@ -237,6 +227,6 @@ void DSA_Uv_Example::update()
     glUniform1i(glGetUniformLocation(this->program, "our_texture"), 0);
 
     glUniformMatrix4fv(this->matrix_loc, 1, false, glm::value_ptr(final_transform_m));
-    // glDrawElements(GL_TRIANGLES, this->data_containers.elements.size(), GL_UNSIGNED_INT, 0);
-    glDrawArrays(GL_TRIANGLES, 0, this->data_containers.positions.size() / 3);
+    glDrawElements(GL_TRIANGLES, this->data_containers.elements.size(), GL_UNSIGNED_INT, 0);
+    // glDrawArrays(GL_TRIANGLES, 0, this->data_containers.positions.size() / 3);
 }
