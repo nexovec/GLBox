@@ -205,7 +205,7 @@ DSA_Uv_Example::DSA_Uv_Example()
     glTexParameteri(this->texture_id, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
     glTexParameteri(this->texture_id, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-    glTextureStorage2D(this->texture_id, 1, GL_RGB, width, height);
+    glTextureStorage2D(this->texture_id, 1, GL_RGB8, width, height);
     glTextureSubImage2D(this->texture_id, 0, 0, 0, width, height, GL_RGB, GL_UNSIGNED_BYTE, data);
     // glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
     glGenerateTextureMipmap(this->texture_id);
