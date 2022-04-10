@@ -7,6 +7,6 @@
 [submodule "vendor/stb"]
 	path = vendor/stb
 	url = https://github.com/nothings/stb.git
-[submodule "vendor/assimp"]
-	path = vendor/assimp
-	url = https://github.com/assimp/assimp.git
+[submodule "vendor/OBJLoader"]
+	path = vendor/OBJLoader
+	url = https://github.com/mojobojo/OBJLoader.git

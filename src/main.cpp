@@ -9,6 +9,7 @@
 #include "examples/uv_test.hpp"
 #include "examples/dsa_example.hpp"
 #include "examples/dsa_uv.hpp"
+#include "examples/obj_loader_example.hpp"
 #include "tests.hpp"
 #include "stdio.h"
 #include "stdlib.h"
@@ -104,6 +105,7 @@ static int startup(int argc, char *argv[])
     std::unique_ptr<DSA_Test_Example> DSA_example = std::make_unique<DSA_Test_Example>();
     std::unique_ptr<Uv_Test_Example> uv_test_example = std::make_unique<Uv_Test_Example>();
     std::unique_ptr<DSA_Uv_Example> DSA_uv_example = std::make_unique<DSA_Uv_Example>();
+    std::unique_ptr<OBJ_Loader_Example> OBJ_loader_example = std::make_unique<OBJ_Loader_Example>();
 
     Example *current_example;
     current_example = new_vbo_rendering_example.get();
@@ -111,6 +113,7 @@ static int startup(int argc, char *argv[])
     current_example = DSA_example.get();
     current_example = uv_test_example.get();
     current_example = DSA_uv_example.get();
+    current_example = OBJ_loader_example.get();
 
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_CULL_FACE);

@@ -26,23 +26,37 @@
 //     fclose(file);
 //     return contents;
 // }
-char *read_file(const char *path)
+struct File_Container
 {
-    FILE *file = fopen(path, "r");
-    if (file == NULL)
+    bool file_loaded;
+    size_t buffer_size;
+    size_t data_size;
+    char *data;
+};
+
+// data container might be bigger than what is read
+File_Container read_file(const char *path)
+{
+    FILE *file_handle = fopen(path, "r");
+    if (file_handle == NULL)
     {
-        return nullptr;
+        return {};
     }
-    fseek(file, 0, SEEK_END);
-    uint32_t size = ftell(file);
-    fseek(file, 0, SEEK_SET);
-    char *contents = (char *)malloc((size) * sizeof(char));
+    fseek(file_handle, 0, SEEK_END);
+    size_t reported_file_size = ftell(file_handle);
+    size_t buffer_size = reported_file_size + 1;
+    fseek(file_handle, 0, SEEK_SET);
+    // char *contents = (char *)malloc(buffer_size * sizeof(char));
+    char *contents = (char *)calloc(buffer_size, sizeof(char));
     assert(contents);
-    uint32_t end_char = fread_s(contents, size, sizeof(char), size, file);
-    // NOTE: This errors if fread read more characters than size
-    assert(size >= end_char + 1);
-    contents[end_char] = '\0';
-    return contents;
+    uint32_t size_read = fread_s(contents, reported_file_size, sizeof(char), reported_file_size, file_handle);
+    // contents[reported_file_size] = 0;
+    // contents[size_read] = 0;
+    assert(reported_file_size >= size_read);
+    // NOTE: If this errors, read error occurred
+    // std::cout << "File reported_file_size: " << reported_file_size << "\n"
+    //           << "Actual data reported_file_size: " << size_read << std::endl;
+    return {true, buffer_size, size_read, contents};
 }
 void glfw_err_callback(int code, char *err)
 {
@@ -65,8 +79,8 @@ void utils_print_GL_error(const uint32_t subject, GLenum pname, char *prefixedMe
 }
 const uint32_t gl_build_program(const char *const vertPath, const char *const fragPath)
 {
-    char *vert_shader_source = read_file(vertPath);
-    char *fragment_shader_source = read_file(fragPath);
+    char *vert_shader_source = read_file(vertPath).data;
+    char *fragment_shader_source = read_file(fragPath).data;
     // TODO: test fail cases
     if (vert_shader_source == nullptr)
     {
