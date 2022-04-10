@@ -133,7 +133,7 @@ void Uv_Test_Example::update()
 
     glUniformMatrix4fv(this->matrix_loc, 1, false, glm::value_ptr(final_transform_m));
 
-    glDrawElements(GL_TRIANGLES, this->data_containers.elements.size(), GL_UNSIGNED_INT, 0);
+    glDrawElements(GL_TRIANGLES, (GLsizei)this->data_containers.elements.size(), GL_UNSIGNED_INT, 0);
 
     // NOTE: not mandatory
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);

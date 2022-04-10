@@ -6,6 +6,7 @@
 struct OBJ_Loader_Data_Container
 {
     std::vector<float> positions;
+    std::vector<float> normals;
     std::vector<float> tex_coords;
     std::vector<uint32_t> elements;
     OBJ_Loader_Data_Container();
@@ -14,7 +15,7 @@ struct OBJ_Loader_Data_Container
 struct OBJ_Loader_Example : Example
 {
     OBJ_Loader_Data_Container data_containers;
-    Vbo_Indices_Uv attrib_buffer_indices;
+    Vbo_Indices_Ptne attrib_buffer_indices;
     uint32_t program;
     uint32_t position_buffer_binding_point = 0;
     uint32_t tex_coords_buffer_binding_point = 1;

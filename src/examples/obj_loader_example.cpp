@@ -9,120 +9,50 @@
 #include <iostream>
 #include <vector>
 #include "stb_image.h"
+#include "utils/utils.hpp"
+#define FAST_OBJ_IMPLEMENTATION
+#include "fast_obj.h"
 
 #define FRAGMENT_PATH "res/shaders/uv.frag"
 // #define FRAGMENT_PATH "res/shaders/give_me_tex_coords.frag"
 #define VERTEX_PATH "res/shaders/uv.vert"
 #define PATH_TO_CUBE_TEXTURE "res/images/wood.jpg"
+#define PATH_TO_OBJ_MODEL "res/models/cube/cube.obj"
 
 OBJ_Loader_Data_Container::OBJ_Loader_Data_Container()
 {
-    this->positions = std::vector<float>{
-        -1.0f, -1.0f, -1.0f, // triangle 1 : begin
-        -1.0f, -1.0f, 1.0f,
-        -1.0f, 1.0f, 1.0f, // triangle 1 : end
+    File_Container obj_file = read_file((const char *)PATH_TO_OBJ_MODEL);
+    fastObjMesh *obj_model = fast_obj_read(PATH_TO_OBJ_MODEL);
 
-        1.0f, 1.0f, -1.0f, // triangle 2 : begin
-        -1.0f, -1.0f, -1.0f,
-        -1.0f, 1.0f, -1.0f, // triangle 2 : end
-
-        1.0f, -1.0f, 1.0f,
-        -1.0f, -1.0f, -1.0f,
-        1.0f, -1.0f, -1.0f,
-
-        1.0f, 1.0f, -1.0f,
-        1.0f, -1.0f, -1.0f,
-        -1.0f, -1.0f, -1.0f,
-
-        -1.0f, -1.0f, -1.0f,
-        -1.0f, 1.0f, 1.0f,
-        -1.0f, 1.0f, -1.0f,
-
-        1.0f, -1.0f, 1.0f,
-        -1.0f, -1.0f, 1.0f,
-        -1.0f, -1.0f, -1.0f,
-
-        -1.0f, 1.0f, 1.0f,
-        -1.0f, -1.0f, 1.0f,
-        1.0f, -1.0f, 1.0f,
-
-        1.0f, 1.0f, 1.0f,
-        1.0f, -1.0f, -1.0f,
-        1.0f, 1.0f, -1.0f,
-
-        1.0f, -1.0f, -1.0f,
-        1.0f, 1.0f, 1.0f,
-        1.0f, -1.0f, 1.0f,
-
-        1.0f, 1.0f, 1.0f,
-        1.0f, 1.0f, -1.0f,
-        -1.0f, 1.0f, -1.0f,
-
-        1.0f, 1.0f, 1.0f,
-        -1.0f, 1.0f, -1.0f,
-        -1.0f, 1.0f, 1.0f,
-
-        1.0f, 1.0f, 1.0f,
-        -1.0f, 1.0f, 1.0f,
-        1.0f, -1.0f, 1.0f};
-    // populate_unit_cube_vertex_positions(this->positions);
-    this->tex_coords = std::vector<float>{
-        0.0f, 0.0f,
-        1.0f, 0.0f,
-        1.0f, 1.0f, //
-
-        0.0f, 1.0f,
-        1.0f, 0.0f,
-        1.0f, 1.0f, //
-
-        0.0f, 0.0f,
-        1.0f, 1.0f,
-        0.0f, 1.0f,
-
-        0.0f, 1.0f,
-        0.0f, 0.0f,
-        1.0f, 0.0f, //
-
-        0.0f, 0.0f,
-        1.0f, 1.0f,
-        0.0f, 1.0f, //
-
-        0.0f, 0.0f,
-        1.0f, 0.0f,
-        1.0f, 1.0f,
-
-        0.0f, 1.0f,
-        0.0f, 0.0f,
-        1.0f, 0.0f, //
-
-        0.0f, 1.0f,
-        1.0f, 0.0f,
-        1.0f, 1.0f, //
-
-        1.0f, 0.0f,
-        0.0f, 1.0f,
-        0.0f, 0.0f, //
-
-        1.0f, 0.0f,
-        1.0f, 1.0f, //
-        0.0f, 1.0f,
-
-        1.0f, 0.0f,
-        0.0f, 1.0f,
-        0.0f, 0.0f, //
-
-        1.0f, 1.0f,
-        0.0f, 1.0f,
-        1.0f, 0.0f, //
-    };
-    this->elements = std::vector<uint32_t>{
-        0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11,
-        12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23,
-        24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35};
+    // TODO: operate on obj_model
+    if (!obj_model)
+    {
+        std::cerr << "obj_loader_example failed to parse obj model: " << PATH_TO_OBJ_MODEL << std::endl;
+        terminate();
+    }
+    this->positions = std::vector<float>();
+    this->tex_coords = std::vector<float>();
+    this->normals = std::vector<float>();
+    this->elements = std::vector<uint32_t>();
+    size_t index_count = obj_model->index_count;
+    for (uint32_t i = 0; i < index_count; i++)
+    {
+        auto current_element = obj_model->indices[i];
+        this->positions.push_back(obj_model->positions[current_element.p * 3 + 0]);
+        this->positions.push_back(obj_model->positions[current_element.p * 3 + 1]);
+        this->positions.push_back(obj_model->positions[current_element.p * 3 + 2]);
+        this->normals.push_back(obj_model->normals[current_element.n * 3 + 0]);
+        this->normals.push_back(obj_model->normals[current_element.n * 3 + 1]);
+        this->normals.push_back(obj_model->normals[current_element.n * 3 + 2]);
+        this->tex_coords.push_back(obj_model->texcoords[current_element.t * 2 + 0]);
+        this->tex_coords.push_back(obj_model->texcoords[current_element.t * 2 + 1]);
+        this->elements.push_back(i);
+    }
+    fast_obj_destroy(obj_model);
     glCullFace(GL_BACK);
     glEnable(GL_DEPTH_TEST);
     // DEBUG:
-    glDisable(GL_CULL_FACE);
+    // glDisable(GL_CULL_FACE);
 }
 OBJ_Loader_Example::OBJ_Loader_Example()
 {
@@ -135,6 +65,7 @@ OBJ_Loader_Example::OBJ_Loader_Example()
     this->pos_loc = glGetAttribLocation(this->program, "i_pos");
     this->tex_coords_loc = glGetAttribLocation(this->program, "i_tex_coords");
     glCreateBuffers(1, &this->attrib_buffer_indices.positions);
+    glCreateBuffers(1, &this->attrib_buffer_indices.normals);
     glCreateBuffers(1, &this->attrib_buffer_indices.tex_coords);
     glCreateBuffers(1, &this->attrib_buffer_indices.elements);
     glCreateVertexArrays(1, &this->vao);
@@ -166,9 +97,9 @@ static double start_time = (double)std::chrono::high_resolution_clock::now()
                                .time_since_epoch()
                                .count() /
                            1000000000.0;
-static glm::vec3 camera_position = glm::vec3(0.f, 0.f, 0.f);
+static glm::vec3 camera_position = glm::vec3(0.f, 0.f, -10.f);
 static float camera_speed = 0.08f;
-static float cube_scale_factor = 5.0f;
+static float cube_scale_factor = 1.0f;
 
 void OBJ_Loader_Example::update()
 {
@@ -189,10 +120,10 @@ void OBJ_Loader_Example::update()
     {
         camera_position.x += camera_speed;
     }
-    glm::mat4 ortho_m = glm::ortho(-10.f, (GLfloat)10, (GLfloat)10, -10.f, 1.0f, 1000.f);
+    glm::mat4 ortho_m = glm::ortho(-10.f, (GLfloat)10, (GLfloat)10, -10.f, 0.1f, 100.f);
     glm::mat4 cube_scale = glm::scale(glm::identity<glm::mat4>(), glm::vec3(cube_scale_factor, cube_scale_factor, cube_scale_factor));
     glm::mat4 cube_origin_translation = glm::translate(glm::identity<glm::mat4>(), glm::vec3(-0.5f, -0.5f, -0.5f));
-    glm::mat4 cube_position = glm::translate(glm::identity<glm::mat4>(), glm::vec3(0.f, 0.f, -10.f));
+    glm::mat4 cube_position = glm::translate(glm::identity<glm::mat4>(), glm::vec3(0.f, 0.f, -70.f));
     glm::mat4 cube_inverse_origin_translation = glm::inverse(cube_origin_translation);
     double time = std::chrono::high_resolution_clock::now().time_since_epoch().count() / 1000000000.0 - start_time;
     glm::mat4 cube_rotation = glm::rotate(glm::identity<glm::mat4>(), (glm::f32)(time), glm::normalize(glm::vec3(1.0f, 0.3f, 0.1f * time)));
@@ -215,7 +146,9 @@ void OBJ_Loader_Example::update()
     }
     glm::mat4 camera_position_m = glm::translate(glm::identity<glm::mat4>(), -camera_position);
     glm::mat4 camera_rotation_m = glm::rotate(glm::identity<glm::mat4>(), (glm::f32)(time), glm::normalize(glm::vec3(0.f, 0.f, 1.f)));
-    glm::mat4 final_transform_m = ortho_m * camera_rotation_m * camera_position_m * cube_position * cube_inverse_origin_translation * cube_scale * cube_rotation * cube_origin_translation;
+    glm::mat4 final_transform_m = ortho_m * camera_position_m * camera_rotation_m * cube_position * cube_inverse_origin_translation * cube_scale * cube_rotation * cube_origin_translation;
+    // DEBUG:
+    // final_transform_m = ortho_m * camera_position_m * cube_position * cube_inverse_origin_translation * cube_scale * cube_rotation * cube_origin_translation;
 
     glBindVertexArray(this->vao);
     glVertexArrayVertexBuffer(this->vao, this->position_buffer_binding_point, this->attrib_buffer_indices.positions, 0, 3 * sizeof(float));
@@ -227,6 +160,6 @@ void OBJ_Loader_Example::update()
     glUniform1i(glGetUniformLocation(this->program, "our_texture"), 0);
 
     glUniformMatrix4fv(this->matrix_loc, 1, false, glm::value_ptr(final_transform_m));
-    glDrawElements(GL_TRIANGLES, this->data_containers.elements.size(), GL_UNSIGNED_INT, 0);
+    glDrawElements(GL_TRIANGLES, (GLsizei)this->data_containers.elements.size(), GL_UNSIGNED_INT, 0);
     // glDrawArrays(GL_TRIANGLES, 0, this->data_containers.positions.size() / 3);
 }

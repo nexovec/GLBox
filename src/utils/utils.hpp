@@ -3,7 +3,15 @@
 #include "mymath/mymath.hpp"
 #include <stdint.h>
 #include <string>
-char *read_file(char *path);
+
+struct File_Container
+{
+    bool file_loaded;
+    size_t buffer_size;
+    size_t data_size;
+    char *data;
+};
+File_Container read_file(const char *path);
 
 void glfw_err_callback(int code, char *err);
 

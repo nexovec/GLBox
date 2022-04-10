@@ -16,7 +16,7 @@ project 'Sandbox'
     warnings "Extra"
     -- pchheader "pch.hpp"
     targetdir 'bin/%{cfg.buildcfg}'
-    includedirs {'./src', "vendor/glm", './vendor/glad/include', './vendor/glfw/include', "./vendor/stb", "./vendor/OBJLoader"}
+    includedirs {'./src', "vendor/glm", './vendor/glad/include', './vendor/glfw/include', "./vendor/stb", "./vendor/fast_obj"}
     links {
         'GLFW',
         'Glad'

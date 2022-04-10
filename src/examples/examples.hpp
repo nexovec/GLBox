@@ -28,6 +28,14 @@ struct Vbo_Indices_Uv
     uint32_t tex_coords;
 };
 
+struct Vbo_Indices_Ptne
+{
+    uint32_t positions;
+    uint32_t normals;
+    uint32_t elements;
+    uint32_t tex_coords;
+};
+
 static void populate_unit_cube_vertex_positions(std::vector<float> &vec)
 {
     float data[] = {

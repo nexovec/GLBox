@@ -26,13 +26,6 @@
 //     fclose(file);
 //     return contents;
 // }
-struct File_Container
-{
-    bool file_loaded;
-    size_t buffer_size;
-    size_t data_size;
-    char *data;
-};
 
 // data container might be bigger than what is read
 File_Container read_file(const char *path)
@@ -45,11 +38,12 @@ File_Container read_file(const char *path)
     fseek(file_handle, 0, SEEK_END);
     size_t reported_file_size = ftell(file_handle);
     size_t buffer_size = reported_file_size + 1;
+    assert(buffer_size <= UINT32_MAX);
     fseek(file_handle, 0, SEEK_SET);
     // char *contents = (char *)malloc(buffer_size * sizeof(char));
     char *contents = (char *)calloc(buffer_size, sizeof(char));
     assert(contents);
-    uint32_t size_read = fread_s(contents, reported_file_size, sizeof(char), reported_file_size, file_handle);
+    uint32_t size_read = fread_s(contents, (uint32_t)reported_file_size, sizeof(char), (uint32_t)reported_file_size, file_handle);
     // contents[reported_file_size] = 0;
     // contents[size_read] = 0;
     assert(reported_file_size >= size_read);
