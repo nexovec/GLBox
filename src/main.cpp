@@ -28,6 +28,7 @@ static int startup(int argc, char *argv[]);
 #endif
 
 static bool running = true;
+double mouse_xpos, mouse_ypos;
 
 int main(int argc, char *argv[])
 {
@@ -47,7 +48,10 @@ bool get_key_state(int key)
 static void key_callback(GLFWwindow *window, int key, int scancode, int action, int mods)
 {
     if (action == GLFW_PRESS || action == GLFW_REPEAT)
-        std::cout << key << "\t|\t" << glfwGetKeyScancode(key) << "\t|\t" << (int)'E' << std::endl;
+    {
+        int t_scancode = glfwGetKeyScancode(key); // probably redundant
+        std::cout << key << "\t|\t" << t_scancode << "\t|\t" << (char)t_scancode << std::endl;
+    }
 
     switch (action)
     {
@@ -92,6 +96,7 @@ static int startup(int argc, char *argv[])
     }
     glfwSetKeyCallback(window, key_callback);
     glfwMakeContextCurrent(window);
+    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
     gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
     // std::cout << glGetString(GL_VERSION) << std::endl;
     // std::cout << glGetString (GL_SHADING_LANGUAGE_VERSION) << std::endl;
@@ -120,10 +125,19 @@ static int startup(int argc, char *argv[])
     while (running)
     {
         glfwPollEvents();
+        glfwGetCursorPos(window, &mouse_xpos, &mouse_ypos);
+        mouse_xpos /= WIDTH;
+        mouse_ypos /= HEIGHT;
+        std::cout << "x: " << mouse_xpos << "\n"
+                  << "y: " << mouse_ypos << std::endl;
         // code goes here
         glClear(GL_COLOR_BUFFER_BIT | GL_STENCIL_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         current_example->update();
         glfwSwapBuffers(window);
+        if (get_key_state(GLFW_KEY_ESCAPE))
+        {
+            running = false;
+        }
         if (glfwWindowShouldClose(window) == GLFW_TRUE)
         {
             running = false;

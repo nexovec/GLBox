@@ -17,7 +17,13 @@
 // #define FRAGMENT_PATH "res/shaders/give_me_tex_coords.frag"
 #define VERTEX_PATH "res/shaders/uv.vert"
 #define PATH_TO_CUBE_TEXTURE "res/images/wood.jpg"
+#define PATH_TO_CUBE_TEXTURE "res/models/_ignored/terrain/textures/diff2.jpg"
 #define PATH_TO_OBJ_MODEL "res/models/cube/cube.obj"
+// #define PATH_TO_OBJ_MODEL "res/models/_ignored/car/car.obj"
+#define PATH_TO_OBJ_MODEL "res/models/_ignored/terrain/source/terrain.obj"
+
+extern double mouse_xpos, mouse_ypos;
+double start_mouse_xpos, start_mouse_ypos;
 
 OBJ_Loader_Data_Container::OBJ_Loader_Data_Container()
 {
@@ -51,6 +57,7 @@ OBJ_Loader_Data_Container::OBJ_Loader_Data_Container()
     fast_obj_destroy(obj_model);
     glCullFace(GL_BACK);
     glEnable(GL_DEPTH_TEST);
+    start_mouse_xpos = mouse_xpos;
     // DEBUG:
     // glDisable(GL_CULL_FACE);
 }
@@ -77,6 +84,8 @@ OBJ_Loader_Example::OBJ_Loader_Example()
     glVertexArrayAttribFormat(this->vao, this->tex_coords_loc, 2, GL_FLOAT, GL_FALSE, 0);
     glNamedBufferData(this->attrib_buffer_indices.positions, this->data_containers.positions.size() * sizeof(float), this->data_containers.positions.data(), GL_STATIC_DRAW);
     glNamedBufferData(this->attrib_buffer_indices.tex_coords, this->data_containers.tex_coords.size() * sizeof(float), this->data_containers.tex_coords.data(), GL_STATIC_DRAW);
+    glVertexArrayVertexBuffer(this->vao, this->position_buffer_binding_point, this->attrib_buffer_indices.positions, 0, 3 * sizeof(float));
+    glVertexArrayVertexBuffer(this->vao, this->tex_coords_buffer_binding_point, this->attrib_buffer_indices.tex_coords, 0, 2 * sizeof(float));
     // TODO: use index buffer
     int width{}, height{}, nrChannels{};
     unsigned char *data = stbi_load(PATH_TO_CUBE_TEXTURE, &width, &height, &nrChannels, 0);
@@ -99,7 +108,8 @@ static double start_time = (double)std::chrono::high_resolution_clock::now()
                            1000000000.0;
 static glm::vec3 camera_position = glm::vec3(0.f, 0.f, -10.f);
 static float camera_speed = 0.08f;
-static float cube_scale_factor = 1.0f;
+static float cube_scale_factor = 0.1f;
+static glm::vec3 camera_direction = glm::vec3(0.0f, 0.0f, -1.0f);
 
 void OBJ_Loader_Example::update()
 {
@@ -120,13 +130,15 @@ void OBJ_Loader_Example::update()
     {
         camera_position.x += camera_speed;
     }
-    glm::mat4 ortho_m = glm::ortho(-10.f, (GLfloat)10, (GLfloat)10, -10.f, 0.1f, 100.f);
+    // glm::mat4 ortho_m = glm::ortho(-10.f, (GLfloat)10, (GLfloat)10, -10.f, 0.1f, 100.f);
+    glm::mat4 ortho_m = glm::perspective(45.0f, (GLfloat)4 / 3, 0.1f, 300.0f);
     glm::mat4 cube_scale = glm::scale(glm::identity<glm::mat4>(), glm::vec3(cube_scale_factor, cube_scale_factor, cube_scale_factor));
     glm::mat4 cube_origin_translation = glm::translate(glm::identity<glm::mat4>(), glm::vec3(-0.5f, -0.5f, -0.5f));
     glm::mat4 cube_position = glm::translate(glm::identity<glm::mat4>(), glm::vec3(0.f, 0.f, -70.f));
     glm::mat4 cube_inverse_origin_translation = glm::inverse(cube_origin_translation);
     double time = std::chrono::high_resolution_clock::now().time_since_epoch().count() / 1000000000.0 - start_time;
-    glm::mat4 cube_rotation = glm::rotate(glm::identity<glm::mat4>(), (glm::f32)(time), glm::normalize(glm::vec3(1.0f, 0.3f, 0.1f * time)));
+    glm::mat4 model_rotation = glm::rotate(glm::identity<glm::mat4>(), (glm::f32)(time), glm::normalize(glm::vec3(1.0f, 0.3f, 0.1f * time)));
+    model_rotation = glm::identity<glm::mat4>();
     if (get_key_state('W'))
     {
         std::cout << "W pressed!" << std::endl;
@@ -145,14 +157,19 @@ void OBJ_Loader_Example::update()
         camera_position.x += camera_speed;
     }
     glm::mat4 camera_position_m = glm::translate(glm::identity<glm::mat4>(), -camera_position);
-    glm::mat4 camera_rotation_m = glm::rotate(glm::identity<glm::mat4>(), (glm::f32)(time), glm::normalize(glm::vec3(0.f, 0.f, 1.f)));
-    glm::mat4 final_transform_m = ortho_m * camera_position_m * camera_rotation_m * cube_position * cube_inverse_origin_translation * cube_scale * cube_rotation * cube_origin_translation;
+    // glm::mat4 camera_rotation_m = glm::rotate(glm::identity<glm::mat4>(), (glm::f32)(time), glm::normalize(glm::vec3(0.f, 0.f, 1.f)));
+    // camera_rotation_m = glm::identity<glm::mat4>();
+    // TODO: fix camera rotation
+    // TODO: camera movement
+    // TODO: cleanup
+    glm::mat4 camera_rotation_x = glm::rotate(glm::identity<glm::mat4>(), (glm::f32)(mouse_xpos - start_mouse_xpos), glm::vec3(0.0f, 1.0f, 0.0f));
+    glm::mat4 camera_rotation_y = glm::rotate(glm::identity<glm::mat4>(), (glm::f32)(mouse_ypos - start_mouse_ypos), glm::vec3(1.0f, 0.0f, 0.0f));
+    glm::mat4 camera_rotation_m = camera_rotation_x * camera_rotation_y;
+    glm::mat4 final_transform_m = ortho_m * camera_position_m * camera_rotation_m * cube_position * cube_inverse_origin_translation * cube_scale * model_rotation * cube_origin_translation;
     // DEBUG:
-    // final_transform_m = ortho_m * camera_position_m * cube_position * cube_inverse_origin_translation * cube_scale * cube_rotation * cube_origin_translation;
+    // final_transform_m = ortho_m * camera_position_m * cube_position * cube_inverse_origin_translation * cube_scale * model_rotation * cube_origin_translation;
 
     glBindVertexArray(this->vao);
-    glVertexArrayVertexBuffer(this->vao, this->position_buffer_binding_point, this->attrib_buffer_indices.positions, 0, 3 * sizeof(float));
-    glVertexArrayVertexBuffer(this->vao, this->tex_coords_buffer_binding_point, this->attrib_buffer_indices.tex_coords, 0, 2 * sizeof(float));
     glVertexArrayElementBuffer(this->vao, this->attrib_buffer_indices.elements);
 
     glUseProgram(this->program);
