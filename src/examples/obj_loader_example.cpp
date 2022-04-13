@@ -61,6 +61,10 @@ OBJ_Loader_Data_Container::OBJ_Loader_Data_Container()
     // DEBUG:
     // glDisable(GL_CULL_FACE);
 }
+
+static glm::mat4 camera_rotation;
+static glm::mat4 camera_position;
+
 OBJ_Loader_Example::OBJ_Loader_Example()
 {
     this->program =
@@ -101,35 +105,20 @@ OBJ_Loader_Example::OBJ_Loader_Example()
     stbi_image_free(data);
     glNamedBufferData(this->attrib_buffer_indices.elements, this->data_containers.elements.size() * sizeof(float), this->data_containers.elements.data(),
                       GL_STATIC_DRAW);
+
+    camera_rotation = glm::identity<glm::mat4>();
+    camera_position = glm::translate(glm::identity<glm::mat4>(), glm::vec3(0.f, 0.f, -10.f));
 }
 static double start_time = (double)std::chrono::high_resolution_clock::now()
                                .time_since_epoch()
                                .count() /
                            1000000000.0;
-static glm::vec3 camera_position = glm::vec3(0.f, 0.f, -10.f);
-static float camera_speed = 0.08f;
+static float camera_speed = 1.5f;
 static float cube_scale_factor = 0.1f;
 static glm::vec3 camera_direction = glm::vec3(0.0f, 0.0f, -1.0f);
 
 void OBJ_Loader_Example::update()
 {
-    if (get_key_state('W'))
-    {
-        std::cout << "W pressed!" << std::endl;
-        camera_position.y -= camera_speed;
-    }
-    else if (get_key_state('S'))
-    {
-        camera_position.y += camera_speed;
-    }
-    else if (get_key_state('A'))
-    {
-        camera_position.x -= camera_speed;
-    }
-    else if (get_key_state('D'))
-    {
-        camera_position.x += camera_speed;
-    }
     // glm::mat4 ortho_m = glm::ortho(-10.f, (GLfloat)10, (GLfloat)10, -10.f, 0.1f, 100.f);
     glm::mat4 ortho_m = glm::perspective(45.0f, (GLfloat)4 / 3, 0.1f, 300.0f);
     glm::mat4 cube_scale = glm::scale(glm::identity<glm::mat4>(), glm::vec3(cube_scale_factor, cube_scale_factor, cube_scale_factor));
@@ -139,33 +128,26 @@ void OBJ_Loader_Example::update()
     double time = std::chrono::high_resolution_clock::now().time_since_epoch().count() / 1000000000.0 - start_time;
     glm::mat4 model_rotation = glm::rotate(glm::identity<glm::mat4>(), (glm::f32)(time), glm::normalize(glm::vec3(1.0f, 0.3f, 0.1f * time)));
     model_rotation = glm::identity<glm::mat4>();
+    glm::mat4 camera_movement_translation = glm::identity<glm::mat4>();
     if (get_key_state('W'))
     {
         std::cout << "W pressed!" << std::endl;
-        camera_position.y -= camera_speed;
+        camera_movement_translation = glm::translate(camera_movement_translation, glm::vec3(0.0f, 0.0f, -1.0f * camera_speed));
     }
-    else if (get_key_state('S'))
+    if (get_key_state('S'))
     {
-        camera_position.y += camera_speed;
+        camera_movement_translation = glm::translate(camera_movement_translation, glm::vec3(0.0f, 0.0f, 1.0f * camera_speed));
     }
-    else if (get_key_state('A'))
-    {
-        camera_position.x -= camera_speed;
-    }
-    else if (get_key_state('D'))
-    {
-        camera_position.x += camera_speed;
-    }
-    glm::mat4 camera_position_m = glm::translate(glm::identity<glm::mat4>(), -camera_position);
     // glm::mat4 camera_rotation_m = glm::rotate(glm::identity<glm::mat4>(), (glm::f32)(time), glm::normalize(glm::vec3(0.f, 0.f, 1.f)));
     // camera_rotation_m = glm::identity<glm::mat4>();
     // TODO: fix camera rotation
-    // TODO: move camera along it's directional vector
     // TODO: cleanup
     glm::mat4 camera_rotation_x = glm::rotate(glm::identity<glm::mat4>(), (glm::f32)(mouse_xpos - start_mouse_xpos), glm::vec3(0.0f, 1.0f, 0.0f));
     glm::mat4 camera_rotation_y = glm::rotate(glm::identity<glm::mat4>(), (glm::f32)(mouse_ypos - start_mouse_ypos), glm::vec3(1.0f, 0.0f, 0.0f));
-    glm::mat4 camera_rotation_m = camera_rotation_x * camera_rotation_y;
-    glm::mat4 final_transform_m = ortho_m * camera_position_m * camera_rotation_m * cube_position * cube_inverse_origin_translation * cube_scale * model_rotation * cube_origin_translation;
+    camera_rotation = camera_rotation_x * camera_rotation_y;
+    camera_position *= glm::inverse(camera_rotation) * camera_movement_translation * camera_rotation;
+
+    glm::mat4 final_transform_m = ortho_m * camera_rotation * camera_position * cube_position * cube_inverse_origin_translation * cube_scale * model_rotation * cube_origin_translation;
     // DEBUG:
     // final_transform_m = ortho_m * camera_position_m * cube_position * cube_inverse_origin_translation * cube_scale * model_rotation * cube_origin_translation;
 
