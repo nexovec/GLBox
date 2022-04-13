@@ -124,12 +124,14 @@ static int startup(int argc, char *argv[])
     glEnable(GL_CULL_FACE);
     while (running)
     {
+        // TODO: fix mouse movement stopping when cursor is at the edge of the screen
+        // TODO: proper game loop
         glfwPollEvents();
         glfwGetCursorPos(window, &mouse_xpos, &mouse_ypos);
         mouse_xpos /= WIDTH;
         mouse_ypos /= HEIGHT;
-        std::cout << "x: " << mouse_xpos << "\n"
-                  << "y: " << mouse_ypos << std::endl;
+        // std::cout << "x: " << mouse_xpos << "\n"
+        //           << "y: " << mouse_ypos << std::endl;
         // code goes here
         glClear(GL_COLOR_BUFFER_BIT | GL_STENCIL_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         current_example->update();
@@ -138,7 +140,7 @@ static int startup(int argc, char *argv[])
         {
             running = false;
         }
-        if (glfwWindowShouldClose(window) == GLFW_TRUE)
+        else if (glfwWindowShouldClose(window) == GLFW_TRUE)
         {
             running = false;
         }
