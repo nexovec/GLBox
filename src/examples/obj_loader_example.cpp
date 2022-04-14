@@ -131,7 +131,7 @@ void OBJ_Loader_Example::update()
     glm::mat4 camera_movement_translation = glm::identity<glm::mat4>();
     if (get_key_state('W'))
     {
-        std::cout << "W pressed!" << std::endl;
+        // std::cout << "W pressed!" << std::endl;
         camera_movement_translation = glm::translate(camera_movement_translation, glm::vec3(0.0f, 0.0f, -1.0f * camera_speed));
     }
     if (get_key_state('S'))
@@ -140,10 +140,11 @@ void OBJ_Loader_Example::update()
     }
     // glm::mat4 camera_rotation_m = glm::rotate(glm::identity<glm::mat4>(), (glm::f32)(time), glm::normalize(glm::vec3(0.f, 0.f, 1.f)));
     // camera_rotation_m = glm::identity<glm::mat4>();
-    // TODO: fix camera rotation
     // TODO: cleanup
     glm::mat4 camera_rotation_x = glm::rotate(glm::identity<glm::mat4>(), (glm::f32)(mouse_xpos - start_mouse_xpos), glm::vec3(0.0f, 1.0f, 0.0f));
     glm::mat4 camera_rotation_y = glm::rotate(glm::identity<glm::mat4>(), (glm::f32)(mouse_ypos - start_mouse_ypos), glm::vec3(1.0f, 0.0f, 0.0f));
+    camera_rotation_y = glm::inverse(camera_rotation_x) * camera_rotation_y * camera_rotation_x;
+    // camera_rotation = camera_rotation_x * camera_rotation_y;
     camera_rotation = camera_rotation_x * camera_rotation_y;
     camera_position *= glm::inverse(camera_rotation) * camera_movement_translation * camera_rotation;
 

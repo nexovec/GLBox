@@ -49,8 +49,8 @@ static void key_callback(GLFWwindow *window, int key, int scancode, int action, 
 {
     if (action == GLFW_PRESS || action == GLFW_REPEAT)
     {
-        int t_scancode = glfwGetKeyScancode(key); // probably redundant
-        std::cout << key << "\t|\t" << t_scancode << "\t|\t" << (char)t_scancode << std::endl;
+        // int t_scancode = glfwGetKeyScancode(key); // probably redundant
+        // std::cout << key << "\t|\t" << t_scancode << "\t|\t" << (char)t_scancode << std::endl;
     }
 
     switch (action)
@@ -95,6 +95,12 @@ static int startup(int argc, char *argv[])
         return -1;
     }
     glfwSetKeyCallback(window, key_callback);
+    if (!glfwRawMouseMotionSupported())
+    {
+        std::cerr << "ERROR: raw mouse motion is not supported on this device." << std::endl;
+        terminate();
+    }
+    glfwSetInputMode(window, GLFW_RAW_MOUSE_MOTION, GLFW_TRUE);
     glfwMakeContextCurrent(window);
     glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
     gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
