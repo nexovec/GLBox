@@ -12,6 +12,8 @@
 #include "utils/utils.hpp"
 #define FAST_OBJ_IMPLEMENTATION
 #include "fast_obj.h"
+// #include "GLFW/glfw3.h"
+#define GLFW_KEY_LEFT_SHIFT 340
 
 #define FRAGMENT_PATH "res/shaders/uv.frag"
 // #define FRAGMENT_PATH "res/shaders/give_me_tex_coords.frag"
@@ -21,9 +23,21 @@
 #define PATH_TO_OBJ_MODEL "res/models/cube/cube.obj"
 // #define PATH_TO_OBJ_MODEL "res/models/_ignored/car/car.obj"
 #define PATH_TO_OBJ_MODEL "res/models/_ignored/terrain/source/terrain.obj"
+#define CAMERA_SPEED 0.08f
+#define CAMERA_SPEED_MULTIPLIER 5.0f
 
 extern double mouse_xpos, mouse_ypos;
-double start_mouse_xpos, start_mouse_ypos;
+static double start_mouse_xpos, start_mouse_ypos;
+
+// static glm::mat4 camera_rotation;
+static glm::mat4 camera_position;
+static double start_time = (double)std::chrono::high_resolution_clock::now()
+                               .time_since_epoch()
+                               .count() /
+                           1000000000.0;
+static float camera_speed = 0.08f;
+static float cube_scale_factor = 0.1f;
+static glm::vec3 camera_direction = glm::vec3(0.0f, 0.0f, -1.0f);
 
 OBJ_Loader_Data_Container::OBJ_Loader_Data_Container()
 {
@@ -62,9 +76,6 @@ OBJ_Loader_Data_Container::OBJ_Loader_Data_Container()
     // glDisable(GL_CULL_FACE);
 }
 
-static glm::mat4 camera_rotation;
-static glm::mat4 camera_position;
-
 OBJ_Loader_Example::OBJ_Loader_Example()
 {
     this->program =
@@ -90,7 +101,6 @@ OBJ_Loader_Example::OBJ_Loader_Example()
     glNamedBufferData(this->attrib_buffer_indices.tex_coords, this->data_containers.tex_coords.size() * sizeof(float), this->data_containers.tex_coords.data(), GL_STATIC_DRAW);
     glVertexArrayVertexBuffer(this->vao, this->position_buffer_binding_point, this->attrib_buffer_indices.positions, 0, 3 * sizeof(float));
     glVertexArrayVertexBuffer(this->vao, this->tex_coords_buffer_binding_point, this->attrib_buffer_indices.tex_coords, 0, 2 * sizeof(float));
-    // TODO: use index buffer
     int width{}, height{}, nrChannels{};
     unsigned char *data = stbi_load(PATH_TO_CUBE_TEXTURE, &width, &height, &nrChannels, 0);
 
@@ -106,16 +116,9 @@ OBJ_Loader_Example::OBJ_Loader_Example()
     glNamedBufferData(this->attrib_buffer_indices.elements, this->data_containers.elements.size() * sizeof(float), this->data_containers.elements.data(),
                       GL_STATIC_DRAW);
 
-    camera_rotation = glm::identity<glm::mat4>();
+    // camera_rotation = glm::identity<glm::mat4>();
     camera_position = glm::translate(glm::identity<glm::mat4>(), glm::vec3(0.f, 0.f, -10.f));
 }
-static double start_time = (double)std::chrono::high_resolution_clock::now()
-                               .time_since_epoch()
-                               .count() /
-                           1000000000.0;
-static float camera_speed = 1.5f;
-static float cube_scale_factor = 0.1f;
-static glm::vec3 camera_direction = glm::vec3(0.0f, 0.0f, -1.0f);
 
 void OBJ_Loader_Example::update()
 {
@@ -129,23 +132,40 @@ void OBJ_Loader_Example::update()
     glm::mat4 model_rotation = glm::rotate(glm::identity<glm::mat4>(), (glm::f32)(time), glm::normalize(glm::vec3(1.0f, 0.3f, 0.1f * time)));
     model_rotation = glm::identity<glm::mat4>();
     glm::mat4 camera_movement_translation = glm::identity<glm::mat4>();
+    float camera_speed = CAMERA_SPEED;
+    if (get_key_state(GLFW_KEY_LEFT_SHIFT))
+    {
+        camera_speed *= CAMERA_SPEED_MULTIPLIER;
+    }
     if (get_key_state('W'))
     {
         // std::cout << "W pressed!" << std::endl;
-        camera_movement_translation = glm::translate(camera_movement_translation, glm::vec3(0.0f, 0.0f, -1.0f * camera_speed));
+        camera_movement_translation = glm::translate(camera_movement_translation, glm::vec3(0.0f, 0.0f, 1.0f * camera_speed));
     }
     if (get_key_state('S'))
     {
-        camera_movement_translation = glm::translate(camera_movement_translation, glm::vec3(0.0f, 0.0f, 1.0f * camera_speed));
+        camera_movement_translation = glm::translate(camera_movement_translation, glm::vec3(0.0f, 0.0f, -1.0f * camera_speed));
     }
-    // glm::mat4 camera_rotation_m = glm::rotate(glm::identity<glm::mat4>(), (glm::f32)(time), glm::normalize(glm::vec3(0.f, 0.f, 1.f)));
-    // camera_rotation_m = glm::identity<glm::mat4>();
-    // TODO: cleanup
-    glm::mat4 camera_rotation_x = glm::rotate(glm::identity<glm::mat4>(), (glm::f32)(mouse_xpos - start_mouse_xpos), glm::vec3(0.0f, 1.0f, 0.0f));
+    if (get_key_state('D'))
+    {
+        camera_movement_translation = glm::translate(camera_movement_translation, glm::vec3(-1.0f * camera_speed, 0.0f, 0.0f));
+    }
+    if (get_key_state('A'))
+    {
+        camera_movement_translation = glm::translate(camera_movement_translation, glm::vec3(1.0f * camera_speed, 0.0f, 0.0f));
+    }
+    if (get_key_state('E'))
+    {
+        camera_movement_translation = glm::translate(camera_movement_translation, glm::vec3(0.0f, -1.0f * camera_speed, 0.0f));
+    }
+    if (get_key_state('Q'))
+    {
+        camera_movement_translation = glm::translate(camera_movement_translation, glm::vec3(0.0f, 1.0f * camera_speed, 0.0f));
+    }
+    glm::mat4 camera_rotation_hor = glm::rotate(glm::identity<glm::mat4>(), (glm::f32)(mouse_xpos - start_mouse_xpos), glm::vec3(0.0f, 1.0f, 0.0f));
     glm::mat4 camera_rotation_y = glm::rotate(glm::identity<glm::mat4>(), (glm::f32)(mouse_ypos - start_mouse_ypos), glm::vec3(1.0f, 0.0f, 0.0f));
-    camera_rotation_y = glm::inverse(camera_rotation_x) * camera_rotation_y * camera_rotation_x;
-    // camera_rotation = camera_rotation_x * camera_rotation_y;
-    camera_rotation = camera_rotation_x * camera_rotation_y;
+    glm::mat4 camera_rotation_vert = glm::inverse(camera_rotation_hor) * camera_rotation_y * camera_rotation_hor;
+    glm::mat4 camera_rotation = camera_rotation_hor * camera_rotation_vert;
     camera_position *= glm::inverse(camera_rotation) * camera_movement_translation * camera_rotation;
 
     glm::mat4 final_transform_m = ortho_m * camera_rotation * camera_position * cube_position * cube_inverse_origin_translation * cube_scale * model_rotation * cube_origin_translation;
