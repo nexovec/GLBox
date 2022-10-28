@@ -19,10 +19,10 @@
 // #define FRAGMENT_PATH "res/shaders/give_me_tex_coords.frag"
 #define VERTEX_PATH "res/shaders/uv.vert"
 #define PATH_TO_CUBE_TEXTURE "res/images/wood.jpg"
-#define PATH_TO_CUBE_TEXTURE "res/models/_ignored/terrain/textures/diff2.jpg"
+#define PATH_TO_CUBE_TEXTURE "res/models/terrain/textures/diff2.jpg"
 #define PATH_TO_OBJ_MODEL "res/models/cube/cube.obj"
 // #define PATH_TO_OBJ_MODEL "res/models/_ignored/car/car.obj"
-#define PATH_TO_OBJ_MODEL "res/models/_ignored/terrain/source/terrain.obj"
+#define PATH_TO_OBJ_MODEL "res/models/terrain/source/terrain.obj"
 #define CAMERA_SPEED 0.08f
 #define CAMERA_SPEED_MULTIPLIER 5.0f
 
